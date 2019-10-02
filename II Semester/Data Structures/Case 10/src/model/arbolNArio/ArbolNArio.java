@@ -1,8 +1,12 @@
 package model.arbolNArio;
 
+import java.util.ArrayList;
+
 public class ArbolNArio<T> {
 
 	private NodoNArio<T> raiz;
+	private int cantidadNodos;
+	
 	
 	// Constructores
 	
@@ -13,6 +17,8 @@ public class ArbolNArio<T> {
 	public ArbolNArio(T pValor) {
 		raiz = new NodoNArio<T>();
 		raiz.setValor(pValor);
+		
+		cantidadNodos += 1;
 	}
 
 	// Getters & Setters generados
@@ -24,14 +30,34 @@ public class ArbolNArio<T> {
 		this.raiz = raiz;
 	}
 	
+	public int getCantidadNodos() {
+		return cantidadNodos;
+	}
+	
 	//Metodos creados
 	
-	public int getCantidadNodos() {
-		int cantidadNodos = 0;
+	public void agregarNodo(NodoNArio<T> pPadre, NodoNArio<T> pNodo) {
 		
-		//terminar
+		pPadre.agregarHijo(pNodo);
 		
-		return cantidadNodos;
+		if (pNodo.tieneHijos()) cantidadNodos += pNodo.getHijos().size();
+		
+		cantidadNodos += 1;
+		
+	}
+	
+	public void quitarNodo(NodoNArio<T> pNodo) {
+		// Quita el nodo siempre que no sea la raiz
+		if (pNodo.getPadre() != null) { 
+			
+			NodoNArio<T> padre = pNodo.getPadre();
+			ArrayList<NodoNArio<T>> hijos = pNodo.getHijos();
+			
+			pNodo = null;
+			
+			hijos.forEach((hijoActual) -> hijoActual.setPadre(padre));
+		}
+		
 	}
 	
 	public boolean isEmpty() {
