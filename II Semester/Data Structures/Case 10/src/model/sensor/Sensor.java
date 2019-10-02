@@ -1,22 +1,24 @@
 package model.sensor;
 
 import java.util.Hashtable;
+import java.util.Random;
 
 import model.Ubicacion.*;
 
 public class Sensor implements ISensorConstants{
 	
 	private String id;
-	private int cantidadAgua;
+	private int consumoBase;
+	private int consumoActual;
 	private Ubicacion lugar;
 	
 	private Hashtable<Integer, Ubicacion> tipoUbicacion;
 	
-	public Sensor(String pId, int pTipoUbicacion, String pNombreLugar, int pCantidadAgua) {
+	public Sensor(String pId, int pTipoUbicacion, String pNombreLugar, int pConsumoBase) {
 		
 		id = pId;
 		
-		cantidadAgua = pCantidadAgua;
+		consumoBase = pConsumoBase;
 		
 		lugar = setTipoLugar(pTipoUbicacion);
 		lugar.setNombre(pNombreLugar);
@@ -32,12 +34,20 @@ public class Sensor implements ISensorConstants{
 		this.id = pId;
 	}
 
-	public int getCantidadAgua() {
-		return cantidadAgua;
+	public int getConsumoBase() {
+		return consumoBase;
 	}
 
-	public void setCantidadAgua(int pCantidadAgua) {
-		this.cantidadAgua = pCantidadAgua;
+	public void setConsumoBase(int consumoBase) {
+		this.consumoBase = consumoBase;
+	}
+
+	public int getConsumoActual() {
+		return consumoActual;
+	}
+
+	public void setConsumoActual(int consumoActual) {
+		this.consumoActual = consumoActual;
 	}
 
 	public Ubicacion getLugar() {
@@ -60,6 +70,13 @@ public class Sensor implements ISensorConstants{
 		return lugar;
 	}
 
-	
-	
+	public void actualizarConsumo() {
+		Random randomValue = new Random();
+		
+		double randomRate = OSCILAMIENTO_MIN + (OSCILAMIENTO_MAX + OSCILAMIENTO_MIN) * randomValue.nextDouble();
+		
+		consumoActual = (int) (consumoBase * randomRate);
+		
+	}
+	 
 }	
