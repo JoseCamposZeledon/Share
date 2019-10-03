@@ -12,7 +12,7 @@ public class Sensor implements ISensorConstants{
 	private int consumoActual;
 	private Ubicacion lugar;
 	
-	private Hashtable<Integer, Ubicacion> tipoUbicacion;
+	private Hashtable<Integer, Ubicacion> tipoUbicacion = new Hashtable<Integer, Ubicacion>();
 	
 	public Sensor(String pId, int pTipoUbicacion, String pNombreLugar, int pConsumoBase) {
 		
@@ -60,23 +60,20 @@ public class Sensor implements ISensorConstants{
 	
 	// Metodos creados
 	public Ubicacion setTipoLugar(int pTipoUbicacion) {
-		tipoUbicacion = new Hashtable<Integer, Ubicacion>();
 		
 		tipoUbicacion.put(CANTON, new Canton());
 		tipoUbicacion.put(DISTRITO, new Distrito());
 		tipoUbicacion.put(BARRIO, new Barrio());
 		
-		lugar = tipoUbicacion.get(pTipoUbicacion);
+		return tipoUbicacion.get(pTipoUbicacion);
 		
-		return lugar;
 	}
 
 	public void actualizarConsumo() {
 		Random randomValue = new Random();
 		
 		double randomRate = OSCILAMIENTO_MIN + (OSCILAMIENTO_MAX - OSCILAMIENTO_MIN) * randomValue.nextDouble();
-		System.out.println("RANDOM>>" + randomRate);
-		consumoActual = (int) (consumoBase * randomRate);
+		consumoActual = (int) (consumoBase + (consumoBase * randomRate));
 		
 	}
 	 
