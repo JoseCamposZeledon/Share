@@ -21,18 +21,23 @@ public class SplayTree<T extends Comparable<T>> {
 	
 	public void convertirEnRaiz(NodoSplay<T> pNodo) {
 		// Función recursiva para convertir por medio de rotaciones a un nodo en raiz.
+		System.out.println("convertirEnRaiz");
 		if (pNodo.esRaiz()) {
 			// Nodo ya es raiz
+			System.out.println("esRaiz");
 			return;
 		} else if (pNodo.getPadre().esRaiz()) {
 			// Nodo se encuentra en el nivel 1
+			System.out.println("zig con bool: " + pNodo.esHijoIzquierdo());
 			pNodo.zig(pNodo.esHijoIzquierdo());
 		} else if (pNodo.esHijoIzquierdo() != pNodo.getPadre().esHijoIzquierdo()) {
 			// Nodo se encuentra en algún nivel del árbol y se diferencia con su padre en su posición como hijo
+			System.out.println("zigZag con bool: " + pNodo.esHijoIzquierdo());
 			pNodo.zigZag(pNodo.esHijoIzquierdo());
 			convertirEnRaiz(pNodo);
 		} else {
 			// Nodo se encuentra en algún nivel del árbol pero su posición es igual a la del padre
+			System.out.println("zigZig con bool: " + pNodo.esHijoIzquierdo());
 			pNodo.zigZig(pNodo.esHijoIzquierdo());
 			convertirEnRaiz(pNodo);
 		}
@@ -63,6 +68,7 @@ public class SplayTree<T extends Comparable<T>> {
 				agregar(pNodo, currentNodo.getHijoIzquierdo());
 			} else {
 				currentNodo.setHijoIzquierdo(pNodo);
+				pNodo.setPadre(currentNodo);
 			}
 		} else {
 			// Es mayor, si existe hijo correr función con él, de lo contrario agregarlo como hijo derecho del currentNodo
@@ -70,6 +76,7 @@ public class SplayTree<T extends Comparable<T>> {
 				agregar(pNodo, currentNodo.getHijoDerecho());
 			} else {
 				currentNodo.setHijoDerecho(pNodo);
+				pNodo.setPadre(currentNodo);
 			}
 		}
 	}
@@ -89,15 +96,16 @@ public class SplayTree<T extends Comparable<T>> {
 		int resultado = pNodo.compareTo(currentNodo);
 		if (resultado == 0) {
 			// Son iguales por lo tanto existe en el arbol y retorna currentNodo
+			convertirEnRaiz(currentNodo);
+			setRaiz(currentNodo);
 			return currentNodo;
 		} else if (resultado < 0) {
 			// Es menor, correr función en el hijo izquierdo de él
-			buscar(pNodo, currentNodo.getHijoIzquierdo());
+			return buscar(pNodo, currentNodo.getHijoIzquierdo());
 		} else {
 			// Es mayor, correr función con en el hijo derecho de él
-			buscar(pNodo, currentNodo.getHijoDerecho());
+			return buscar(pNodo, currentNodo.getHijoDerecho());
 		}
-		return null;
 	}
 	
 	
@@ -120,17 +128,21 @@ public class SplayTree<T extends Comparable<T>> {
 	public static void main(String args[]) {
 		SplayTree<String> arbol = new SplayTree<String>();
 		arbol.agregar("b");
-		arbol.agregar("a");
-		arbol.agregar("d");
-		arbol.agregar("c");
 		arbol.agregar("e");
-		arbol.agregar("f");
+		arbol.agregar("c");
 		arbol.agregar("d");
+		//arbol.agregar("e");
+		//arbol.agregar("f");
+		//arbol.agregar("d");
 		
 		NodoSplay<String> nodito = new NodoSplay<String>();
-		nodito = arbol.buscar("f");
-		System.out.println(nodito.getHijoIzquierdo());
+		nodito = arbol.buscar("d");
+		System.out.println(arbol.getRaiz());
+		System.out.println(arbol.getRaiz().getHijoIzquierdo());
+		System.out.println(arbol.getRaiz().getHijoIzquierdo());
+		//System.out.println(nodito.getHijoDerecho());
+		//System.out.println(nodito.getHijoIzquierdo());
 		
-		arbol.imprimirArbol();
+		//arbol.imprimirArbol();
 	}
 }
