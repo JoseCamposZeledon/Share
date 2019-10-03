@@ -60,6 +60,7 @@ public class Sensor implements ISensorConstants{
 	
 	// Metodos creados
 	public Ubicacion setTipoLugar(int pTipoUbicacion) {
+		tipoUbicacion = new Hashtable<Integer, Ubicacion>();
 		
 		tipoUbicacion.put(CANTON, new Canton());
 		tipoUbicacion.put(DISTRITO, new Distrito());
@@ -73,10 +74,22 @@ public class Sensor implements ISensorConstants{
 	public void actualizarConsumo() {
 		Random randomValue = new Random();
 		
-		double randomRate = OSCILAMIENTO_MIN + (OSCILAMIENTO_MAX + OSCILAMIENTO_MIN) * randomValue.nextDouble();
-		
+		double randomRate = OSCILAMIENTO_MIN + (OSCILAMIENTO_MAX - OSCILAMIENTO_MIN) * randomValue.nextDouble();
+		System.out.println("RANDOM>>" + randomRate);
 		consumoActual = (int) (consumoBase * randomRate);
 		
 	}
 	 
+	
+	public static void main(String args[]) {
+		
+		Sensor sensorTest = new Sensor("TEST", CANTON, "LUGAR TEST", 31);
+		
+		System.out.println("CLASE > " + sensorTest.getLugar().getClass());
+		System.out.println("BASE" + sensorTest.getConsumoBase());
+		sensorTest.actualizarConsumo();
+		System.out.println("ACTUAL 1 " + sensorTest.getConsumoActual());
+		sensorTest.actualizarConsumo();
+		System.out.println("ACTUAL 2 " + sensorTest.getConsumoActual());
+	}
 }	
