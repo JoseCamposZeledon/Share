@@ -7,5 +7,9 @@ public class Distrito extends Ubicacion{
 	public Distrito(String pNombre) {
 		super(pNombre);
 	}
+
+	public String toString() {
+		return "DISTRITO: " + nombre;
+	}
 	
 }

@@ -7,7 +7,15 @@ import java.awt.event.WindowEvent;
 
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
+import javax.swing.JTree;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreeNode;
+import javax.swing.tree.TreePath;
 
+import model.arbolnario.ArbolNArio;
+import model.arbolnario.NodoJTree;
+import model.arbolnario.NodoNArio;
 import model.sensor.Sensor;
 import view.VentanaConectar;
 
@@ -15,13 +23,21 @@ public class VentanaConectarController {
 	
 	VentanaConectar view;
 	JButton btnConectarMenu;
+	JTree tree;
+	ArbolNArio<Sensor> arbol;
+	NodoJTree<Sensor> node;
 	
 	public VentanaConectarController(VentanaConectar pView, 
-			JButton pBtnConectarMenu) {
+			JButton pBtnConectarMenu, JTree pTree, NodoJTree<Sensor> pNode,
+			ArbolNArio<Sensor> pArbol) {
 		
 		view = pView;
 		btnConectarMenu = pBtnConectarMenu;
+		tree = pTree;
+		node = pNode;
+		arbol = pArbol;
 		
+		view.setFuenteText(node.toString());
 		this.view.addBtnConectarListener(new btnConectarListener());
 		
 		// Reactiva el boton al cerrar la ventana
@@ -56,7 +72,17 @@ public class VentanaConectarController {
 			
 			Sensor sensorNuevo = new Sensor(id, tipoUbicacion, nombre, consumo);
 			
-			System.out.println(sensorNuevo.getLugar().getClass());
+			NodoNArio<Sensor> sensorNodo = new NodoNArio<Sensor>(sensorNuevo);
+			
+			// Agrega el hijo en el arbol
+			arbol.agregarNodo(node.getNodo(), sensorNodo);
+			
+			// Agrega el Sensor al GUI
+			NodoJTree<Sensor> sensorJTree = new NodoJTree<Sensor>(sensorNodo);
+			
+			DefaultTreeModel model = (DefaultTreeModel) tree.getModel();
+			
+			model.insertNodeInto(sensorJTree, node, node.getChildCount());
 			
 			view.dispose();
 		}

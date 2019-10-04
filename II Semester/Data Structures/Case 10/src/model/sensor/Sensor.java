@@ -79,15 +79,7 @@ public class Sensor implements ISensorConstants{
 	}
 	 
 	
-	public static void main(String args[]) {
-		
-		Sensor sensorTest = new Sensor("TEST", CANTON, "LUGAR TEST", 31);
-		
-		System.out.println("CLASE > " + sensorTest.getLugar().getClass());
-		System.out.println("BASE" + sensorTest.getConsumoBase());
-		sensorTest.actualizarConsumo();
-		System.out.println("ACTUAL 1 " + sensorTest.getConsumoActual());
-		sensorTest.actualizarConsumo();
-		System.out.println("ACTUAL 2 " + sensorTest.getConsumoActual());
+	public String toString() {
+		return this.getLugar().toString();
 	}
 }	

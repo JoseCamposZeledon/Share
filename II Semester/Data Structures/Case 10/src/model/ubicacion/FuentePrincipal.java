@@ -7,5 +7,8 @@ public class FuentePrincipal extends Ubicacion{
 	public FuentePrincipal(String pNombre) {
 		super(pNombre);
 	}
-	
+
+	public String toString() {
+		return "FUENTE_PRINCIPAL: " + nombre;
+	}
 }

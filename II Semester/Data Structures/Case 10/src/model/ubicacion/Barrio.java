@@ -8,4 +8,7 @@ public class Barrio extends Ubicacion{
 		super(pNombre);
 	}
 	
+	public String toString() {
+		return "BARRIO: " + nombre;
+	}
 }

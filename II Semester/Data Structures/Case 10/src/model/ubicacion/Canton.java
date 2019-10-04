@@ -8,4 +8,7 @@ public class Canton extends Ubicacion{
 		super(pNombre);
 	}
 	
+	public String toString() {
+		return "CANTON: " + nombre;
+	}
 }

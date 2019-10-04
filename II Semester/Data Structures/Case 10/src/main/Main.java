@@ -3,6 +3,7 @@ package main;
 import java.awt.EventQueue;
 
 import controller.MenuPrincipalController;
+import model.sensor.Sensor;
 import view.MenuPrincipal;
 
 public class Main {

@@ -15,12 +15,17 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeSelectionModel;
 
 import controller.MenuPrincipalController;
+import model.arbolnario.ArbolNArio;
+import model.arbolnario.NodoJTree;
+import model.arbolnario.NodoNArio;
+import model.sensor.Sensor;
 
 public class MenuPrincipal extends JFrame {
 
 	private JPanel contentPane;
 	private JButton btnConectar, btnDesconectar, btnVerInfo, btnLeerJson;
 	private JTree tree;
+	private ArbolNArio<Sensor> arbol;
 	
 	/**
 	 * Create the frame.
@@ -48,7 +53,13 @@ public class MenuPrincipal extends JFrame {
 		btnVerInfo.setBounds(375, 620, 150, 30);
 		
 		// Arbol
-		DefaultMutableTreeNode top = new DefaultMutableTreeNode("AAA");
+		Sensor sensor = new Sensor("heredia01", 3, "HEREDIA", 350000);
+		NodoNArio<Sensor> nodoSensor = new NodoNArio<Sensor>(sensor);
+		
+		arbol = new ArbolNArio<Sensor>(sensor);
+			
+		// JTree
+		NodoJTree<Sensor> top = new NodoJTree<Sensor>(nodoSensor);
 		tree = new JTree(top);
 		tree.setBorder(BorderFactory.createLineBorder(Color.gray));
 		tree.setBounds(15, 15, 510, 590);
@@ -68,6 +79,14 @@ public class MenuPrincipal extends JFrame {
 	
 	public JButton getBtnConectar() {
 		return btnConectar;
+	}
+	
+	public JTree getTree() {
+		return tree;
+	}
+	
+	public ArbolNArio<Sensor> getArbol() {
+		return arbol;
 	}
 	
 	public void addBtnVerInfoListener(ActionListener listenerBtnVerInfo) {

@@ -23,7 +23,7 @@ public class VentanaConectar extends JFrame {
 	
 	private JComboBox tipoUbicacionInput;
 	
-	private String[] tiposUbicacion = {"Fuente Principal" ,"Cantón" , "Distrito", "Barrio"};
+	private String[] tiposUbicacion = {"Cantón" , "Distrito", "Barrio"};
 	
 	private JButton btnConectar;
 	
@@ -90,6 +90,10 @@ public class VentanaConectar extends JFrame {
 		contentPane.add(fuenteSensor);
 		
 		contentPane.add(btnConectar);
+	}
+	
+	public void setFuenteText(String pTexto) {
+		this.fuenteSensor.setText(pTexto);
 	}
 	
 	public void addBtnConectarListener(ActionListener btnConectarListener) {
