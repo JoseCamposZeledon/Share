@@ -3,7 +3,7 @@ package model.sensor;
 import java.util.Hashtable;
 import java.util.Random;
 
-import model.Ubicacion.*;
+import model.ubicacion.*;
 
 public class Sensor implements ISensorConstants{
 	
@@ -64,6 +64,7 @@ public class Sensor implements ISensorConstants{
 		tipoUbicacion.put(CANTON, new Canton());
 		tipoUbicacion.put(DISTRITO, new Distrito());
 		tipoUbicacion.put(BARRIO, new Barrio());
+		tipoUbicacion.put(FUENTE_PRINCIPAL, new FuentePrincipal());
 		
 		return tipoUbicacion.get(pTipoUbicacion);
 		

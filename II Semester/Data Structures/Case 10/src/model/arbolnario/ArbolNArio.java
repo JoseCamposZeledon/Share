@@ -1,4 +1,4 @@
-package model.arbolNArio;
+package model.arbolnario;
 
 import java.util.ArrayList;
 

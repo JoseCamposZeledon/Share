@@ -1,4 +1,4 @@
-package model.Ubicacion;
+package model.ubicacion;
 
 public class Distrito extends Ubicacion{
 	

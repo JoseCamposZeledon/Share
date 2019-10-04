@@ -1,20 +1,26 @@
 package view;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.EventQueue;
+import java.awt.event.ActionListener;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTree;
 import javax.swing.border.EmptyBorder;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreeSelectionModel;
+
+import controller.MenuPrincipalController;
 
 public class MenuPrincipal extends JFrame {
 
 	private JPanel contentPane;
 	private JButton btnConectar, btnDesconectar, btnVerInfo, btnLeerJson;
-	private JTree treeJerarquia;
+	private JTree tree;
 	
 	/**
 	 * Create the frame.
@@ -23,7 +29,7 @@ public class MenuPrincipal extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 550, 700);
 		setResizable(false);
-		setTitle("aaa");
+		setTitle("Sistema de Tuberías");
 		
 		// Ventana
 		contentPane = new JPanel();
@@ -43,15 +49,37 @@ public class MenuPrincipal extends JFrame {
 		
 		// Arbol
 		DefaultMutableTreeNode top = new DefaultMutableTreeNode("AAA");
-		treeJerarquia = new JTree(top);
-		
-		
+		tree = new JTree(top);
+		tree.setBorder(BorderFactory.createLineBorder(Color.gray));
+		tree.setBounds(15, 15, 510, 590);
+	
+		tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
 		
 		// Render
 		contentPane.add(btnConectar);
 		contentPane.add(btnDesconectar);
 		contentPane.add(btnVerInfo);
-		contentPane.add(treeJerarquia);
+		contentPane.add(tree);
+	}
+	
+	public JButton getBtnVerInfo() {
+		return btnVerInfo;
+	}
+	
+	public JButton getBtnConectar() {
+		return btnConectar;
+	}
+	
+	public void addBtnVerInfoListener(ActionListener listenerBtnVerInfo) {
+		btnVerInfo.addActionListener(listenerBtnVerInfo);
+	}
+	
+	public void addBtnConectarListener(ActionListener listenerBtnConectar) {
+		btnConectar.addActionListener(listenerBtnConectar);
+	}
+	
+	public void addBtnDesconectarListener(ActionListener listenerBtnDesconectar) {
+		btnDesconectar.addActionListener(listenerBtnDesconectar);
 	}
 	
 }
