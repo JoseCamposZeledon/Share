@@ -21,23 +21,18 @@ public class SplayTree<T extends Comparable<T>> {
 	
 	public void convertirEnRaiz(NodoSplay<T> pNodo) {
 		// Función recursiva para convertir por medio de rotaciones a un nodo en raiz.
-		System.out.println("convertirEnRaiz");
 		if (pNodo.esRaiz()) {
 			// Nodo ya es raiz
-			System.out.println("esRaiz");
 			return;
 		} else if (pNodo.getPadre().esRaiz()) {
 			// Nodo se encuentra en el nivel 1
-			System.out.println("zig con bool: " + pNodo.esHijoIzquierdo());
 			pNodo.zig(pNodo.esHijoIzquierdo());
 		} else if (pNodo.esHijoIzquierdo() != pNodo.getPadre().esHijoIzquierdo()) {
 			// Nodo se encuentra en algún nivel del árbol y se diferencia con su padre en su posición como hijo
-			System.out.println("zigZag con bool: " + pNodo.esHijoIzquierdo());
 			pNodo.zigZag(pNodo.esHijoIzquierdo());
 			convertirEnRaiz(pNodo);
 		} else {
 			// Nodo se encuentra en algún nivel del árbol pero su posición es igual a la del padre
-			System.out.println("zigZig con bool: " + pNodo.esHijoIzquierdo());
 			pNodo.zigZig(pNodo.esHijoIzquierdo());
 			convertirEnRaiz(pNodo);
 		}
@@ -131,18 +126,17 @@ public class SplayTree<T extends Comparable<T>> {
 		arbol.agregar("e");
 		arbol.agregar("c");
 		arbol.agregar("d");
-		//arbol.agregar("e");
-		//arbol.agregar("f");
 		//arbol.agregar("d");
+		//arbol.agregar("c");
+		//arbol.agregar("e");
 		
 		NodoSplay<String> nodito = new NodoSplay<String>();
 		nodito = arbol.buscar("d");
+		System.out.println(nodito.getPadre());
 		System.out.println(arbol.getRaiz());
-		System.out.println(arbol.getRaiz().getHijoIzquierdo());
-		System.out.println(arbol.getRaiz().getHijoIzquierdo());
-		//System.out.println(nodito.getHijoDerecho());
-		//System.out.println(nodito.getHijoIzquierdo());
-		
-		//arbol.imprimirArbol();
+		System.out.println(nodito.getHijoIzquierdo());
+		System.out.println(nodito.getHijoDerecho());
+		System.out.println(nodito.getHijoIzquierdo().getHijoDerecho());
+		arbol.imprimirArbol();
 	}
 }
