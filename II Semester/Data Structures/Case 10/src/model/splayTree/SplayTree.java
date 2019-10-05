@@ -63,6 +63,7 @@ public class SplayTree<T extends Comparable<T>> {
 				agregar(pNodo, currentNodo.getHijoIzquierdo());
 			} else {
 				currentNodo.setHijoIzquierdo(pNodo);
+				pNodo.setPadre(currentNodo);
 			}
 		} else {
 			// Es mayor, si existe hijo correr función con él, de lo contrario agregarlo como hijo derecho del currentNodo
@@ -70,6 +71,7 @@ public class SplayTree<T extends Comparable<T>> {
 				agregar(pNodo, currentNodo.getHijoDerecho());
 			} else {
 				currentNodo.setHijoDerecho(pNodo);
+				pNodo.setPadre(currentNodo);
 			}
 		}
 	}
@@ -89,15 +91,16 @@ public class SplayTree<T extends Comparable<T>> {
 		int resultado = pNodo.compareTo(currentNodo);
 		if (resultado == 0) {
 			// Son iguales por lo tanto existe en el arbol y retorna currentNodo
+			convertirEnRaiz(currentNodo);
+			setRaiz(currentNodo);
 			return currentNodo;
 		} else if (resultado < 0) {
 			// Es menor, correr función en el hijo izquierdo de él
-			buscar(pNodo, currentNodo.getHijoIzquierdo());
+			return buscar(pNodo, currentNodo.getHijoIzquierdo());
 		} else {
 			// Es mayor, correr función con en el hijo derecho de él
-			buscar(pNodo, currentNodo.getHijoDerecho());
+			return buscar(pNodo, currentNodo.getHijoDerecho());
 		}
-		return null;
 	}
 	
 	
@@ -120,17 +123,20 @@ public class SplayTree<T extends Comparable<T>> {
 	public static void main(String args[]) {
 		SplayTree<String> arbol = new SplayTree<String>();
 		arbol.agregar("b");
-		arbol.agregar("a");
-		arbol.agregar("d");
-		arbol.agregar("c");
 		arbol.agregar("e");
-		arbol.agregar("f");
+		arbol.agregar("c");
 		arbol.agregar("d");
+		//arbol.agregar("d");
+		//arbol.agregar("c");
+		//arbol.agregar("e");
 		
 		NodoSplay<String> nodito = new NodoSplay<String>();
-		nodito = arbol.buscar("f");
+		nodito = arbol.buscar("d");
+		System.out.println(nodito.getPadre());
+		System.out.println(arbol.getRaiz());
 		System.out.println(nodito.getHijoIzquierdo());
-		
+		System.out.println(nodito.getHijoDerecho());
+		System.out.println(nodito.getHijoIzquierdo().getHijoDerecho());
 		arbol.imprimirArbol();
 	}
 }
