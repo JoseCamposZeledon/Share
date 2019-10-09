@@ -56,7 +56,7 @@ public class MenuPrincipal extends JFrame {
 		Sensor sensor = new Sensor("heredia01", 3, "HEREDIA", 350000);
 		NodoNArio<Sensor> nodoSensor = new NodoNArio<Sensor>(sensor);
 		
-		arbol = new ArbolNArio<Sensor>(sensor);
+		arbol = new ArbolNArio<Sensor>();
 			
 		// JTree
 		NodoJTree<Sensor> top = new NodoJTree<Sensor>(nodoSensor);

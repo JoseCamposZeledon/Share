@@ -38,24 +38,29 @@ public class ArbolNArio<T> {
 	
 	public void agregarNodo(NodoNArio<T> pPadre, NodoNArio<T> pNodo) {
 		
+		// Si no hay nodos entonces lo convierte en la raiz
+		if (pPadre == null) {
+			this.setRaiz(pNodo);
+			return;
+		}
+		
+		// Agrega el nodo al padre
 		pPadre.agregarHijo(pNodo);
 		pNodo.setPadre(pPadre);
 		
 		if (pNodo.tieneHijos()) cantidadNodos += pNodo.getHijos().size();
-		
 		cantidadNodos += 1;
 		
 	}
 	
 	public void quitarNodo(NodoNArio<T> pNodo) {
-		// Quita el nodo siempre que no sea la raiz
 		
+		// Si es la raiz entonces se borra todo el arbol
 		if (pNodo.getPadre() == null) {
 			
 			this.limpiar();
-			this.cantidadNodos = 0;
 			
-		}else if (pNodo.getPadre() != null) { 
+		} else if (pNodo.getPadre() != null) {  // Quita algun nodo, si tiene hijos entonces les cambia el padre
 			
 			NodoNArio<T> padre = pNodo.getPadre();
 			ArrayList<NodoNArio<T>> hijos = pNodo.getHijos();
@@ -70,9 +75,20 @@ public class ArbolNArio<T> {
 	}
 	
 	public void limpiar() {
-		raiz.setHijos(new ArrayList<NodoNArio<T>>());
 		raiz = null;
-		// Que el garbage collector haga lo demás
+	
+		// Se llama al Garbage Collector para borrar todo
+		System.gc();
+		this.cantidadNodos = 0;
+	}
+	
+	public NodoNArio<T> cambiarRaizNula(NodoNArio<T> pNodo) {
+		if (this.raiz == null) {
+			this.setRaiz(pNodo);
+			this.cantidadNodos = 1;
+		}
+		
+		return pNodo;
 	}
 	
 	public boolean isEmpty() {

@@ -49,7 +49,8 @@ public class MenuPrincipalController {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			
-			if (view.getTree().getLastSelectedPathComponent() == null) {
+			if (view.getTree().getLastSelectedPathComponent() == null &&
+					!view.getArbol().isEmpty()) {
 				JOptionPane.showMessageDialog(null, "Seleccione la ubicación del sensor", 
 						"ERROR", JOptionPane.ERROR_MESSAGE);
 				return;
