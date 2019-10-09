@@ -73,6 +73,7 @@ public class NodoNArio<T> {
 	}
 	
 	public void agregarHijo(NodoNArio<T> pNodo) {
+		pNodo.setPadre(this);
 		hijos.add(pNodo);
 	}
 	
@@ -82,10 +83,17 @@ public class NodoNArio<T> {
 	
 	public void removerHijos() {
 		hijos = new ArrayList<NodoNArio<T>>();
+		hijos.trimToSize();
+	}
+	
+	public void removerHijo(NodoNArio<T> pNodo) {
+		hijos.remove(pNodo);
+		hijos.trimToSize();
 	}
 	
 	public void removerHijoEn(int pPos) {
 		hijos.remove(pPos);
+		hijos.trimToSize();
 	}
 	
 }

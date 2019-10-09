@@ -14,6 +14,8 @@ import javax.swing.tree.MutableTreeNode;
 
 import model.*;
 import model.arbolnario.NodoJTree;
+import model.arbolnario.NodoNArio;
+import model.sensor.Sensor;
 
 public class MenuPrincipalController {
 	
@@ -88,16 +90,18 @@ public class MenuPrincipalController {
 			if (nodoSeleccionado.isRoot()) {
 				nodoSeleccionado.removeAllChildren();
 				view.getArbol().quitarNodo(nodoSeleccionado.getNodo());
-				model.reload();
 				model.setRoot(null);
+				model.reload();
 				return;
 			}
 			
-			// Mueve los nodos hijos al padre 
+			// Mueve los nodos hijos al padre en el arbol
 			view.getArbol().quitarNodo(nodoSeleccionado.getNodo());
 			
+			//Pasa los hijos al padre en el GUI
 			int cantidadHijos = model.getChildCount(nodoSeleccionado);
 			for (int indexActual = 0; indexActual < cantidadHijos; indexActual++) {
+				
 				NodoJTree hijoActual = (NodoJTree) model.getChild(nodoSeleccionado, 0);
 				
 				model.insertNodeInto(hijoActual, (MutableTreeNode) nodoSeleccionado.getParent(), 
@@ -105,6 +109,7 @@ public class MenuPrincipalController {
 				
 			}
 			
+			// Quita el seleccionado del GUI
 			model.removeNodeFromParent(nodoSeleccionado);
 			
 		}

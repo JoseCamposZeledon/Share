@@ -12,6 +12,7 @@ import javax.swing.JPanel;
 import javax.swing.JTree;
 import javax.swing.border.EmptyBorder;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeSelectionModel;
 
 import controller.MenuPrincipalController;
@@ -53,14 +54,16 @@ public class MenuPrincipal extends JFrame {
 		btnVerInfo.setBounds(375, 620, 150, 30);
 		
 		// Arbol
-		Sensor sensor = new Sensor("heredia01", 3, "HEREDIA", 350000);
-		NodoNArio<Sensor> nodoSensor = new NodoNArio<Sensor>(sensor);
-		
 		arbol = new ArbolNArio<Sensor>();
 			
 		// JTree
-		NodoJTree<Sensor> top = new NodoJTree<Sensor>(nodoSensor);
-		tree = new JTree(top);
+		tree = new JTree();
+		
+		// Quita los nodos por defecto
+		DefaultTreeModel modelTree = (DefaultTreeModel) tree.getModel();
+		modelTree.setRoot(null);
+		modelTree.reload();
+		
 		tree.setBorder(BorderFactory.createLineBorder(Color.gray));
 		tree.setBounds(15, 15, 510, 590);
 	
@@ -71,6 +74,7 @@ public class MenuPrincipal extends JFrame {
 		contentPane.add(btnDesconectar);
 		contentPane.add(btnVerInfo);
 		contentPane.add(tree);
+
 	}
 	
 	public JButton getBtnVerInfo() {

@@ -46,7 +46,6 @@ public class ArbolNArio<T> {
 		
 		// Agrega el nodo al padre
 		pPadre.agregarHijo(pNodo);
-		pNodo.setPadre(pPadre);
 		
 		if (pNodo.tieneHijos()) cantidadNodos += pNodo.getHijos().size();
 		cantidadNodos += 1;
@@ -60,14 +59,18 @@ public class ArbolNArio<T> {
 			
 			this.limpiar();
 			
-		} else if (pNodo.getPadre() != null) {  // Quita algun nodo, si tiene hijos entonces les cambia el padre
+		} else {  // Quita algun nodo, si tiene hijos entonces les cambia el padre
 			
 			NodoNArio<T> padre = pNodo.getPadre();
 			ArrayList<NodoNArio<T>> hijos = pNodo.getHijos();
 			
-			pNodo = null;
+			for (NodoNArio<T> hijoActual : hijos) {
+				padre.agregarHijo(hijoActual);
+			}
 			
-			hijos.forEach((hijoActual) -> hijoActual.setPadre(padre));
+			padre.removerHijo(pNodo);
+			
+			pNodo = null;
 			
 			this.cantidadNodos -= 1;
 		}
