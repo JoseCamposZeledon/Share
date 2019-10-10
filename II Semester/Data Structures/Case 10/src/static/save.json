@@ -9,20 +9,30 @@
       "tipoUbicacion": 0,
       "nombreLugar": "Canton 2",
       "consumoBase": 500,
-      "hijos": [{
-                "id": "Distrito1",
-                "tipoUbicacion": 1,
-                "nombreLugar": "Distrito 1",
-                "consumoBase": 500,
-                "hijos": []
-            }]
+      "hijos": [
+        {
+          "id": "Distrito1",
+          "tipoUbicacion": 1,
+          "nombreLugar": "Distrito 1",
+          "consumoBase": 500,
+          "hijos": []
+        }
+      ]
     },
     {
       "id": "Canton2",
       "tipoUbicacion": 0,
       "nombreLugar": "Canton 1",
       "consumoBase": 700,
-      "hijos": []
+      "hijos": [
+        {
+          "id": "Distrio2",
+          "tipoUbicacion": 1,
+          "nombreLugar": "Distrito 2",
+          "consumoBase": 566,
+          "hijos": []
+        }
+      ]
     }
   ]
 }

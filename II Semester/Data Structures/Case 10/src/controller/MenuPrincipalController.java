@@ -4,11 +4,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.swing.JOptionPane;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.MutableTreeNode;
+
+import com.google.gson.JsonIOException;
 
 import model.arbolnario.NodoJTree;
 import model.sensor.Sensor;
@@ -31,7 +34,13 @@ public class MenuPrincipalController {
 		this.view.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                System.out.println("CERRADO");
+                try {
+					view.getReader().writeToFile(view.getReader().serializer(view.getArbol().getRaiz()));
+				} catch (JsonIOException | IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				};
+            	view.getSplay();
                 System.exit(0);
             }
         });

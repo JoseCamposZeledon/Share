@@ -130,6 +130,18 @@ public class MenuPrincipal extends JFrame {
 	public void setSplay(SplayTree<String> splay) {
 		this.splay = splay;
 	}
+	
+	
+
+	public JSonReader getReader() {
+		return reader;
+	}
+
+
+	public void setReader(JSonReader reader) {
+		this.reader = reader;
+	}
+
 
 	public void addBtnVerInfoListener(ActionListener listenerBtnVerInfo) {
 		btnVerInfo.addActionListener(listenerBtnVerInfo);
