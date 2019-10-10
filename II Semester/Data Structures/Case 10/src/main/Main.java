@@ -14,6 +14,23 @@ public class Main {
 		
 		MenuPrincipalController controller = new MenuPrincipalController(view);
 		
+		
+		(new Thread(new Runnable(){
+			   public void run(){
+					while (true){
+						controller.actualizarConsumos(view.getArbol().getRaiz());
+						controller.detectarInalcanzables(view.getArbol().getRaiz());
+						
+						System.out.println("----");
+						try {
+							Thread.sleep(5000);
+						} catch (Exception ex) {
+							
+						}
+					}		
+			   }
+			})).start();
+		
 		view.setVisible(true);
 	}
 	

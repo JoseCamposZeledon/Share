@@ -114,11 +114,7 @@ public class VentanaConectarController {
 				model.setRoot(sensorJTree);
 			} else {
 				model.insertNodeInto(sensorJTree, node, node.getChildCount());
-				System.out.println("Hijos del Seleccionado. " + node.getNodo().getCantidadHijos());
 			}
-			
-			
-			System.out.println("NODOS EN ARBOL: " + arbol.getCantidadNodos());
 			
 			view.dispose();
 		}
