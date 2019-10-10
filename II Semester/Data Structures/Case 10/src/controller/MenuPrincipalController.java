@@ -1,32 +1,19 @@
 package controller;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+
+import javax.swing.JOptionPane;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.MutableTreeNode;
+
+import model.arbolnario.NodoJTree;
+import model.sensor.Sensor;
 import view.MenuPrincipal;
 import view.MyTreeCellRenderer;
 import view.VentanaConectar;
 import view.VentanaInfo;
-
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.awt.event.WindowAdapter;
-import java.util.concurrent.TimeUnit;
-
-import javax.swing.JOptionPane;
-import javax.swing.JTree;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeCellRenderer;
-import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.MutableTreeNode;
-
-import com.sun.glass.events.WindowEvent;
-
-import model.*;
-import model.arbolnario.ArbolNArio;
-import model.arbolnario.NodoJTree;
-import model.arbolnario.NodoNArio;
-import model.sensor.Sensor;
 
 public class MenuPrincipalController {
 	

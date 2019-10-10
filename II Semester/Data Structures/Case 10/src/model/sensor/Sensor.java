@@ -3,7 +3,12 @@ package model.sensor;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Random;
-import model.ubicacion.*;
+
+import model.ubicacion.Barrio;
+import model.ubicacion.Canton;
+import model.ubicacion.Distrito;
+import model.ubicacion.FuentePrincipal;
+import model.ubicacion.Ubicacion;
 
 public class Sensor implements ISensorConstants{
 	

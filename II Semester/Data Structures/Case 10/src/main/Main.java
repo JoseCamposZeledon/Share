@@ -1,7 +1,5 @@
 package main;
 
-import java.awt.EventQueue;
-
 import controller.MenuPrincipalController;
 import model.arbolnario.NodoJTree;
 import model.sensor.Sensor;
