@@ -23,8 +23,6 @@ public class VentanaConectar extends JFrame {
 	
 	private JComboBox tipoUbicacionInput;
 	
-	private String[] tiposUbicacion = {"Cantón" , "Distrito", "Barrio"};
-	
 	private JButton btnConectar;
 	
 	/**
@@ -55,7 +53,7 @@ public class VentanaConectar extends JFrame {
 		tipoUbicacionLabel = new JLabel("Tipo de lugar:");
 		tipoUbicacionLabel.setBounds(10, 70, 110, 20);
 		
-		tipoUbicacionInput = new JComboBox<String>(tiposUbicacion);
+		tipoUbicacionInput = new JComboBox<String>();
 		tipoUbicacionInput.setBounds(120, 70, 300, 20);
 		
 		consumoLabel = new JLabel("Consumo:");
@@ -108,6 +106,14 @@ public class VentanaConectar extends JFrame {
 		return nombreLugarInput.getText().trim();
 	}
 	
+	public JComboBox getTipoUbicacionInput() {
+		return tipoUbicacionInput;
+	}
+
+	public void setTipoUbicacionInput(JComboBox tipoUbicacionInput) {
+		this.tipoUbicacionInput = tipoUbicacionInput;
+	}
+
 	public int getComboUbicacion() {
 		return tipoUbicacionInput.getSelectedIndex();
 	}
