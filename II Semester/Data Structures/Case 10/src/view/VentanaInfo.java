@@ -29,7 +29,7 @@ public class VentanaInfo extends JFrame {
 	 */
 	public VentanaInfo() {
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setBounds(100, 100, 450, 250);
+		setBounds(100, 90, 450, 250);
 	
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -40,7 +40,7 @@ public class VentanaInfo extends JFrame {
 		
 		// TextField
 		buscarInput = new JTextField();
-		buscarInput.setBounds(100, 10, 310, 20);
+		buscarInput.setBounds(120, 10, 310, 20);
 		
 		// Separador
 		separador = new JSeparator();
@@ -48,8 +48,8 @@ public class VentanaInfo extends JFrame {
 		
 		
 		// Labels
-		buscarLabel = new JLabel("Buscar por <>:");
-		buscarLabel.setBounds(10, 10, 85, 20);
+		buscarLabel = new JLabel("Buscar por <ID>:");
+		buscarLabel.setBounds(10, 10, 100, 20);
 		
 		idLabel = new JLabel("ID:");
 		idLabel.setBounds(10, 40, 110, 20);
@@ -103,5 +103,15 @@ public class VentanaInfo extends JFrame {
 		contentPane.add(fuenteLabel);
 		contentPane.add(fuenteSensor);
 	}
+
+	public JTextField getBuscarInput() {
+		return buscarInput;
+	}
+
+	public void setBuscarInput(JTextField buscarInput) {
+		this.buscarInput = buscarInput;
+	}
+	
+	
 
 }

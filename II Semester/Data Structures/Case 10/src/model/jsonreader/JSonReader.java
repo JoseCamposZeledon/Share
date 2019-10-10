@@ -12,14 +12,20 @@ public class JSonReader implements JsonConstants {
 	
 	private Gson gson;
 	private String filePath;
+	private SensorSerializator fileContent;
+	private NodoNArio<Sensor> nodo;
 	
 	public JSonReader() {
 		gson = new GsonBuilder().setPrettyPrinting().create();
 	}
 	
 	public JSonReader(String filePath) {
-		gson = new GsonBuilder().setPrettyPrinting().create();
-		this.filePath = filePath;
+		this();
+		this.filePath = JSON_FILES_PATH + "\\" + filePath;
+		fileContent = readFromFile();
+		if (fileContent != null) {
+			nodo = deserializer(fileContent);
+		}
 	}
 
 	public Gson getGson() {
@@ -32,6 +38,22 @@ public class JSonReader implements JsonConstants {
 
 	public String getFilePath() {
 		return filePath;
+	}
+
+	public SensorSerializator getFileContent() {
+		return fileContent;
+	}
+
+	public void setFileContent(SensorSerializator fileContent) {
+		this.fileContent = fileContent;
+	}
+
+	public NodoNArio<Sensor> getNodo() {
+		return nodo;
+	}
+
+	public void setNodo(NodoNArio<Sensor> nodo) {
+		this.nodo = nodo;
 	}
 
 	public void setFilePath(String filePath) {
@@ -72,14 +94,9 @@ public class JSonReader implements JsonConstants {
 	
 	public static void main(String args[]) throws JsonIOException, IOException {
 		
-		JSonReader jsonReader = new JSonReader(JSON_FILES_PATH + "//test.json");
+		JSonReader jsonReader = new JSonReader("save.json");
 		
-
-        System.out.println(jsonReader.readFromFile());
+        System.out.println(jsonReader.getNodo().getHijos().get(0).getHijos().get(0).getValor());
         
-        NodoNArio<Sensor> nodo = jsonReader.deserializer(jsonReader.readFromFile());
-        System.out.println(nodo.getHijos());
-        SensorSerializator serie = jsonReader.serializer(nodo);
-        System.out.println(serie.getTipoUbicacion());
 	}
 }

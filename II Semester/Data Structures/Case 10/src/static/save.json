@@ -7,12 +7,18 @@
     {
       "id": "Canton1",
       "tipoUbicacion": 0,
-      "nombreLugar": "Canton 1",
+      "nombreLugar": "Canton 2",
       "consumoBase": 500,
-      "hijos": []
+      "hijos": [{
+                "id": "Distrito1",
+                "tipoUbicacion": 1,
+                "nombreLugar": "Distrito 1",
+                "consumoBase": 500,
+                "hijos": []
+            }]
     },
     {
-      "id": "Canton1",
+      "id": "Canton2",
       "tipoUbicacion": 0,
       "nombreLugar": "Canton 1",
       "consumoBase": 700,
