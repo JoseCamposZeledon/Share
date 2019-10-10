@@ -1,4 +1,4 @@
-package model.sensor;
+ package model.sensor;
 
 import java.lang.reflect.Type;
 import java.util.UUID;
@@ -36,7 +36,7 @@ public class test {
 
 	class UserAction
 	{
-	  private final UUID uuid;
+	  private final UUID id;
 	  private String userId;
 
 	  public UserAction()
@@ -46,7 +46,7 @@ public class test {
 
 	  public UserAction(UUID uuid)
 	  {
-	    this.uuid = uuid;
+	    this.id = uuid;
 	  }
 
 	  void setUserId(String userId)

@@ -1,37 +1,22 @@
 {
-    "pId" : "PRINCIPAL1",
-    "pTipoUbicacion" : "FUENTE_PRINCIPAL",
-    "pNombreLugar" : 3,
-    "pConsumoBase" :  100000,
-    "Hijos" : [
-        {
-            "id" : "CANTON1",
-            "Tipo Ubicacion" : 0,
-            "Nombre Lugar": "HEREDIA",
-            "Consumo" : 4100,
-            "Hijos" : [
-                {
-                    "id" : "DISTRITO1",
-                    "Tipo Ubicacion": 1,
-                    "Nombre Lugar": "SAN RAFAEL",
-                    "Consumo" : 700,
-                    "Hijos" : []
-                } ,
-                {
-                    "id" : "DISTRITO2",
-                    "Tipo Ubicacion": 1,
-                    "Nombre Lugar": "SAN JOSECITO",
-                    "Consumo" : 500,
-                    "Hijos" : []
-                }
-            ]
-        }, 
-        {
-            "id" : "CANTON2",
-            "Tipo Ubicacion": 0,
-            "Nombre Lugar": "SA",
-            "Consumo" : 700,
-            "Hijos" : []
-        }
-    ]
+  "id": "Fuente_Principal",
+  "tipoUbicacion": 3,
+  "nombreLugar": "Fuente Principal",
+  "consumoBase": 1000,
+  "hijos": [
+    {
+      "id": "Canton1",
+      "tipoUbicacion": 0,
+      "nombreLugar": "Canton 1",
+      "consumoBase": 500,
+      "hijos": []
+    },
+    {
+      "id": "Canton1",
+      "tipoUbicacion": 0,
+      "nombreLugar": "Canton 1",
+      "consumoBase": 700,
+      "hijos": []
+    }
+  ]
 }
