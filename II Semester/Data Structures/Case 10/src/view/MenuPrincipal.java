@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.event.ActionListener;
+import java.util.concurrent.TimeUnit;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -19,7 +20,9 @@ import controller.MenuPrincipalController;
 import model.arbolnario.ArbolNArio;
 import model.arbolnario.NodoJTree;
 import model.arbolnario.NodoNArio;
+import model.jsonreader.JSonReader;
 import model.sensor.Sensor;
+import model.splayTree.SplayTree;
 
 public class MenuPrincipal extends JFrame {
 
@@ -27,6 +30,8 @@ public class MenuPrincipal extends JFrame {
 	private JButton btnConectar, btnDesconectar, btnVerInfo, btnLeerJson;
 	private JTree tree;
 	private ArbolNArio<Sensor> arbol;
+	private SplayTree<String> splay;
+	private JSonReader reader;
 	
 	/**
 	 * Create the frame.
@@ -38,10 +43,11 @@ public class MenuPrincipal extends JFrame {
 		setTitle("Sistema de Tuberías");
 		
 		// Ventana
-		contentPane = new JPanel();
+		contentPane = new JPanel();	
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(null);
 		setContentPane(contentPane);
+	
 		
 		// Botones
 		btnConectar= new JButton("Conectar Sensor");
@@ -55,7 +61,13 @@ public class MenuPrincipal extends JFrame {
 		
 		// Arbol
 		arbol = new ArbolNArio<Sensor>();
-			
+		
+		// Splay
+		splay = new SplayTree<String>();
+		
+		// JReader
+		reader = new JSonReader("save.json");
+		
 		// JTree
 		tree = new JTree();
 		
@@ -63,6 +75,15 @@ public class MenuPrincipal extends JFrame {
 		DefaultTreeModel modelTree = (DefaultTreeModel) tree.getModel();
 		modelTree.setRoot(null);
 		modelTree.reload();
+		
+		// Agrega el Sensor al GUI
+		
+		if(reader.getNodo() != null) {
+			NodoJTree<Sensor> sensorJTree = new NodoJTree<Sensor>(reader.getNodo());
+			arbol.cambiarRaizNula(reader.getNodo());
+			modelTree.setRoot(sensorJTree);
+			loadNodosModel(modelTree, sensorJTree);
+		}
 		
 		tree.setBorder(BorderFactory.createLineBorder(Color.gray));
 		tree.setBounds(15, 15, 510, 590);
@@ -76,6 +97,18 @@ public class MenuPrincipal extends JFrame {
 		contentPane.add(tree);
 
 	}
+	
+	
+	private void loadNodosModel(DefaultTreeModel modelTree, NodoJTree<Sensor> parent) {
+		splay.agregar(parent);
+		for (NodoNArio<Sensor> nodo : parent.getNodo().getHijos()) {
+			NodoJTree nodoTree = new NodoJTree(nodo);
+			nodoTree.getNodo().setPadre(parent.getNodo());
+			modelTree.insertNodeInto(nodoTree, parent, parent.getChildCount());
+			loadNodosModel(modelTree, nodoTree);
+		}
+	}
+	
 	
 	public JButton getBtnVerInfo() {
 		return btnVerInfo;
@@ -93,6 +126,14 @@ public class MenuPrincipal extends JFrame {
 		return arbol;
 	}
 	
+	public SplayTree<String> getSplay() {
+		return splay;
+	}
+
+	public void setSplay(SplayTree<String> splay) {
+		this.splay = splay;
+	}
+
 	public void addBtnVerInfoListener(ActionListener listenerBtnVerInfo) {
 		btnVerInfo.addActionListener(listenerBtnVerInfo);
 	}

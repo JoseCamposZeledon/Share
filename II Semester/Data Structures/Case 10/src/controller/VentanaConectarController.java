@@ -19,6 +19,7 @@ import model.arbolnario.ArbolNArio;
 import model.arbolnario.NodoJTree;
 import model.arbolnario.NodoNArio;
 import model.sensor.Sensor;
+import model.splayTree.SplayTree;
 import view.VentanaConectar;
 
 public class VentanaConectarController {
@@ -28,16 +29,18 @@ public class VentanaConectarController {
 	JTree tree;
 	ArbolNArio<Sensor> arbol;
 	NodoJTree<Sensor> node;
+	SplayTree<String> splay;
 	
 	public VentanaConectarController(VentanaConectar pView, 
 			JButton pBtnConectarMenu, JTree pTree, NodoJTree<Sensor> pNode,
-			ArbolNArio<Sensor> pArbol) {
+			ArbolNArio<Sensor> pArbol, SplayTree<String> pSplay) {
 		
 		view = pView;
 		btnConectarMenu = pBtnConectarMenu;
 		tree = pTree;
 		node = pNode;
 		arbol = pArbol;
+		splay = pSplay;
 		
 		DefaultComboBoxModel<String> tipoUbicacion;
 		
@@ -76,13 +79,13 @@ public class VentanaConectarController {
 			int tipoUbicacion = view.getComboUbicacion();
 			
 			if (id.isEmpty() || nombre.isEmpty()) {
-				JOptionPane.showMessageDialog(null, "INGRESE LA INFORMACIÓN NECESARIA", 
+				JOptionPane.showMessageDialog(null, "INGRESE LA INFORMACIï¿½N NECESARIA", 
 						"ERROR", JOptionPane.ERROR_MESSAGE);
 				return;
 			}
 			
 			if (consumo == Integer.MIN_VALUE || consumo <= 0) {
-				JOptionPane.showMessageDialog(null, "INGRESE UN NÚMERO VÁLIDO", 
+				JOptionPane.showMessageDialog(null, "INGRESE UN Nï¿½MERO Vï¿½LIDO", 
 						"ERROR", JOptionPane.ERROR_MESSAGE);
 				return;
 			}
@@ -118,6 +121,7 @@ public class VentanaConectarController {
 			}
 			
 			model.reload();
+			splay.agregar(sensorJTree);
 			
 			view.dispose();
 		}

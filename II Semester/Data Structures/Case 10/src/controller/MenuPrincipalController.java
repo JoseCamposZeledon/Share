@@ -10,6 +10,8 @@ import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.awt.event.WindowAdapter;
+import java.util.concurrent.TimeUnit;
 
 import javax.swing.JOptionPane;
 import javax.swing.JTree;
@@ -17,6 +19,8 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.MutableTreeNode;
+
+import com.sun.glass.events.WindowEvent;
 
 import model.*;
 import model.arbolnario.ArbolNArio;
@@ -49,7 +53,7 @@ public class MenuPrincipalController {
 			view.getBtnVerInfo().setEnabled(false);
 			
 			VentanaInfoController controllerInfo = new VentanaInfoController(
-					ventanaInfo, view.getBtnVerInfo());
+					ventanaInfo, view.getBtnVerInfo(), view.getSplay());
 			
 			ventanaInfo.setVisible(true);
 			
@@ -64,7 +68,7 @@ public class MenuPrincipalController {
 			
 			if (view.getTree().getLastSelectedPathComponent() == null &&
 					!view.getArbol().isEmpty()) {
-				JOptionPane.showMessageDialog(null, "Seleccione la ubicación del sensor", 
+				JOptionPane.showMessageDialog(null, "Seleccione la ubicaciï¿½n del sensor", 
 						"ERROR", JOptionPane.ERROR_MESSAGE);
 				return;
 			}
@@ -76,7 +80,7 @@ public class MenuPrincipalController {
 			VentanaConectarController controllerConectar = new VentanaConectarController(
 					conectarSensor, view.getBtnConectar(), view.getTree(), 
 					(NodoJTree) view.getTree().getLastSelectedPathComponent(),
-					view.getArbol());
+					view.getArbol(), view.getSplay());
 			
 			conectarSensor.setVisible(true);
 		}
@@ -124,6 +128,9 @@ public class MenuPrincipalController {
 			// Quita el seleccionado del GUI
 			model.removeNodeFromParent(nodoSeleccionado);
 			model.reload();
+
+            // Borra del splay
+			view.getSplay().borrar(((Sensor) nodoSeleccionado.getNodo().getValor()).getId());
 		}
 	}
 	
