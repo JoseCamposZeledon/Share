@@ -1,15 +1,20 @@
 package controller;
 
 import view.MenuPrincipal;
+import view.MyTreeCellRenderer;
 import view.VentanaConectar;
 import view.VentanaInfo;
 
+import java.awt.Color;
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 import javax.swing.JOptionPane;
+import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.MutableTreeNode;
 
@@ -23,7 +28,7 @@ public class MenuPrincipalController {
 	
 	private MenuPrincipal view;
 	private int consumoMax;
-	private ArrayList<NodoNArio<Sensor>> sensoresInalcanzables = new ArrayList<NodoNArio<Sensor>>();
+	private ArrayList<NodoJTree<Sensor>> sensoresInalcanzables = new ArrayList<NodoJTree<Sensor>>();
 	
 	public MenuPrincipalController(MenuPrincipal pView) {
 		view = pView;
@@ -31,6 +36,8 @@ public class MenuPrincipalController {
 		this.view.addBtnConectarListener(new ListenerBtnConectar());
 		this.view.addBtnDesconectarListener(new ListenerBtnDesconectar());
 	}
+	
+	
 	
 	class ListenerBtnVerInfo implements ActionListener {
 
@@ -101,6 +108,7 @@ public class MenuPrincipalController {
 			
 			// Mueve los nodos hijos al padre en el arbol
 			view.getArbol().quitarNodo(nodoSeleccionado.getNodo());
+			nodoSeleccionado.borrarNodo();
 			
 			//Pasa los hijos al padre en el GUI
 			int cantidadHijos = model.getChildCount(nodoSeleccionado);
@@ -115,73 +123,86 @@ public class MenuPrincipalController {
 			
 			// Quita el seleccionado del GUI
 			model.removeNodeFromParent(nodoSeleccionado);
+			model.reload();
 		}
 	}
 	
 	// Funcion para actualizar todos los consumos cada cierto tiempo
-	public void actualizarConsumos(NodoNArio<Sensor> pRoot) {
+	public void actualizarConsumos(NodoJTree<Sensor> pRoot) {
 		try {
 			// Revisa si es la raiz
-			if (pRoot.getPadre() == null) {
+			if (pRoot.getNodo().getPadre() == null) {
 				// Actualiza cada sensor pero no la raiz
 				
-				for (NodoNArio<Sensor> hijoActual : pRoot.getHijos()) {
+				pRoot.getNodo().getValor().actualizarConsumo();
+				
+				for (NodoJTree<Sensor> hijoActual : pRoot.getHijos()) {
 					this.actualizarConsumos(hijoActual);
 				}
 				
-			} else if (pRoot.tieneHijos()){ // Caso en el que no es la raiz y tiene hijos				
+			} else if (pRoot.getNodo().tieneHijos()){ // Caso en el que no es la raiz y tiene hijos				
 				
-				pRoot.getValor().actualizarConsumo();
+				pRoot.getNodo().getValor().actualizarConsumo();
 				
-				for (NodoNArio<Sensor> hijoActual : pRoot.getHijos()) {
+				for (NodoJTree<Sensor> hijoActual : pRoot.getHijos()) {
 					this.actualizarConsumos(hijoActual);
 				}
 				
 			} else { // Caso en el que no es raiz y no tiene hijos
-				pRoot.getValor().actualizarConsumo();
+				pRoot.getNodo().getValor().actualizarConsumo();
 			}
 			
 		} catch (NullPointerException e) {
-			
+
 		}
 	}
 	
-	public void detectarInalcanzables(NodoNArio<Sensor> pRoot) {
+	public void detectarInalcanzables(NodoJTree<Sensor> pRoot) {
 		sensoresInalcanzables.clear();
 		sensoresInalcanzables.trimToSize();
 		try {
-			if (pRoot.tieneHijos()) {
-				for (NodoNArio<Sensor> hijoActual : pRoot.getHijos()) {
+			if (pRoot.getNodo().tieneHijos()) {
+				for (NodoJTree<Sensor> hijoActual : pRoot.getHijos()) {
 					this.detectarInalcanzables(hijoActual, 0);
 				}
 			}
 		} catch (NullPointerException e) {
-			
+
 		}
 	}
 	
 	// 
-	public void detectarInalcanzables(NodoNArio<Sensor> pRoot, int pCantidadActual) {
+	public void detectarInalcanzables(NodoJTree<Sensor> pRoot, int pCantidadActual) {
 		
 		consumoMax = view.getArbol().getRaiz().getValor().getConsumoBase();
 		
 		// Caso en que un hijo tenga un consumo mayor a la fuente principal
-		if (pRoot.getValor().getConsumoActual() > consumoMax) { 
+		if (pRoot.getNodo().getValor().getConsumoActual() > consumoMax) { 
 			
 			sensoresInalcanzables.add(pRoot);
 			
-		} else if (pRoot.tieneHijos()) {
-			for (NodoNArio<Sensor> hijoActual : pRoot.getHijos()) {
+		} else if (pRoot.getNodo().tieneHijos()) {
+			for (NodoJTree<Sensor> hijoActual : pRoot.getHijos()) {
 				
 				// Caso en que la suma del consumo del hijo con el de toda la rama sea mas que el consumo maximo
-				if (hijoActual.getValor().getConsumoActual() + pRoot.getValor().getConsumoActual() > consumoMax) {
+				if (hijoActual.getNodo().getValor().getConsumoActual() + pRoot.getNodo().getValor().getConsumoActual()
+						> consumoMax) {
 					sensoresInalcanzables.add(hijoActual);	
+					
 				} else {
-					this.detectarInalcanzables(hijoActual, pCantidadActual + pRoot.getValor().getConsumoActual());
+					this.detectarInalcanzables(hijoActual, pCantidadActual + pRoot.getNodo().getValor().getConsumoActual());
 				}	
 			}	
 		}
 	}
 	
-	
+	public void actualizarNodos() {
+		MyTreeCellRenderer render = new MyTreeCellRenderer();
+		render.setSensores(sensoresInalcanzables);
+		
+		
+		if (!view.getArbol().isEmpty()) {
+			view.getTree().setCellRenderer(render);
+		}
+	}
 }

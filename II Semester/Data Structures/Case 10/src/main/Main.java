@@ -3,6 +3,7 @@ package main;
 import java.awt.EventQueue;
 
 import controller.MenuPrincipalController;
+import model.arbolnario.NodoJTree;
 import model.sensor.Sensor;
 import view.MenuPrincipal;
 
@@ -14,16 +15,20 @@ public class Main {
 		
 		MenuPrincipalController controller = new MenuPrincipalController(view);
 		
-		
 		(new Thread(new Runnable(){
 			   public void run(){
 					while (true){
-						controller.actualizarConsumos(view.getArbol().getRaiz());
-						controller.detectarInalcanzables(view.getArbol().getRaiz());
+						
+						NodoJTree<Sensor> root = (NodoJTree<Sensor>) view.getTree().getModel().getRoot();
+						
+						controller.actualizarConsumos(root);
+						controller.detectarInalcanzables(root);
+						controller.actualizarNodos();
 						
 						System.out.println("----");
+						
 						try {
-							Thread.sleep(5000);
+							Thread.sleep(3000);
 						} catch (Exception ex) {
 							
 						}
