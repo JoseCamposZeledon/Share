@@ -2,6 +2,8 @@ package model.arbolnario;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 
+import model.sensor.Sensor;
+
 public class NodoJTree<T> extends DefaultMutableTreeNode{
 	NodoNArio<T> nodo;
 	
@@ -10,7 +12,7 @@ public class NodoJTree<T> extends DefaultMutableTreeNode{
 	}
 	
 	public String toString() {
-		return nodo.getValor().toString();
+		return "<" + ((Sensor) nodo.getValor()).getId() + ">  " + ((Sensor) nodo.getValor()).getLugar().getNombre();
 	}
 	
 	public NodoNArio<T> getNodo() {

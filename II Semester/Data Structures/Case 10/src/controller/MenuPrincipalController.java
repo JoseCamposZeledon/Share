@@ -6,11 +6,15 @@ import view.VentanaInfo;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.util.concurrent.TimeUnit;
 
 import javax.swing.JOptionPane;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.MutableTreeNode;
+
+import com.sun.glass.events.WindowEvent;
 
 import model.*;
 import model.arbolnario.NodoJTree;
@@ -38,7 +42,7 @@ public class MenuPrincipalController {
 			view.getBtnVerInfo().setEnabled(false);
 			
 			VentanaInfoController controllerInfo = new VentanaInfoController(
-					ventanaInfo, view.getBtnVerInfo());
+					ventanaInfo, view.getBtnVerInfo(), view.getSplay());
 			
 			ventanaInfo.setVisible(true);
 			
@@ -65,7 +69,7 @@ public class MenuPrincipalController {
 			VentanaConectarController controllerConectar = new VentanaConectarController(
 					conectarSensor, view.getBtnConectar(), view.getTree(), 
 					(NodoJTree) view.getTree().getLastSelectedPathComponent(),
-					view.getArbol());
+					view.getArbol(), view.getSplay());
 			
 			conectarSensor.setVisible(true);
 		}
@@ -111,6 +115,9 @@ public class MenuPrincipalController {
 			
 			// Quita el seleccionado del GUI
 			model.removeNodeFromParent(nodoSeleccionado);
+			
+			// Borra del splay
+			view.getSplay().borrar(((Sensor) nodoSeleccionado.getNodo().getValor()).getId());
 			
 		}
 		

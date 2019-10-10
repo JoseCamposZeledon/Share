@@ -1,5 +1,8 @@
 package model.splayTree;
 
+import model.arbolnario.NodoJTree;
+import model.sensor.Sensor;
+
 public class SplayTree<T extends Comparable<T>> {
 	
 	private NodoSplay<T> raiz;
@@ -47,6 +50,16 @@ public class SplayTree<T extends Comparable<T>> {
 			setRaiz(nodo);
 		} else {
 			agregar(nodo, getRaiz());
+		}
+	}
+	
+	
+	public void agregar(NodoJTree<Sensor> pNodo) {
+		NodoSplay<String> nodoSplay = new NodoSplay<String>(pNodo.getNodo().getValor().getId(), pNodo.getNodo());
+		if (getRaiz() == null) {
+			setRaiz((NodoSplay<T>) nodoSplay);
+		} else {
+			agregar((NodoSplay<T>) nodoSplay, getRaiz());
 		}
 	}
 	

@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.event.ActionListener;
+import java.util.concurrent.TimeUnit;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -42,10 +43,11 @@ public class MenuPrincipal extends JFrame {
 		setTitle("Sistema de Tuberías");
 		
 		// Ventana
-		contentPane = new JPanel();
+		contentPane = new JPanel();	
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(null);
 		setContentPane(contentPane);
+	
 		
 		// Botones
 		btnConectar= new JButton("Conectar Sensor");
@@ -77,7 +79,6 @@ public class MenuPrincipal extends JFrame {
 		// Agrega el Sensor al GUI
 		
 		if(reader.getNodo() != null) {
-			System.out.println(reader.getNodo());
 			NodoJTree<Sensor> sensorJTree = new NodoJTree<Sensor>(reader.getNodo());
 			arbol.cambiarRaizNula(reader.getNodo());
 			modelTree.setRoot(sensorJTree);
@@ -97,13 +98,17 @@ public class MenuPrincipal extends JFrame {
 
 	}
 	
+	
 	private void loadNodosModel(DefaultTreeModel modelTree, NodoJTree<Sensor> parent) {
+		splay.agregar(parent);
 		for (NodoNArio<Sensor> nodo : parent.getNodo().getHijos()) {
 			NodoJTree nodoTree = new NodoJTree(nodo);
+			nodoTree.getNodo().setPadre(parent.getNodo());
 			modelTree.insertNodeInto(nodoTree, parent, parent.getChildCount());
 			loadNodosModel(modelTree, nodoTree);
 		}
 	}
+	
 	
 	public JButton getBtnVerInfo() {
 		return btnVerInfo;

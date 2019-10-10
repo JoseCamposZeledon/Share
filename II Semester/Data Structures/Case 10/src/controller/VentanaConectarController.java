@@ -19,6 +19,7 @@ import model.arbolnario.ArbolNArio;
 import model.arbolnario.NodoJTree;
 import model.arbolnario.NodoNArio;
 import model.sensor.Sensor;
+import model.splayTree.SplayTree;
 import view.VentanaConectar;
 
 public class VentanaConectarController {
@@ -28,16 +29,18 @@ public class VentanaConectarController {
 	JTree tree;
 	ArbolNArio<Sensor> arbol;
 	NodoJTree<Sensor> node;
+	SplayTree<String> splay;
 	
 	public VentanaConectarController(VentanaConectar pView, 
 			JButton pBtnConectarMenu, JTree pTree, NodoJTree<Sensor> pNode,
-			ArbolNArio<Sensor> pArbol) {
+			ArbolNArio<Sensor> pArbol, SplayTree<String> pSplay) {
 		
 		view = pView;
 		btnConectarMenu = pBtnConectarMenu;
 		tree = pTree;
 		node = pNode;
 		arbol = pArbol;
+		splay = pSplay;
 		
 		DefaultComboBoxModel<String> tipoUbicacion;
 		
@@ -117,6 +120,7 @@ public class VentanaConectarController {
 				System.out.println("Hijos del Seleccionado. " + node.getNodo().getCantidadHijos());
 			}
 			
+			splay.agregar(sensorJTree);
 			
 			System.out.println("NODOS EN ARBOL: " + arbol.getCantidadNodos());
 			
