@@ -10,7 +10,6 @@ implements Comparable<NodoSplay<T>> {
 	private NodoSplay<T> hijoDerecho;
 	private NodoSplay<T> hijoIzquierdo;
 	private T valor;
-	private NodoNArio<Sensor> nodo;
 	
 	public NodoSplay() {
 	}
@@ -36,6 +35,7 @@ implements Comparable<NodoSplay<T>> {
 	public void setHijoDerecho(NodoSplay<T> hijoDerecho) {
 		this.hijoDerecho = hijoDerecho;
 	}
+	private NodoNArio<Sensor> nodo;
 	public NodoSplay<T> getHijoIzquierdo() {
 		return hijoIzquierdo;
 	}
