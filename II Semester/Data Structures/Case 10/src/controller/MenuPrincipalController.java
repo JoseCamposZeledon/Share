@@ -2,6 +2,8 @@ package controller;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 
 import javax.swing.JOptionPane;
@@ -26,6 +28,14 @@ public class MenuPrincipalController {
 		this.view.addBtnVerInfoListener(new ListenerBtnVerInfo());
 		this.view.addBtnConectarListener(new ListenerBtnConectar());
 		this.view.addBtnDesconectarListener(new ListenerBtnDesconectar());
+		this.view.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                System.out.println("CERRADO");
+                System.exit(0);
+            }
+        });
+		
 	}
 	
 	
@@ -128,8 +138,6 @@ public class MenuPrincipalController {
 			if (pRoot.getNodo().getPadre() == null) {
 				// Actualiza cada sensor pero no la raiz
 				
-				pRoot.getNodo().getValor().actualizarConsumo();
-				
 				for (NodoJTree<Sensor> hijoActual : pRoot.getHijos()) {
 					this.actualizarConsumos(hijoActual);
 				}
@@ -151,11 +159,13 @@ public class MenuPrincipalController {
 		}
 	}
 	
+	
 	public void detectarInalcanzables(NodoJTree<Sensor> pRoot) {
 		sensoresInalcanzables.clear();
 		sensoresInalcanzables.trimToSize();
+		
 		try {
-			if (pRoot.getNodo().tieneHijos()) {
+			if (pRoot.getNodo().tieneHijos() && pRoot.getPadre() == null) {
 				for (NodoJTree<Sensor> hijoActual : pRoot.getHijos()) {
 					this.detectarInalcanzables(hijoActual, 0);
 				}

@@ -24,7 +24,6 @@ public class Main implements IConstants{
 						controller.actualizarNodos();
 						
 						
-						
 						try {
 							Thread.sleep(DELAY);
 						} catch (Exception ex) {
