@@ -200,7 +200,8 @@ public class MenuPrincipalController {
 				// Caso en que la suma del consumo del hijo con el de toda la rama sea mas que el consumo maximo
 				if (hijoActual.getNodo().getValor().getConsumoActual() + pRoot.getNodo().getValor().getConsumoActual()
 						> consumoMax) {
-					sensoresInalcanzables.add(hijoActual);	
+					
+					this.agregarHijosInalcanzables(hijoActual);
 					
 				} else {
 					this.detectarInalcanzables(hijoActual, pCantidadActual + pRoot.getNodo().getValor().getConsumoActual());
@@ -216,6 +217,16 @@ public class MenuPrincipalController {
 		
 		if (!view.getArbol().isEmpty()) {
 			view.getTree().setCellRenderer(render);
+		}
+	}
+	
+	public void agregarHijosInalcanzables(NodoJTree<Sensor> pRoot) {
+		sensoresInalcanzables.add(pRoot);
+		
+		if (pRoot.getNodo().tieneHijos()) {
+			for (NodoJTree<Sensor> hijoActual : pRoot.getHijos()) {
+				this.agregarHijosInalcanzables(hijoActual);
+			}
 		}
 	}
 }
