@@ -15,7 +15,15 @@
           "tipoUbicacion": 1,
           "nombreLugar": "Distrito 1",
           "consumoBase": 500,
-          "hijos": []
+          "hijos": [
+            {
+              "id": "Barrio1",
+              "tipoUbicacion": 2,
+              "nombreLugar": "Barrio 1",
+              "consumoBase": 56,
+              "hijos": []
+            }
+          ]
         }
       ]
     },
