@@ -25,7 +25,7 @@ public class Main implements IConstants{
 						controller.detectarInalcanzables(root);
 						controller.actualizarNodos();
 						
-						System.out.println("----");
+						
 						
 						try {
 							Thread.sleep(DELAY);

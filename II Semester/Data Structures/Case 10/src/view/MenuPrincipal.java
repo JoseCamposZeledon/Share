@@ -105,6 +105,8 @@ public class MenuPrincipal extends JFrame {
 			NodoJTree nodoTree = new NodoJTree(nodo);
 			nodoTree.getNodo().setPadre(parent.getNodo());
 			modelTree.insertNodeInto(nodoTree, parent, parent.getChildCount());
+			parent.agregarHijo(nodoTree);
+			modelTree.reload();
 			loadNodosModel(modelTree, nodoTree);
 		}
 	}
