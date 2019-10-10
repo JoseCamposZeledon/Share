@@ -1,5 +1,8 @@
 package model.splayTree;
 
+import model.arbolnario.NodoJTree;
+import model.sensor.Sensor;
+
 public class SplayTree<T extends Comparable<T>> {
 	
 	private NodoSplay<T> raiz;
@@ -51,6 +54,16 @@ public class SplayTree<T extends Comparable<T>> {
 	}
 	
 	
+	public void agregar(NodoJTree<Sensor> pNodo) {
+		NodoSplay<String> nodoSplay = new NodoSplay<String>(pNodo.getNodo().getValor().getId(), pNodo.getNodo());
+		if (getRaiz() == null) {
+			setRaiz((NodoSplay<T>) nodoSplay);
+		} else {
+			agregar((NodoSplay<T>) nodoSplay, getRaiz());
+		}
+	}
+	
+	
 	public void agregar(NodoSplay<T> pNodo, NodoSplay<T> currentNodo) {
 		// Función que correrá recursivamente y comparará el currentNodo con el pNodo
 		int resultado = pNodo.compareTo(currentNodo);
@@ -63,6 +76,7 @@ public class SplayTree<T extends Comparable<T>> {
 				agregar(pNodo, currentNodo.getHijoIzquierdo());
 			} else {
 				currentNodo.setHijoIzquierdo(pNodo);
+				pNodo.setPadre(currentNodo);
 			}
 		} else {
 			// Es mayor, si existe hijo correr función con él, de lo contrario agregarlo como hijo derecho del currentNodo
@@ -70,6 +84,7 @@ public class SplayTree<T extends Comparable<T>> {
 				agregar(pNodo, currentNodo.getHijoDerecho());
 			} else {
 				currentNodo.setHijoDerecho(pNodo);
+				pNodo.setPadre(currentNodo);
 			}
 		}
 	}
@@ -89,15 +104,42 @@ public class SplayTree<T extends Comparable<T>> {
 		int resultado = pNodo.compareTo(currentNodo);
 		if (resultado == 0) {
 			// Son iguales por lo tanto existe en el arbol y retorna currentNodo
+			convertirEnRaiz(currentNodo);
+			setRaiz(currentNodo);
 			return currentNodo;
 		} else if (resultado < 0) {
 			// Es menor, correr función en el hijo izquierdo de él
-			buscar(pNodo, currentNodo.getHijoIzquierdo());
+			return buscar(pNodo, currentNodo.getHijoIzquierdo());
 		} else {
 			// Es mayor, correr función con en el hijo derecho de él
-			buscar(pNodo, currentNodo.getHijoDerecho());
+			return buscar(pNodo, currentNodo.getHijoDerecho());
 		}
-		return null;
+	}
+	
+	public NodoSplay<T> getMax(NodoSplay<T> pNodo) {
+		if (pNodo.getHijoDerecho() != null) {
+			return getMax(pNodo.getHijoDerecho());
+		} else {
+			return pNodo;
+		}
+	}
+	
+	public void borrar(T pValor) {
+		NodoSplay<T> buscado = buscar(pValor);
+		buscado.getHijoIzquierdo().setPadre(null);
+		buscado.getHijoDerecho().setPadre(null);
+		if (buscado != null) {
+			if (buscado.getHijoIzquierdo() == null) {
+				setRaiz(buscado.getHijoDerecho());
+			} else {
+				NodoSplay<T> hojaMaxima = getMax(buscado.getHijoIzquierdo());
+				convertirEnRaiz(hojaMaxima);
+				hojaMaxima.setHijoDerecho(buscado.getHijoDerecho());
+				buscado.getHijoDerecho().setPadre(hojaMaxima);
+				setRaiz(hojaMaxima);
+			}
+			buscado = null;
+		}
 	}
 	
 	
@@ -118,19 +160,17 @@ public class SplayTree<T extends Comparable<T>> {
 	
 	
 	public static void main(String args[]) {
-		SplayTree<String> arbol = new SplayTree<String>();
-		arbol.agregar("b");
-		arbol.agregar("a");
-		arbol.agregar("d");
-		arbol.agregar("c");
-		arbol.agregar("e");
-		arbol.agregar("f");
-		arbol.agregar("d");
+		SplayTree<Integer> arbol = new SplayTree<Integer>();
+		arbol.agregar(4);
+		arbol.agregar(2);
+		arbol.agregar(6);
+		arbol.agregar(1);
+		arbol.agregar(3);
+		arbol.agregar(5);
+		arbol.agregar(7);
 		
-		NodoSplay<String> nodito = new NodoSplay<String>();
-		nodito = arbol.buscar("f");
-		System.out.println(nodito.getHijoIzquierdo());
-		
+		arbol.borrar(5);
 		arbol.imprimirArbol();
+		System.out.println(arbol.getRaiz());
 	}
 }
