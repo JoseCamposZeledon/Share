@@ -159,9 +159,9 @@ implements Comparable<NodoSplay<T>> {
 	
 	
 	public static void main(String args[]) {
-		NodoSplay<String> dab = new NodoSplay<String>("aaaa");
-		NodoSplay<String> jeff = new NodoSplay<String>("bbb");
-		System.out.println(dab.compareTo(jeff));
+		NodoSplay<Integer[]> dab = new NodoSplay<Integer[]>([1, 2, 3]);
+		NodoSplay<Integer[]> jeff = new NodoSplay<Integer[]>([34, 1]);
+		System.out.println(jeff.compareTo(dab));
 	}
 	
 }

@@ -1,86 +1,117 @@
 package model.bptree;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 /*
  * Nodo Arbol B+
  */
-public class BPNode<T> {
+public class BPNode<T extends Comparable<T>> implements Comparable<BPNode<T>> {
 	// Atributos 
-	private int cantidadLlaves, llavesMax, cantidadHijos;
-	private BPNode<T> padre, vecinoDrch, vecinoIzq;
-	private ArrayList<BPInternalNode<T>> elementos;
- 	
+	private int llavesMax;
+	private T llaves[];
+	private BPNode<T> padre, siguiente, hijos[];
+	
+	
 	// Constructores
 	public BPNode() {
 		padre = null;
-		vecinoDrch = null;
-		vecinoIzq = null;
+		siguiente = null;
 	}
 	
+	
+	@SuppressWarnings("unchecked")
 	public BPNode(int pLlavesMax) {
-		this();
 		llavesMax = pLlavesMax;
+		llaves = (T[]) new Object[llavesMax - 1];
+		hijos = (BPNode<T>[]) new Object[llavesMax];
 	}
-
-	// Getters & Setters
 	
-	public int getCantidadLlaves() {
-		return cantidadLlaves;
+	
+	// Setters & Getters
+	public T[] getLlaves() {
+		return llaves;
 	}
 
-	public void setCantidadLlaves(int cantidadLlaves) {
-		this.cantidadLlaves = cantidadLlaves;
+	
+	public void setLlaves(T[] llaves) {
+		this.llaves = llaves;
 	}
 
-	public int getLlavesMax() {
-		return llavesMax;
-	}
-
-	public void setLlavesMax(int llavesMax) {
-		this.llavesMax = llavesMax;
-	}
-
-	public int getCantidadHijos() {
-		return cantidadHijos;
-	}
-
-	public void setCantidadHijos(int cantidadHijos) {
-		this.cantidadHijos = cantidadHijos;
-	}
-
+	
 	public BPNode<T> getPadre() {
 		return padre;
 	}
 
+	
 	public void setPadre(BPNode<T> padre) {
 		this.padre = padre;
 	}
 
-	public BPNode<T> getVecinoDrch() {
-		return vecinoDrch;
+	
+	public BPNode<T> getSiguiente() {
+		return siguiente;
 	}
 
-	public void setVecinoDrch(BPNode<T> vecinoDrch) {
-		this.vecinoDrch = vecinoDrch;
+	
+	public void setSiguiente(BPNode<T> siguiente) {
+		this.siguiente = siguiente;
 	}
 
-	public BPNode<T> getVecinoIzq() {
-		return vecinoIzq;
+	
+	public BPNode<T>[] getHijos() {
+		return hijos;
 	}
 
-	public void setVecinoIzq(BPNode<T> vecinoIzq) {
-		this.vecinoIzq = vecinoIzq;
+	
+	public void setHijos(BPNode<T>[] hijos) {
+		this.hijos = hijos;
 	}
 
-	public ArrayList<BPInternalNode<T>> getElementos() {
-		return elementos;
+	
+	public int getLlavesMax() {
+		return llavesMax;
 	}
 
-	public void setElementos(ArrayList<BPInternalNode<T>> elementos) {
-		this.elementos = elementos;
-	}
 	
 	// Metodos Creados
+	public boolean tieneHijos() {
+		return hijos.length != 0;
+	}
+	
+	
+	public boolean isEmpty() {
+		return llaves.length == 0;
+	}
+	
+	
+	public boolean isFull () {
+		return llaves.length == llavesMax;
+	}
+	
+	
+	@Override
+	public int compareTo(BPNode<T> o) {
+		// TODO Auto-generated method stub
+		return 1;
+	}
+	
+	
+	// Retorna true si se pudo incluir la nueva llave, false de lo contrario
+	public boolean nuevaLlave(T pLlave) { 
+		if (this.isEmpty()) { // Caso 1, nodo vacio
+			this.getLlaves()[0] = pLlave;
+			return true;
+		} else if(this.isFull()) { // Caso 2, nodo lleno
+			return false;
+		} else {
+			
+			
+			
+			return true;
+		}
+		
+	}
+
 	
 }
