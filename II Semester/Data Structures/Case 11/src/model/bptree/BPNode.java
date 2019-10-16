@@ -1,30 +1,35 @@
 package model.bptree;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 
 /*
  * Nodo Arbol B+
  */
-public class BPNode<T extends Comparable<T>> implements Comparable<BPNode<T>> {
+public class BPNode<T extends Comparable<T>> implements Comparable<T> {
 	// Atributos 
 	private int llavesMax;
 	private T llaves[];
 	private BPNode<T> padre, siguiente, hijos[];
 	
 	
-	// Constructores
+	/*
+	 * Inicializa parcialmente un arbol
+	 */
 	public BPNode() {
 		padre = null;
 		siguiente = null;
 	}
 	
-	
+	/*
+	 * Inicializa un arbol vacio, con la cantidad de llaves que tendra
+	 */
 	@SuppressWarnings("unchecked")
 	public BPNode(int pLlavesMax) {
+		this();
 		llavesMax = pLlavesMax;
-		llaves = (T[]) new Object[llavesMax - 1];
-		hijos = (BPNode<T>[]) new Object[llavesMax];
+		llaves = (T[]) new Comparable[llavesMax];
+		hijos = (BPNode<T>[]) new Object[llavesMax + 1];
 	}
 	
 	
@@ -80,37 +85,52 @@ public class BPNode<T extends Comparable<T>> implements Comparable<BPNode<T>> {
 	}
 	
 	
-	public boolean isEmpty() {
-		return llaves.length == 0;
+	public boolean isEmpty(Object[] pArray) {
+		return Arrays.asList(pArray).isEmpty();
 	}
 	
 	
-	public boolean isFull () {
-		return llaves.length == llavesMax;
+	public boolean isFull (Object[] pArray) {
+		return !Arrays.asList(pArray).contains(null);
 	}
 	
-	
+	/*
+	 * Metodo necesario para hacer la clase comparable
+	 */
 	@Override
-	public int compareTo(BPNode<T> o) {
+	public int compareTo(T o) {
 		// TODO Auto-generated method stub
-		return 1;
+		return 0;
 	}
 	
-	
-	// Retorna true si se pudo incluir la nueva llave, false de lo contrario
+	/*
+	 * Retorna true si se pudo incluir la nueva llave, false de lo contrario
+	 */
 	public boolean nuevaLlave(T pLlave) { 
-		if (this.isEmpty()) { // Caso 1, nodo vacio
+		if (this.isEmpty(this.llaves)) { // Caso 1, nodo vacio
 			this.getLlaves()[0] = pLlave;
 			return true;
-		} else if(this.isFull()) { // Caso 2, nodo lleno
+			
+		} else if(this.isFull(this.llaves)) { // Caso 2, nodo lleno
+			System.out.println("FAIl");
 			return false;
+			
 		} else {
-			
-			
-			
-			return true;
+			return false;
 		}
 		
+	}
+
+	
+	
+	public static void main(String[] args) {
+		BPNode<Integer> test = new BPNode<Integer>(5);
+		
+		test.nuevaLlave(1);
+		test.nuevaLlave(13);
+		test.nuevaLlave(5);
+		test.nuevaLlave(13);
+		test.nuevaLlave(-13);
 	}
 
 	
