@@ -6,12 +6,11 @@ import java.util.Collections;
 /*
  * Nodo Arbol B+
  */
-public class BPNode<T extends Comparable<T>> implements Comparable<T> {
+public class BPNode<T extends Comparable<T>> implements Comparable<BPNode<T>> {
 	// Atributos 
 	private int llavesMax;
 	private T llaves[];
 	private BPNode<T> padre, siguiente, hijos[];
-	
 	
 	/*
 	 * Inicializa parcialmente un arbol
@@ -29,7 +28,7 @@ public class BPNode<T extends Comparable<T>> implements Comparable<T> {
 		this();
 		llavesMax = pLlavesMax;
 		llaves = (T[]) new Comparable[llavesMax];
-		hijos = (BPNode<T>[]) new Object[llavesMax + 1];
+		hijos = new BPNode[llavesMax + 1];
 	}
 	
 	
@@ -78,15 +77,22 @@ public class BPNode<T extends Comparable<T>> implements Comparable<T> {
 		return llavesMax;
 	}
 
-	
 	// Metodos Creados
 	public boolean tieneHijos() {
 		return hijos.length != 0;
 	}
 	
 	
+	public boolean esHoja() {
+		for (int i = 0; i < llavesMax; i++) {
+			if (hijos[i] != null) return false;
+		}
+		return true;
+	}
+	
+	
 	public boolean isEmpty(Object[] pArray) {
-		return Arrays.asList(pArray).isEmpty();
+		return pArray[0] == null;
 	}
 	
 	
@@ -98,9 +104,19 @@ public class BPNode<T extends Comparable<T>> implements Comparable<T> {
 	 * Metodo necesario para hacer la clase comparable
 	 */
 	@Override
-	public int compareTo(T o) {
-		// TODO Auto-generated method stub
-		return 0;
+	public int compareTo(BPNode<T> o) {
+		// Compara la menor llave de cada nodo 
+		return this.llaves[0].compareTo(o.llaves[0]);
+	}
+	
+	public T remover(T pLlave) {
+		T llave = null;
+		
+		/*
+		 * Binary Search 
+		 */
+		
+		return llave;
 	}
 	
 	/*
@@ -112,26 +128,32 @@ public class BPNode<T extends Comparable<T>> implements Comparable<T> {
 			return true;
 			
 		} else if(this.isFull(this.llaves)) { // Caso 2, nodo lleno
-			System.out.println("FAIl");
+			System.out.println("FAIL");
 			return false;
 			
-		} else {
-			return false;
+		} else { // Caso 3, inserción en orden
+			int indiceInsertar;
+		    for(indiceInsertar = 0; indiceInsertar<llaves.length-1; indiceInsertar++) {
+		    	
+		    	// Si la llave es mayor a los demás lo inserta al final
+		    	if(llaves[indiceInsertar] == null) {
+		        	llaves[indiceInsertar] = pLlave;
+		        	return true;
+		        }
+		    	
+		    	// Si la llave es menor o igual a los demás lo inserta
+		        if(pLlave.compareTo(llaves[indiceInsertar]) <= 0) break;      
+		    }
+		    
+		    //Proceso para insertar, corre el contenido 1 espacio
+		    for(int posActual=llaves.length-2; posActual>=indiceInsertar; posActual--){
+		        llaves[posActual+1]=llaves[posActual];            
+		    }
+		    
+		    llaves[indiceInsertar] = pLlave;
+			return true;
 		}
 		
 	}
 
-	
-	
-	public static void main(String[] args) {
-		BPNode<Integer> test = new BPNode<Integer>(5);
-		
-		test.nuevaLlave(1);
-		test.nuevaLlave(13);
-		test.nuevaLlave(5);
-		test.nuevaLlave(13);
-		test.nuevaLlave(-13);
-	}
-
-	
 }
