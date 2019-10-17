@@ -55,6 +55,8 @@ public class BPTree<T extends Comparable<T>> {
 		BPTree<Integer> test = new BPTree<Integer>(3, 10);
 		
 		System.out.println(Arrays.deepToString(test.getRaiz().getLlaves()));
+		
+		System.out.println(test.getRaiz().buscar(10, test.getRaiz().getLlaves()));
 	}
 	
 }

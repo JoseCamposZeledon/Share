@@ -109,16 +109,6 @@ public class BPNode<T extends Comparable<T>> implements Comparable<BPNode<T>> {
 		return this.llaves[0].compareTo(o.llaves[0]);
 	}
 	
-	public T remover(T pLlave) {
-		T llave = null;
-		
-		/*
-		 * Binary Search 
-		 */
-		
-		return llave;
-	}
-	
 	/*
 	 * Retorna true si se pudo incluir la nueva llave, false de lo contrario
 	 */
@@ -128,7 +118,7 @@ public class BPNode<T extends Comparable<T>> implements Comparable<BPNode<T>> {
 			return true;
 			
 		} else if(this.isFull(this.llaves)) { // Caso 2, nodo lleno
-			System.out.println("FAIL");
+			
 			return false;
 			
 		} else { // Caso 3, inserción en orden
@@ -155,5 +145,26 @@ public class BPNode<T extends Comparable<T>> implements Comparable<BPNode<T>> {
 		}
 		
 	}
-
+	
+	
+	/*
+	 * Se deshace del objeto en las llaves, se reacomodan los hijos
+	 */
+	public T removerLlave(T pLlave) {
+		
+		int llavePos = buscar(pLlave, this.hijos);
+		
+		return llaves[llavePos];
+	}
+	
+	
+	/*
+	 *  Hace un binary search para buscar el elemento, retorna el indice donde se encuentra
+	 */
+	public int buscar(Object pLlave, Object[] pArray) {
+		
+		return Arrays.binarySearch(pArray, pLlave);
+		
+	}
+	
 }
