@@ -79,13 +79,13 @@ public class VentanaConectarController {
 			int tipoUbicacion = view.getComboUbicacion();
 			
 			if (id.isEmpty() || nombre.isEmpty()) {
-				JOptionPane.showMessageDialog(null, "INGRESE LA INFORMACIÓN NECESARIA", 
+				JOptionPane.showMessageDialog(null, "INGRESE LA INFORMACIÃ“N NECESARIA", 
 						"ERROR", JOptionPane.ERROR_MESSAGE);
 				return;
 			}
 			
 			if (consumo == Integer.MIN_VALUE || consumo <= 0) {
-				JOptionPane.showMessageDialog(null, "INGRESE UN NÚMERO VÁLIDO", 
+				JOptionPane.showMessageDialog(null, "INGRESE UN NÃšMERO VÃLIDO", 
 						"ERROR", JOptionPane.ERROR_MESSAGE);
 				return;
 			}
@@ -116,10 +116,12 @@ public class VentanaConectarController {
 			if(arbol.getCantidadNodos() == 1) {
 				model.setRoot(sensorJTree);
 			} else {
+				node.agregarHijo(sensorJTree);
 				model.insertNodeInto(sensorJTree, node, node.getChildCount());
-				System.out.println("Hijos del Seleccionado. " + node.getNodo().getCantidadHijos());
 			}
 			
+			model.reload();
+
 			splay.agregar(sensorJTree);
 			
 			System.out.println("NODOS EN ARBOL: " + arbol.getCantidadNodos());
