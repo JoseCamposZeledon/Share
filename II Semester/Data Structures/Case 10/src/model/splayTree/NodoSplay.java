@@ -1,5 +1,8 @@
 package model.splayTree;
 
+import model.arbolnario.NodoNArio;
+import model.sensor.Sensor;
+
 public class NodoSplay<T extends Comparable<T>> 
 implements Comparable<NodoSplay<T>> {
 	
@@ -7,12 +10,18 @@ implements Comparable<NodoSplay<T>> {
 	private NodoSplay<T> hijoDerecho;
 	private NodoSplay<T> hijoIzquierdo;
 	private T valor;
+	private NodoNArio<Sensor> nodo;
 	
 	public NodoSplay() {
 	}
 	
 	public NodoSplay(T pValor) {
 		setValor(pValor);
+	}
+	
+	public NodoSplay(T pValor, NodoNArio<Sensor> pNodo) {
+		this(pValor);
+		setNodo(pNodo);
 	}
 	
 	public NodoSplay<T> getPadre() {
@@ -39,7 +48,13 @@ implements Comparable<NodoSplay<T>> {
 	public void setValor(T valor) {
 		this.valor = valor;
 	}
-	
+	public NodoNArio<Sensor> getNodo() {
+		return nodo;
+	}
+	public void setNodo(NodoNArio<Sensor> nodo) {
+		this.nodo = nodo;
+	}
+
 	public String toString() {
 		return getValor().toString();
 	}

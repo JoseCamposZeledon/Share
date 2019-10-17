@@ -1,5 +1,8 @@
 package model.splayTree;
 
+import model.arbolnario.NodoJTree;
+import model.sensor.Sensor;
+
 public class SplayTree<T extends Comparable<T>> {
 	
 	private NodoSplay<T> raiz;
@@ -47,6 +50,16 @@ public class SplayTree<T extends Comparable<T>> {
 			setRaiz(nodo);
 		} else {
 			agregar(nodo, getRaiz());
+		}
+	}
+	
+	
+	public void agregar(NodoJTree<Sensor> pNodo) {
+		NodoSplay<String> nodoSplay = new NodoSplay<String>(pNodo.getNodo().getValor().getId(), pNodo.getNodo());
+		if (getRaiz() == null) {
+			setRaiz((NodoSplay<T>) nodoSplay);
+		} else {
+			agregar((NodoSplay<T>) nodoSplay, getRaiz());
 		}
 	}
 	
@@ -103,6 +116,32 @@ public class SplayTree<T extends Comparable<T>> {
 		}
 	}
 	
+	public NodoSplay<T> getMax(NodoSplay<T> pNodo) {
+		if (pNodo.getHijoDerecho() != null) {
+			return getMax(pNodo.getHijoDerecho());
+		} else {
+			return pNodo;
+		}
+	}
+	
+	public void borrar(T pValor) {
+		NodoSplay<T> buscado = buscar(pValor);
+		buscado.getHijoIzquierdo().setPadre(null);
+		buscado.getHijoDerecho().setPadre(null);
+		if (buscado != null) {
+			if (buscado.getHijoIzquierdo() == null) {
+				setRaiz(buscado.getHijoDerecho());
+			} else {
+				NodoSplay<T> hojaMaxima = getMax(buscado.getHijoIzquierdo());
+				convertirEnRaiz(hojaMaxima);
+				hojaMaxima.setHijoDerecho(buscado.getHijoDerecho());
+				buscado.getHijoDerecho().setPadre(hojaMaxima);
+				setRaiz(hojaMaxima);
+			}
+			buscado = null;
+		}
+	}
+	
 	
 	public void imprimirArbol() {
 		// Imprime los elementos de menor a mayor desde la raiz
@@ -121,22 +160,17 @@ public class SplayTree<T extends Comparable<T>> {
 	
 	
 	public static void main(String args[]) {
-		SplayTree<String> arbol = new SplayTree<String>();
-		arbol.agregar("b");
-		arbol.agregar("e");
-		arbol.agregar("c");
-		arbol.agregar("d");
-		//arbol.agregar("d");
-		//arbol.agregar("c");
-		//arbol.agregar("e");
+		SplayTree<Integer> arbol = new SplayTree<Integer>();
+		arbol.agregar(4);
+		arbol.agregar(2);
+		arbol.agregar(6);
+		arbol.agregar(1);
+		arbol.agregar(3);
+		arbol.agregar(5);
+		arbol.agregar(7);
 		
-		NodoSplay<String> nodito = new NodoSplay<String>();
-		nodito = arbol.buscar("d");
-		System.out.println(nodito.getPadre());
-		System.out.println(arbol.getRaiz());
-		System.out.println(nodito.getHijoIzquierdo());
-		System.out.println(nodito.getHijoDerecho());
-		System.out.println(nodito.getHijoIzquierdo().getHijoDerecho());
+		arbol.borrar(5);
 		arbol.imprimirArbol();
+		System.out.println(arbol.getRaiz());
 	}
 }
