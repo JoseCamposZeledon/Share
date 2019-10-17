@@ -77,12 +77,7 @@ public class BPNode<T extends Comparable<T>> implements Comparable<BPNode<T>> {
 		return llavesMax;
 	}
 
-	// Metodos Creados
-	public boolean tieneHijos() {
-		return hijos.length != 0;
-	}
-	
-	
+	// Metodos Creados	
 	public boolean esHoja() {
 		for (int i = 0; i < llavesMax; i++) {
 			if (hijos[i] != null) return false;
@@ -91,13 +86,13 @@ public class BPNode<T extends Comparable<T>> implements Comparable<BPNode<T>> {
 	}
 	
 	
-	public boolean isEmpty(Object[] pArray) {
-		return pArray[0] == null;
+	public boolean isEmpty() {
+		return llaves[0] == null;
 	}
 	
 	
-	public boolean isFull (Object[] pArray) {
-		return !Arrays.asList(pArray).contains(null);
+	public boolean isFull () {
+		return !Arrays.asList(llaves).contains(null);
 	}
 	
 	/*
@@ -113,11 +108,11 @@ public class BPNode<T extends Comparable<T>> implements Comparable<BPNode<T>> {
 	 * Retorna true si se pudo incluir la nueva llave, false de lo contrario
 	 */
 	public boolean nuevaLlave(T pLlave) { 
-		if (this.isEmpty(this.llaves)) { // Caso 1, nodo vacio
+		if (this.isEmpty()) { // Caso 1, nodo vacio
 			this.getLlaves()[0] = pLlave;
 			return true;
 			
-		} else if(this.isFull(this.llaves)) { // Caso 2, nodo lleno
+		} else if(this.isFull()) { // Caso 2, nodo lleno
 			
 			return false;
 			
@@ -152,19 +147,73 @@ public class BPNode<T extends Comparable<T>> implements Comparable<BPNode<T>> {
 	 */
 	public T removerLlave(T pLlave) {
 		
-		int llavePos = buscar(pLlave, this.hijos);
+		int llavePos = buscar(pLlave, this.llaves);
+		// Retorna nulo si la llave no se encuentra
+		if (llavePos < 0) return null;
 		
-		return llaves[llavePos];
+		T llave = llaves[llavePos];
+		llaves[llavePos] = null;
+		
+		// Corre los elementos que le seguian a la llave que se removio un espacio hacia atras
+		T temp;
+		for (int posActual = llavePos + 1; posActual < this.llavesMax; posActual++) {
+			
+			// Detiene el ciclo si se encuentra con algun null en el camino
+			if (llaves[posActual] == null) break;
+			
+			// Se intercambian las llaves
+			temp = llaves[posActual - 1];
+			llaves[posActual - 1] = llaves[posActual];
+			llaves[posActual] = temp;
+		}
+		
+		return llave;
 	}
 	
-	
 	/*
-	 *  Hace un binary search para buscar el elemento, retorna el indice donde se encuentra
+	 *  Hace un linear search para buscar el elemento, retorna el indice donde se encuentra
+	 *  Retorna -1 si no encuentra lo que se busca
 	 */
 	public int buscar(Object pLlave, Object[] pArray) {
 		
-		return Arrays.binarySearch(pArray, pLlave);
-		
+		for (int posActual = 0; posActual < pArray.length; posActual++) {
+			if (pArray[posActual] == pLlave) return posActual;
+		}
+		return -1;
 	}
 	
+	/*
+	 * Separa el nodo 
+	 */
+	public BPNode<T> split() {
+		
+		// Caso 1, se quiere partir la raiz, y es hoja
+		if (this.padre == null && this.esHoja()) {
+			
+			int medio = llaves.length / 2;
+			
+			BPNode<T> nuevaRaiz = new BPNode<T>(llavesMax);
+			nuevaRaiz.nuevaLlave(this.llaves[medio]);
+			
+			// Crea los dos nodos de cada lado e inserta los valores correspondientes
+			BPNode<T> nodoIzquierdo = new BPNode<T>(llavesMax);
+			BPNode<T> nodoDerecho = new BPNode<T>(llavesMax);
+			
+			for(int posIzquierda = 0; posIzquierda <= medio; posIzquierda++) {
+				nodoIzquierdo.nuevaLlave(this.llaves[posIzquierda]);
+			}
+			
+			for(int posDerecha = medio + 1; posDerecha < llavesMax; posDerecha++) {
+				nodoDerecho.nuevaLlave(this.llaves[posDerecha]);
+			}
+			
+			// Pone los nodos en las posiciones correspondientes
+			nuevaRaiz.getHijos()[0] = nodoIzquierdo;
+			nuevaRaiz.getHijos()[1] = nodoDerecho;
+			return nuevaRaiz;
+		}
+		
+		return null;
+		
+	}
 }
