@@ -212,6 +212,11 @@ public class BPNode<T extends Comparable<T>> implements Comparable<BPNode<T>> {
 			nuevaRaiz.getHijos()[1] = nodoDerecho;
 			return nuevaRaiz;
 		}
+		// Caso 2, se quiere partir la raiz, no es hoja
+		else if (this.getPadre() == null && !this.esHoja()) {
+			
+			
+		}
 		
 		return null;
 		

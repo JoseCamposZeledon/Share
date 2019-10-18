@@ -62,19 +62,29 @@ public class BPTree<T extends Comparable<T>> {
 		if (pValor.compareTo(raiz.getLlaves()[0]) <= 0) {
 			insertar(pValor, raiz.getHijos()[0]);
 			return;
-		} else if (raiz.getLlaves()[raiz.getLlavesMax() - 1] != null) {
+		} else if (raiz.getLlaves()[raiz.getLlavesMax() - 1] != null) { 
+			// Valor mayor a llave mayor, nodo lleno
+			if (pValor.compareTo(raiz.getLlaves()[raiz.getLlavesMax() - 1]) > 0) {
+				insertar(pValor, raiz.getHijos()[raiz.getLlavesMax() - 1]);
+				return;
+			}
 			
-			return;
 		}
 		
 		// El valor a insertar es mayor a la primer llave
 		for (int posActual = 0; posActual < raiz.getLlaves().length; posActual++) {			
 			
-			if (raiz.getLlaves()[posActual] == null) { // Valor a insertar mayor que mayor llave, nodo no lleno
-				insertar(pValor, raiz.getHijos()[posActual]);
+			// Valor a insertar mayor que mayor llave, nodo no lleno
+			if (raiz.getLlaves()[posActual + 1] == null) { 
+				insertar(pValor, raiz.getHijos()[posActual + 1]);
 				break;
 			}
 			
+			// Lo inserta en medio de las 2 llaves correspondientes
+			if (pValor.compareTo(raiz.getLlaves()[posActual]) > 0 &&
+				pValor.compareTo(raiz.getLlaves()[posActual + 1]) <= 0) {
+				insertar(pValor, raiz.getHijos()[posActual + 1]);
+			}
 			
 		}
 		
@@ -89,7 +99,7 @@ public class BPTree<T extends Comparable<T>> {
 		if (pRoot.esHoja() && pRoot.nuevaLlave(pValor)) return;
 		
 		// Caso 2, el nodo es hoja pero no tiene espacio
-		
+			
 		// Caso 3, el nodo no es hoja
 		else {
 			
@@ -109,6 +119,7 @@ public class BPTree<T extends Comparable<T>> {
 		test.insertar(18);
 		test.insertar(-1);
 		test.insertar(300);
+		test.insertar(13);
 		
 		System.out.println("Raiz: " + Arrays.deepToString(test.getRaiz().getLlaves()));
 		System.out.println("Hijo 0: " + Arrays.deepToString(test.getRaiz().getHijos()[0].getLlaves()));
