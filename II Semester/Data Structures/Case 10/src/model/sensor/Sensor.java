@@ -25,6 +25,10 @@ public class Sensor implements ISensorConstants{
 		this();
 		id = pId;
 		consumoBase = pConsumoBase;
+
+		consumoActual = pConsumoBase;
+		
+
 		lugar = setTipoLugar(pTipoUbicacion);
 		lugar.setNombre(pNombreLugar);
 	}
@@ -86,7 +90,6 @@ public class Sensor implements ISensorConstants{
 		
 		double randomRate = OSCILAMIENTO_MIN + (OSCILAMIENTO_MAX - OSCILAMIENTO_MIN) * randomValue.nextDouble();
 		consumoActual = (int) (consumoBase + (consumoBase * randomRate));
-		
 	}
 	 
 	

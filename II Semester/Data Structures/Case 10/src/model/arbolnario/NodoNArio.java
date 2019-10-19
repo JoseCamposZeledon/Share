@@ -69,7 +69,7 @@ public class NodoNArio<T> {
 	}
 	
 	public boolean tieneHijos() {
-		return hijos.isEmpty();
+		return !hijos.isEmpty();
 	}
 	
 	public void agregarHijo(NodoNArio<T> pNodo) {
