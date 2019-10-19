@@ -25,10 +25,8 @@ public class Sensor implements ISensorConstants{
 		this();
 		id = pId;
 		consumoBase = pConsumoBase;
-
 		consumoActual = pConsumoBase;
 		
-
 		lugar = setTipoLugar(pTipoUbicacion);
 		lugar.setNombre(pNombreLugar);
 	}

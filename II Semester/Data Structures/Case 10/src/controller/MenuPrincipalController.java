@@ -68,7 +68,7 @@ public class MenuPrincipalController {
 			
 			if (view.getTree().getLastSelectedPathComponent() == null &&
 					!view.getArbol().isEmpty()) {
-				JOptionPane.showMessageDialog(null, "Seleccione la ubicación del sensor", 
+				JOptionPane.showMessageDialog(null, "Seleccione la ubicaci�n del sensor", 
 						"ERROR", JOptionPane.ERROR_MESSAGE);
 				return;
 			}
@@ -128,6 +128,9 @@ public class MenuPrincipalController {
 			// Quita el seleccionado del GUI
 			model.removeNodeFromParent(nodoSeleccionado);
 			model.reload();
+
+            // Borra del splay
+			view.getSplay().borrar(((Sensor) nodoSeleccionado.getNodo().getValor()).getId());
 		}
 	}
 	
@@ -197,9 +200,6 @@ public class MenuPrincipalController {
 					this.detectarInalcanzables(hijoActual, pCantidadActual + pRoot.getNodo().getValor().getConsumoActual());
 				}	
 			}	
-			// Borra del splay
-			view.getSplay().borrar(((Sensor) nodoSeleccionado.getNodo().getValor()).getId());
-			
 		}
 	}
 	

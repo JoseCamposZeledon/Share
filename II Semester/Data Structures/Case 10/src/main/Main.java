@@ -7,7 +7,7 @@ import model.arbolnario.NodoJTree;
 import model.sensor.Sensor;
 import view.MenuPrincipal;
 
-public class Main {
+public class Main implements IConstants{
 	
 	public static void main(String[] args) {
 		
@@ -25,10 +25,10 @@ public class Main {
 						controller.detectarInalcanzables(root);
 						controller.actualizarNodos();
 						
-						System.out.println("----");
+						
 						
 						try {
-							Thread.sleep(3000);
+							Thread.sleep(DELAY);
 						} catch (Exception ex) {
 							
 						}
