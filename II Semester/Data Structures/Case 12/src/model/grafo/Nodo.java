@@ -2,29 +2,28 @@ package model.grafo;
 
 import java.util.ArrayList;
 
-public class Nodo {
+public class Nodo<T> {
 	
 	private static int ipCount = 0;
 	
 	private int ip; 
-	private ArrayList<Nodo> adjacentes;
-	private int cordX;
-	private int cordY;
+	private ArrayList<Nodo<T>> adjacentes;
+	
+	private T valor;
 	
 	public Nodo() {
 		setIp(ipCount);
 		ipCount++;
-		setAdjacentes(new ArrayList<Nodo>());
+		setAdjacentes(new ArrayList<Nodo<T>>());
 	}
 	
-	public Nodo(int cordX, int cordY) {
+	public Nodo(T pValor) {
 		this();
-		setCordX(cordX);
-		setCordY(cordY);
+		setValor(pValor);
 	}
 	
-	public Nodo(int cordX, int cordY, ArrayList<Nodo> adjacentes) {
-		this(cordX, cordY);
+	public Nodo(T valor, ArrayList<Nodo<T>> adjacentes) {
+		this(valor);
 		setAdjacentes(adjacentes);
 	}
 	
@@ -36,30 +35,22 @@ public class Nodo {
 		this.ip = ip;
 	}
 
-	public ArrayList<Nodo> getAdjacentes() {
+	public ArrayList<Nodo<T>> getAdjacentes() {
 		return adjacentes;
 	}
 	
-	public void setAdjacentes(ArrayList<Nodo> adjacentes) {
+	public void setAdjacentes(ArrayList<Nodo<T>> adjacentes) {
 		this.adjacentes = adjacentes;
 	}
-	
-	public int getCordX() {
-		return cordX;
-	}
-	
-	public void setCordX(int cordX) {
-		this.cordX = cordX;
-	}
-	
-	public int getCordY() {
-		return cordY;
-	}
-	
-	public void setCordY(int cordY) {
-		this.cordY = cordY;
-	}
 
+	public void setValor(T pValor) {
+		this.valor = pValor;
+	}
+	
+	public T getValor() {
+		return valor;
+	}
+	
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -68,7 +59,7 @@ public class Nodo {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Nodo other = (Nodo) obj;
+		Nodo<T> other = (Nodo<T>) obj;
 		if (ip != other.ip)
 			return false;
 		return true;
