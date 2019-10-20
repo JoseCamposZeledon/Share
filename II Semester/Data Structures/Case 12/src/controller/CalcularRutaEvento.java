@@ -12,31 +12,24 @@ import model.grafo.Nodo;
 
 public class CalcularRutaEvento extends MouseAdapter{
 	
-	private JLabel origen = null;
-	private JLabel destino = null;
-	private Hashtable<JLabel, Nodo<Point>> table;
-	private Grafo<Nodo<Point>> grafo;
+	private ControllerPrincipal controller;
 	
 	
-	public CalcularRutaEvento(JLabel pOrigen, JLabel pDestino, 
-			Hashtable<JLabel, Nodo<Point>> pTable,
-			Grafo<Nodo<Point>> pGrafo) {
-		origen = pOrigen;
-		destino = pDestino;
-		table = pTable;
-		grafo = pGrafo;
+	public CalcularRutaEvento(ControllerPrincipal pController) {
+		controller = pController;
 	}
 	
 	public void mouseClicked(MouseEvent e) {
 		
-		if (origen == null || destino == null) {
+		if (controller.getNodoOrigen() == null || controller.getNodoDestino()== null) {
+			System.out.println("VACIOS");
 			return;
 		}
 		
-		Nodo<Point> nodoOrigen = table.get(origen);
-		Nodo<Point> nodoDestino = table.get(destino);
+		Nodo<Point> nodoOrigen = controller.getVista().getTable().get(controller.getNodoOrigen());
+		Nodo<Point> nodoDestino = controller.getVista().getTable().get(controller.getNodoDestino());
 		
-		for(Nodo<Point> actual : grafo.buscarOrden(nodoOrigen, nodoDestino)) {
+		for(Nodo<Point> actual : controller.getModelo().buscarOrden(nodoOrigen, nodoDestino)) {
 			System.out.println(actual);
 		}
 	}

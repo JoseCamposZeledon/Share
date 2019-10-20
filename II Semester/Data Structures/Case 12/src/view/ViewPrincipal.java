@@ -143,7 +143,12 @@ public class ViewPrincipal extends JFrame implements Observer, IConstants{
 	public void setLabelNodos(ArrayList<JLabel> labelNodos) {
 		this.labelNodos = labelNodos;
 	}
-	
-	
-	
+
+	public boolean getEstadoOrigen() {
+		return estadoOrigen;
+	}
+
+	public void setEstadoOrigen(boolean estadoOrigen) {
+		this.estadoOrigen = estadoOrigen;
+	}
 }

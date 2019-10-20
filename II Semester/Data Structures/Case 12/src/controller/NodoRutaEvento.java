@@ -9,17 +9,16 @@ import javax.swing.JLabel;
 public class NodoRutaEvento extends MouseAdapter{
 	
 	private ControllerPrincipal controller;
-	private BuscarRutaEvento estados;
 	
 	private static JLabel origen, destino;
 	
-	public NodoRutaEvento(BuscarRutaEvento estados, ControllerPrincipal pController) {
+	public NodoRutaEvento(ControllerPrincipal pController) {
 		controller = pController;
 	}
 	
 	public void mouseClicked(MouseEvent e) {
 		
-		if() {
+		if(controller.getVista().getEstadoOrigen()) {
 			if(controller.getNodoOrigen() != null) origen.setBackground(Color.RED);
 			origen = (JLabel) e.getComponent();
 			origen.setBackground(Color.green);
