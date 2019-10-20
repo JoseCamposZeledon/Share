@@ -27,12 +27,17 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import controller.NodoClickedEvento;
 import model.grafo.Nodo;
 
 public class ViewPrincipal extends JFrame implements Observer, IConstants{
 	private JButton btnBuscarRuta;
+
 	private JLabel backgroundLabel;
 	private ImagePanel panel;
+	ArrayList<JLabel> labelNodos;
+	
+	private boolean estadoOrigen;
 	
 	private Hashtable<JLabel, Nodo<Point>> table = new Hashtable<JLabel, Nodo<Point>>();
 
@@ -51,6 +56,8 @@ public class ViewPrincipal extends JFrame implements Observer, IConstants{
 			e.printStackTrace();
 		}
 		
+		labelNodos = new ArrayList<JLabel>();
+		
 		Image backgroundImage = background.getScaledInstance(this.getWidth(), this.getHeight(), Image.SCALE_SMOOTH);
 		panel = new ImagePanel(backgroundImage);
 		
@@ -58,6 +65,7 @@ public class ViewPrincipal extends JFrame implements Observer, IConstants{
 		
 		btnBuscarRuta = new JButton("Buscar Ruta");
 		btnBuscarRuta.setBounds(0, 0, 150, 25);
+
 		this.add(btnBuscarRuta);
 	}
 	
@@ -104,30 +112,38 @@ public class ViewPrincipal extends JFrame implements Observer, IConstants{
 	@Override
 	public void update(@SuppressWarnings("deprecation") Observable o, Object arg) {
 		Nodo<Point> nodo = (Nodo<Point>) arg;
+		JLabel labelNodo = dibujarNodo(nodo, o);
+		this.add(labelNodo);
 		
+		this.repaint();
+	}
+	
+	public JLabel dibujarNodo(Nodo<Point> pNodo, Observable o) {
 		JLabel labelNodo = new JLabel();
 		labelNodo.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		
-		labelNodo.setBounds(nodo.getValor().x, nodo.getValor().y, 2 * RADIO, 2 * RADIO);
+		labelNodo.setBounds(pNodo.getValor().x, pNodo.getValor().y, 2 * RADIO, 2 * RADIO);
 		
 		labelNodo.setBackground(Color.RED);
 		labelNodo.setOpaque(true);
 		
-		labelNodo.addMouseListener(new MouseAdapter()
-		{
-			public void mouseClicked(MouseEvent e) {
-				Nodo<Point> nodoClicked = table.get(labelNodo);
-				
-				nodo.getAdjacentes().add(nodoClicked);
-				nodoClicked.getAdjacentes().add(nodo);
-			}
-		});	
+		NodoClickedEvento evento = new NodoClickedEvento(labelNodo, table, o);
+		labelNodo.addMouseListener(evento); 
 		
+		labelNodos.add(labelNodo);
+		this.getTable().put(labelNodo, pNodo);
 		
-		this.add(labelNodo);
-		this.repaint();
-		this.getTable().put(labelNodo, nodo);
-		
+		return labelNodo;
 	}
+
+	public ArrayList<JLabel> getLabelNodos() {
+		return labelNodos;
+	}
+
+	public void setLabelNodos(ArrayList<JLabel> labelNodos) {
+		this.labelNodos = labelNodos;
+	}
+	
+	
 	
 }
