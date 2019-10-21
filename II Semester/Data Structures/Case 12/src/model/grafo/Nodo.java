@@ -6,7 +6,8 @@ public class Nodo<T> {
 	
 	private static int ipCount = 0;
 	
-	private int ip; 
+	private int ip;
+        private Nodo<T> anterior;
 	private ArrayList<Nodo<T>> adjacentes;
 	
 	private T valor;
@@ -34,6 +35,14 @@ public class Nodo<T> {
 	public void setIp(int ip) {
 		this.ip = ip;
 	}
+
+        public void setAnterior(Nodo<T> anterior) {
+                this.anterior = anterior;
+        }
+
+        public Nodo<T> getAnterior() {
+                return anterior;
+        }
 
 	public ArrayList<Nodo<T>> getAdjacentes() {
 		return adjacentes;
