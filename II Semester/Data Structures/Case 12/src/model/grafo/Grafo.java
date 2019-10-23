@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.Stack;
 
 public class Grafo<T> {
 	
@@ -27,8 +28,8 @@ public class Grafo<T> {
 	}
 
         public void limpiarAnteriores() {
-                for (Nodo<T> nodo : nodos) {
-                        nodo.setAnterior(null);
+                for (T nodo : nodos) {
+                        ((Nodo<T>) ((Nodo<T>) nodo).getValor()).setAnterior(null);
                 }
         }
 
@@ -45,10 +46,10 @@ public class Grafo<T> {
                 while (!reversa.isEmpty()) {
                         resultado.add(reversa.pop());
                 }
-                return resultado;
+                return (Queue<T>) resultado;
         }
 
-	public Queue<T> buscarOrden(Object pInicio, Object pBuscado) {
+	public Queue<Nodo<T>> buscarOrden(Object pInicio, Object pBuscado) {
 		// mapa y cola son para realizar busqueda por anchura, resultado se guarda cada busqueda
 		// resultado es una cola con punteros hacia nodos en el orden que fue buscado, retorna null si no se encuentra el nodo
 		HashMap<Integer, Nodo<T>> mapa = new HashMap<Integer, Nodo<T>>();
@@ -64,7 +65,7 @@ public class Grafo<T> {
 				if (!mapa.containsKey(nodo.getIp())) {
 					if (nodo.equals(pBuscado)) {
 						Queue<Nodo<T>> resultado;
-                                                resultado = backTrack(nodo);
+                                                resultado = (Queue<Nodo<T>>) backTrack(nodo);
                                                 limpiarAnteriores();
                                                 return resultado;
 					}
