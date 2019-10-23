@@ -134,14 +134,13 @@ public class BPNode<T extends Comparable<T>> implements Comparable<BPNode<T>> {
 		}
 		
 		// Caso 2 - Nodo con elementos, pero no esta lleno
-		else if (!(this.llavesVacias() || this.llavesLlenas())) {
+		else if (!this.llavesLlenas()) {
 			int indiceInsertar;
-			
 			/* Obtiene el indice en el que se va a insertar para correr los elementos del array
 			 * Si es menor que el elemento entonces corre las llaves un espacio y lo inserta
 			 * Si se encuentra con un null significa que pLlave es mayor que todas las llaves entonces lo inserta
 			 */
-		    for(indiceInsertar = 0; indiceInsertar<llaves.length-1; indiceInsertar++) {
+		    for(indiceInsertar = 0; indiceInsertar < llaves.length - 1; indiceInsertar++) {
 		    	
 		    	// Si la llave es mayor a los demás lo inserta al final
 		    	if(llaves[indiceInsertar] == null) {
@@ -150,20 +149,19 @@ public class BPNode<T extends Comparable<T>> implements Comparable<BPNode<T>> {
 		        }
 		    	
 		    	// Si la llave es menor o igual a los demás lo inserta
-		        if(pLlave.compareTo(llaves[indiceInsertar]) <= 0) break;      
+		    	else if(pLlave.compareTo(llaves[indiceInsertar]) <= 0) break;      
 		    }
 		    
 		    //Proceso para insertar, corre el contenido 1 espacio
 		    for(int posActual = llaves.length-2; posActual >= indiceInsertar; posActual--){
-		        llaves[posActual+1]=llaves[posActual];            
+		        llaves[posActual + 1] = llaves[posActual];            
 		    }
 		    
 		    //Corre los hijos 1 espacio
-		    for (int posActual = hijos.length - 2; posActual >= indiceInsertar + 1; posActual--) {
+		    for (int posActual = hijos.length - 2; posActual > indiceInsertar; posActual--) {
 		    	hijos[posActual + 1] = hijos[posActual];
 		    }
 		    
-		    hijos[indiceInsertar] = null;
 		    llaves[indiceInsertar] = pLlave;
 			return true;
 			
@@ -252,19 +250,19 @@ public class BPNode<T extends Comparable<T>> implements Comparable<BPNode<T>> {
 	 */
 	public void insertarHijo(BPNode<T> pNodo) {
 
-//		// Caso 1 - Menor valor de la llave es menor o igual a la llave menor del nodo
-//		if (pNodo.getLlaves()[0].compareTo(getLlaves()[0]) <= 0) {
-//			getHijos()[0] = pNodo;
-//			return;
-//		}
-//		
-//		// Caso 2 - Menor valor de la llave es mayor a la llave mayor del nodo
-//		
-//		int posMayor = this.getPosMayor();
-//		if (pNodo.getLlaves()[0].compareTo(getLlaves()[posMayor]) > 0) {
-//			this.hijos[posMayor + 1] = pNodo;
-//			return;
-//		}
+		// Caso 1 - Menor valor de la llave es menor o igual a la llave menor del nodo
+		if (pNodo.getLlaves()[0].compareTo(getLlaves()[0]) <= 0) {
+			getHijos()[0] = pNodo;
+			return;
+		}
+		
+		// Caso 2 - Menor valor de la llave es mayor a la llave mayor del nodo
+		
+		int posMayor = this.getPosMayor();
+		if (pNodo.getLlaves()[0].compareTo(getLlaves()[posMayor]) > 0) {
+			this.hijos[posMayor + 1] = pNodo;
+			return;
+		}
 		
 		// Caso 3 - Se busca entre cuales llaves calza
 		for (int posActual = 0; posActual < getLlavesMax(); posActual++) {

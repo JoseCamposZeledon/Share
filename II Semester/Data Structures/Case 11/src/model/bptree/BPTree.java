@@ -72,21 +72,21 @@ public class BPTree<T extends Comparable<T>> {
 			pRoot = splitNodo(pRoot);
 		}
 		
-		// Caso 3 - pRoot no es hoja entonces se tiene que buscar el lugar apropiado
+		// Caso 2 - pRoot no es hoja entonces se tiene que buscar el lugar apropiado
 			
-		// Caso 3.1 - pLlave es menor o igual a pRoot[0] (Menor llave)
+		// Caso 2.1 - pLlave es menor o igual a pRoot[0] (Menor llave)
 		if (pLlave.compareTo(pRoot.getLlaves()[0]) <= 0) {
 			insertar(pLlave, pRoot.getHijos()[0]);
 			return;
 		}
-		// Caso 3.2 - pLlave es mayor a la mayor llave de pRoot
+		// Caso 2.2 - pLlave es mayor a la mayor llave de pRoot
 		int posMayor = pRoot.getPosMayor();
 			
 		if (pLlave.compareTo(pRoot.getLlaves()[posMayor - 1]) > 0) {
 			insertar(pLlave, pRoot.getHijos()[posMayor]);
 		}
 			
-		// Caso 3.3 - pLlave esta en medio de dos valores
+		// Caso 2.3 - pLlave esta en medio de dos valores
 		else {
 			for (int posActual = 0; posActual < pRoot.getLlavesMax(); posActual++) {
 				// Validacion para que no itere sobre llaves vacias
@@ -207,7 +207,10 @@ public class BPTree<T extends Comparable<T>> {
 		test.insertar(24);
 		test.insertar(39);
 		test.insertar(-10);
-		test.insertar(21);
+		test.insertar(50);
+		test.insertar(60);
+		test.insertar(27);
+//		test.insertar(13);  <- Con este se despicha, se pierde un hijo y se coloca uno nuevo donde no deberia estar
 		
 		System.out.println("Raiz: " + Arrays.deepToString(test.getRaiz().getLlaves()));
 		for (int i = 0; i < test.getLlavesMax(); i++) {
