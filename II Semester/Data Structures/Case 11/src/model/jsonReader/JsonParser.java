@@ -34,7 +34,7 @@ public class JsonParser implements JsonConstants{
 	}
 	
 	public Structure readFromFile() {
-		try (Reader reader = new FileReader(JSON_FILES_PATH + "config.json")) {
+		try (Reader reader = new FileReader(JSON_FILES_PATH + "//config.json")) {
         	Structure contenido = gson.fromJson(reader, Structure.class);
         	return contenido;
         } catch (IOException e) {
