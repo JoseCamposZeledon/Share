@@ -92,7 +92,7 @@ public class AVLTree<T extends Comparable<T>> {
 		}
 		// Caso 2 - Ya existe raiz
 		else {
-			insertar(raiz, pValor);
+			raiz = insertar(raiz, pValor);
 		}
 	}
 	
@@ -108,12 +108,12 @@ public class AVLTree<T extends Comparable<T>> {
 		}
 		
 		// Caso 2 - pValor es menor a pRoot
-		else if (pRoot.mayor(pValor)) {
+		else if (pRoot.menor(pValor)) {
 			pRoot.setHijoIzquierdo(insertar(pRoot.getHijoIzquierdo(), pValor));
 		}
 		
 		// Caso 3 - pValor es mayor a pRoot
-		else if (pRoot.menor(pValor)) {
+		else if (pRoot.mayor(pValor)) {
 			pRoot.setHijoDerecho(insertar(pRoot.getHijoDerecho(), pValor));
 		}
 		
@@ -150,7 +150,7 @@ public class AVLTree<T extends Comparable<T>> {
 			
 			// Caso 2.1 - [Derecho - Derecho]
 			if (pRoot.getHijoDerecho().getBalance() >= 0) {
-				return rotacionIzquierda(pRoot);
+				pRoot = rotacionIzquierda(pRoot);
 			}			
 			
 			// Caso 2.2 - [Derecho - Izquierdo]
@@ -195,8 +195,7 @@ public class AVLTree<T extends Comparable<T>> {
 	 * Rotacion hacia la derecha
 	 */
 	public AVLNode<T> rotacionDerecha(AVLNode<T> pRoot) {
-		AVLNode<T> nuevoPadre = new AVLNode<T>();
-		nuevoPadre = pRoot.getHijoIzquierdo();
+		AVLNode<T> nuevoPadre = pRoot.getHijoIzquierdo();
 		
 		pRoot.setHijoIzquierdo(nuevoPadre.getHijoDerecho());
 		
@@ -211,10 +210,10 @@ public class AVLTree<T extends Comparable<T>> {
 	 * Rotacion hacia la izquierda
 	 */
 	public AVLNode<T> rotacionIzquierda(AVLNode<T> pRoot) {
-		AVLNode<T> nuevoPadre = new AVLNode<T>();
-		nuevoPadre = pRoot.getHijoDerecho();
+		AVLNode<T> nuevoPadre = pRoot.getHijoDerecho();
 		
 		pRoot.setHijoDerecho(nuevoPadre.getHijoIzquierdo());
+		
 		nuevoPadre.setHijoIzquierdo(pRoot);
 		
 		pRoot.setBalance(calcularNuevoBalance(pRoot));
@@ -225,10 +224,12 @@ public class AVLTree<T extends Comparable<T>> {
 	public static void main(String[] args) {
 		AVLTree<Integer> test = new AVLTree<Integer>(6);
 		test.insertar(14);
-		test.insertar(21);
+		test.insertar(20);
+		test.insertar(134);
+		test.insertar(133);
 		
 		System.out.println(test.getRaiz().getValor());
-		System.out.println(test.getRaiz().getHijoDerecho().getValor());
+		System.out.println(test.getRaiz().getHijoIzquierdo().getValor());
 	}
 }
 	
