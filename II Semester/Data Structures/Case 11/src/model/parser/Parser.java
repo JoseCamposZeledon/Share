@@ -22,18 +22,21 @@ public class Parser implements ParserConstant {
 	private Queue<Sitio> sitios;
 	private SitioFactory factory;
 	private AVLTree avlPalabras;
-	private ArrayList<AVLTree> listaSitiosPalabras;
+	private ArrayList<SitioPadre> listaSitiosPalabras;
 	
 	private Parser() throws InstantiationException, IllegalAccessException {
 		this.ancho = JsonParser.get().getData().getAncho();
 		this.profundidad = JsonParser.get().getData().getProfundidad();
 		sitios = new LinkedList<Sitio>();
-		for (String valor : JsonParser.get().getData().getLinks()) {
-			sitios.add(new Sitio(valor));
-		}
+		listaSitiosPalabras = new ArrayList<SitioPadre>();
 		factory = new SitioFactory();
+		for (String valor : JsonParser.get().getData().getLinks()) {
+			SitioPadre padre = (SitioPadre) factory.makeTree("Padre");
+			padre.setLink(valor);
+			sitios.add(new SitioPadre(valor));
+			listaSitiosPalabras.add(padre);
+		}
 		avlPalabras = new AVLTree();
-		listaSitiosPalabras = new ArrayList<AVLTree>();
 	}
 	
 	public static Parser get() throws InstantiationException, IllegalAccessException {
@@ -44,7 +47,6 @@ public class Parser implements ParserConstant {
 	}
 	
 	public void computeSites() {
-		HashMap<String, String> map;
 		int counterSitios = 1;
 		int iteraciones = 1;
 		Document document;
@@ -58,10 +60,14 @@ public class Parser implements ParserConstant {
 					if (document.hasText()) {
 						for (Element e : document.select("a")) {
 							String link = e.attr("href");
-							if (link.startsWith("https://") && current.getAnchuraActual() < 10 && current.getProfundidadActual() < 3) {
-								sitios.add(new Sitio(current.getProfundidadActual() + 1, 0, link));
-								current.incrementarAnchura();
-								counterSitios++;
+							if (link.startsWith("https://") && current.getAnchuraActual() < ancho && current.getProfundidadActual() < profundidad) {
+								if (!current.getPadre().getMap().containsKey(link)) {
+									Sitio nuevoSitio = new SitioDerivado(current.getProfundidadActual() + 1, 0, link, current.getPadre());
+									sitios.add(nuevoSitio);
+									current.getPadre().getMap().put(link, current.getPadre());
+									current.incrementarAnchura();
+									counterSitios++;
+								}
 							}
 							// Borra el link para que no aparezca 
 							e.text("");

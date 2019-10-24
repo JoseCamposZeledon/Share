@@ -5,6 +5,7 @@ public class Sitio {
 	private int profundidadActual;
 	private int anchuraActual;
 	private String link;
+	protected SitioPadre padre;
 	
 	public Sitio() {
 		this.profundidadActual = 1;
@@ -46,6 +47,14 @@ public class Sitio {
 		this.link = link;
 	}
 	
+	public SitioPadre getPadre() {
+		return padre;
+	}
+
+	public void setPadre(SitioPadre padre) {
+		this.padre = padre;
+	}
+
 	public void incrementarAnchura() {
 		anchuraActual++;
 	}
