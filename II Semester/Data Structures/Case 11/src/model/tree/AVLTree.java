@@ -1,7 +1,6 @@
 package model.tree;
 
 public class AVLTree<T extends Comparable<T>> {
-
 	private AVLNode<T> raiz;
 	private int cantidadNodos;
 	
@@ -17,219 +16,272 @@ public class AVLTree<T extends Comparable<T>> {
 	}
 	
 	/*
-	 * SETTERS & GETTERS
+	 * GETTERS & SETTERS
 	 */
-	
 	public AVLNode<T> getRaiz() {
 		return raiz;
 	}
-
 	public void setRaiz(AVLNode<T> raiz) {
 		this.raiz = raiz;
 	}
-
 	public int getCantidadNodos() {
 		return cantidadNodos;
-	}
-
-	public void setCantidadNodos(int cantidadNodos) {
-		this.cantidadNodos = cantidadNodos;
 	}
 	
 	/*
 	 * METODOS CREADOS
 	 */
 	
-	public int getAlturaArbol() {
-		if (raiz == null) return 0;
-		return this.raiz.getAltura();
-	}
-	
-	public boolean esVacio() {
-		return raiz == null;
-	}
-	
-	/*
-	 * Busca el valor desde la raiz, 
-	 * Si no lo encuentra retorna null
-	 */
+	// Busqueda
 	public T buscar(T pValor) {
+		// Caso 1 - Raiz nula
+		if (raiz == null) return null;
+		// Caso 2 - Buscar dentro de la raiz
+		
 		return buscar(raiz, pValor);
 	}
 	
-	
-	/*
-	 * Busca el valor desde un nodo especifico,
-	 * Si no lo encuentra retorna null
-	 */
-	public T buscar(AVLNode<T> pRoot, T pValor) {
-		// Caso 1 - Nodo vacio [No existe el valor]
-		if (pRoot == null) return null;
+	public T buscar(AVLNode<T> pRoot ,T pValor) {
+		// Caso 1 - No existe
+		if (pRoot == null) {
+			return null;
+		}
 		
-		// Caso 2 - pValor es igual al valor de pRoot
-		else if(pRoot.igual(pValor)) return pValor; 
+		// Caso 2 - pValor es igual al valor guardado en pRoot
+		else if (iguales(pValor, pRoot.getValor())) {
+			return pValor;
+		}
 		
-		// Caso 3 - pValor es menor al valor dentro de pRoot
-		else if(pRoot.mayor(pValor)) {
+		// Caso 3 - pValor es menor al valor guardado en pRoot
+		else if (menor(pValor, pRoot.getValor())) {
 			return buscar(pRoot.getHijoIzquierdo(), pValor);
 		}
 		
-		// Caso 4 - pValor es mayor al valor dentro de pRoot
+		// Caso 4 - pValor es mayor al valor guardado en pRoot
 		else {
 			return buscar(pRoot.getHijoDerecho(), pValor);
 		}
+	}
+
+	public T buscarMax(AVLNode<T> pRoot) {
+
+		while(pRoot.getHijoDerecho() != null) {
+			pRoot = pRoot.getHijoDerecho();
+		}
 		
+		return pRoot.getValor();
 	}
 	
-	/*
-	 * Inserta un valor nuevo, empezando de la raiz
-	 */
+	public T buscarMin(AVLNode<T> pRoot) {
+
+		while(pRoot.getHijoDerecho() != null) {
+			pRoot = pRoot.getHijoIzquierdo();
+		}
+		
+		return pRoot.getValor();
+	}
+	
+	// Insercion
 	public void insertar(T pValor) {
-		// Caso 1 - Raiz Vacia
+		// Caso 1 - Raiz nula
 		if (raiz == null) {
 			raiz = new AVLNode<T>(pValor);
-			return;
 		}
-		// Caso 2 - Ya existe raiz
+		// Caso 2 - Insercion
 		else {
 			raiz = insertar(raiz, pValor);
 		}
+		this.cantidadNodos++;
 	}
 	
-	
-	/*
-	 * Inserta un valor nuevo en un nodo especifico
-	 */
 	public AVLNode<T> insertar(AVLNode<T> pRoot, T pValor) {
-		// Caso 1 - pRoot es nulo, quiere decir que se encontro el lugar de insercion
+		// Caso 1 - Se encuentra la posicion
 		if (pRoot == null) {
 			pRoot = new AVLNode<T>(pValor);
 			return pRoot;
 		}
-		
-		// Caso 2 - pValor es menor a pRoot
-		else if (pRoot.menor(pValor)) {
-			pRoot.setHijoIzquierdo(insertar(pRoot.getHijoIzquierdo(), pValor));
-		}
-		
-		// Caso 3 - pValor es mayor a pRoot
-		else if (pRoot.mayor(pValor)) {
+		// Caso 2 - pValor mayor al valor guardado en pRoot
+		else if (mayor(pValor, pRoot.getValor())) {
 			pRoot.setHijoDerecho(insertar(pRoot.getHijoDerecho(), pValor));
 		}
 		
-		pRoot.setAltura(pRoot.getAltura() + 1);
-		
-		pRoot = balancear(pRoot);
-		return pRoot;
-	}
-	
-	/*
-	 * Balancea el arbol de ser necesario
-	 */
-	public AVLNode<T> balancear(AVLNode<T> pRoot) {
-		int balance = calcularNuevoBalance(pRoot);
-		
-		// Caso 1 -  Izquierdo dominante
-		if (balance == -2) {
-			
-			// Caso 1.1 - [Izquierdo - Izquierdo]
-			if (pRoot.getHijoIzquierdo().getBalance() <= 0) {
-				pRoot = rotacionDerecha(pRoot);
-			}
-			
-			// Caso 1.2 - [Izquierdo - Derecho]
-			else {
-				pRoot.setHijoIzquierdo(rotacionIzquierda(pRoot.getHijoIzquierdo()));
-				pRoot = rotacionIzquierda(pRoot);
-			}
-
+		// Caso 3 - pValor menor al valor guardado en pRoot
+		else {
+			pRoot.setHijoIzquierdo(insertar(pRoot.getHijoIzquierdo(), pValor));
 		}
 		
-		// Caso 2 - Derecho dominante
-		else if (balance == 2) {
+		return balancear(pRoot);
+	}
+	
+	
+	
+	// Balanceo
+	
+	public AVLNode<T> balancear(AVLNode<T> pRoot) {
+		actualizarBalance(pRoot);
+		
+		// Caso 1 - Derecho dominante
+		if (pRoot.getBalance() == 2) {
 			
-			// Caso 2.1 - [Derecho - Derecho]
+			// Caso 1.1 - [Derecha - Derecha]
 			if (pRoot.getHijoDerecho().getBalance() >= 0) {
-				pRoot = rotacionIzquierda(pRoot);
-			}			
-			
-			// Caso 2.2 - [Derecho - Izquierdo]
+				return rotacionIzquierda(pRoot);
+			}
+			// Caso 1.2 - [Derecha - Izquierda]
 			else {
 				pRoot.setHijoDerecho(rotacionDerecha(pRoot.getHijoDerecho()));
-				pRoot = rotacionDerecha(pRoot);
+				return rotacionIzquierda(pRoot);
 			}
+		}
+		// Caso 2 - Izquierdo dominante
+		else if (pRoot.getBalance() == -2) {
 			
+			// Caso 2.1 - [Izquierda - Izquierda]
+			if (pRoot.getHijoIzquierdo().getBalance() <= 0) {
+				return rotacionDerecha(pRoot);
+			}
+			// Caso 2.2 - [Izquierda - Derecha]
+			else {
+				pRoot.setHijoIzquierdo(rotacionIzquierda(pRoot.getHijoIzquierdo()));
+				return rotacionIzquierda(pRoot);
+			}
 		}
 		
+		// Caso 3 - Balanceado
 		return pRoot;
 	}
 	
-	/*
-	 *  Calcula el nuevo balance de pRoot
-	 */
-	public int calcularNuevoBalance(AVLNode<T> pRoot) {
+	public void actualizarBalance(AVLNode<T> pRoot) {
+		// Se necesita obtener la altura de los hijos para calcular el balance
+		int alturaIzq;
+		int alturaDrch;
 		
-		// Se tienen que calcular las alturas de los hijos de pRoot
-		int alturaIzquierda;
-		int alturaDerecha;
-		
-		if (pRoot.getHijoDerecho() == null) { // Se calcula la altura del derecho
-			alturaDerecha = -1;
-		} else {
-			alturaDerecha = pRoot.getHijoDerecho().getAltura();
+		if (pRoot.getHijoIzquierdo() == null) {
+			alturaIzq = -1;
+		} else { 
+			alturaIzq = pRoot.getHijoIzquierdo().getAltura();
 		}
 		
-		if (pRoot.getHijoIzquierdo() == null) { // Se calcula la altura del izquierdo
-			alturaIzquierda = -1;
+		if (pRoot.getHijoDerecho() == null) {
+			alturaDrch = -1;
 		} else {
-			alturaIzquierda = pRoot.getHijoIzquierdo().getAltura();
+			alturaDrch = pRoot.getHijoDerecho().getAltura();
 		}
 		
-		// Calculo del factor de balance
-		int nuevoBalance = alturaDerecha - alturaIzquierda;
-		pRoot.setBalance(nuevoBalance);
-		return nuevoBalance;
+		// Cambia el balance del nodo
+		pRoot.setBalance(alturaDrch - alturaIzq);
+		
+		// Actualiza la altura del nodo
+		pRoot.setAltura(1 + Math.max(alturaDrch, alturaIzq));
 	}
 	
-	/*
-	 * Rotacion hacia la derecha
-	 */
-	public AVLNode<T> rotacionDerecha(AVLNode<T> pRoot) {
-		AVLNode<T> nuevoPadre = pRoot.getHijoIzquierdo();
+	// Rotaciones
+	
+	public AVLNode<T> rotacionIzquierda(AVLNode<T> pNodo) {
 		
-		pRoot.setHijoIzquierdo(nuevoPadre.getHijoDerecho());
+		AVLNode<T> nuevoNodo = pNodo.getHijoDerecho();
+		pNodo.setHijoDerecho(nuevoNodo.getHijoIzquierdo());
+		nuevoNodo.setHijoIzquierdo(pNodo);
 		
-		nuevoPadre.setHijoDerecho(pRoot);
+		actualizarBalance(nuevoNodo);
+		actualizarBalance(pNodo);
 		
-		pRoot.setBalance(calcularNuevoBalance(pRoot));
-		nuevoPadre.setBalance(calcularNuevoBalance(nuevoPadre));
-		return nuevoPadre;
+		return nuevoNodo;
 	}
 	
-	/*
-	 * Rotacion hacia la izquierda
-	 */
-	public AVLNode<T> rotacionIzquierda(AVLNode<T> pRoot) {
-		AVLNode<T> nuevoPadre = pRoot.getHijoDerecho();
+	public AVLNode<T> rotacionDerecha(AVLNode<T> pNodo) {
 		
-		pRoot.setHijoDerecho(nuevoPadre.getHijoIzquierdo());
+		AVLNode<T> nuevoNodo = pNodo.getHijoIzquierdo();
+		pNodo.setHijoIzquierdo(nuevoNodo.getHijoDerecho());
+		nuevoNodo.setHijoDerecho(pNodo);
 		
-		nuevoPadre.setHijoIzquierdo(pRoot);
+		actualizarBalance(nuevoNodo);
+		actualizarBalance(pNodo);
 		
-		pRoot.setBalance(calcularNuevoBalance(pRoot));
-		nuevoPadre.setBalance(calcularNuevoBalance(nuevoPadre));
-		return nuevoPadre;
+		return nuevoNodo;
 	}
 	
-	public static void main(String[] args) {
-		AVLTree<Integer> test = new AVLTree<Integer>(6);
-		test.insertar(14);
-		test.insertar(20);
-		test.insertar(134);
-		test.insertar(133);
+	// Remover
+	public AVLNode<T> remover(T pValor) {
+		// Caso 1 - Raiz nula
+		if (raiz == null) {
+			return null;
+		}
 		
-		System.out.println(test.getRaiz().getValor());
-		System.out.println(test.getRaiz().getHijoIzquierdo().getValor());
+		// Caso 2 - Buscar el valor a remover desde la raiz
+		else {
+			raiz = remover(raiz, pValor);
+			this.cantidadNodos--;
+			return raiz;
+		}
+	}
+	
+	public AVLNode<T> remover(AVLNode<T> pRoot, T pValor) {
+		// Caso 1 - No existe el nodo
+		if (pRoot == null) {
+			return null;
+		}
+		
+		// Caso 2 - pValor menor al valor guardado en pRoot
+		else if (menor(pValor, pRoot.getValor())) {
+			pRoot.setHijoIzquierdo(remover(pRoot.getHijoIzquierdo(), pValor));
+		}
+		
+		// Caso 3 - pValor mayor al valor guardado en pRoot
+		else if (mayor(pValor, pRoot.getValor())) {
+			pRoot.setHijoDerecho(remover(pRoot.getHijoDerecho(), pValor));
+		}
+		
+		// Caso 4 - Se encontro el valor que se quiere remover
+		else {
+			
+			// Caso 4.1 - No hay hijo derecho
+			if (pRoot.getHijoDerecho() == null) {
+				return pRoot.getHijoIzquierdo();
+			}
+			
+			// Caso 4.2 - No hay hijo izquierdo
+			else if (pRoot.getHijoIzquierdo() == null) {
+				return pRoot.getHijoDerecho();
+			}
+			
+			// Caso 4.3 - Tiene ambos hijos
+			else {
+				
+				// Caso 4.3.1 Sub-Arbol izquierdo es mas alto
+				if (pRoot.getHijoIzquierdo().getAltura() > pRoot.getHijoDerecho().getAltura()) {
+					
+					T nuevoValor = buscarMax(pRoot.getHijoIzquierdo());
+					pRoot.setValor(nuevoValor);
+					
+					pRoot.setHijoIzquierdo(remover(pRoot.getHijoIzquierdo(), nuevoValor));
+				} 
+				// Caso 4.3.2 Sub-Arbol derecho mas o igual de alto
+				else {
+					
+					T nuevoValor = buscarMin(pRoot.getHijoDerecho());
+					pRoot.setValor(nuevoValor);
+					
+					pRoot.setHijoDerecho(remover(pRoot.getHijoDerecho(), nuevoValor));
+					
+				}
+			}	
+		}
+		
+		return balancear(pRoot);
+	}
+	
+	
+	// Comparacion de valores
+	public boolean menor(T pValor1, T pValor2) {
+		return pValor1.compareTo(pValor2) < 0;
+	}
+	
+	public boolean mayor(T pValor1, T pValor2) {
+		return pValor1.compareTo(pValor2) > 0;
+	}
+	
+	public boolean iguales(T pValor1, T pValor2) {
+		return pValor1.compareTo(pValor2) == 0;
 	}
 }
-	
