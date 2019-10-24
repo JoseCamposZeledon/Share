@@ -46,6 +46,7 @@ public class AVLNode<T extends Comparable<T>> {
 
 	public void setHijoIzquierdo(AVLNode<T> hijoIzquierdo) {
 		this.hijoIzquierdo = hijoIzquierdo;
+		hijoIzquierdo.setPadre(this);
 	}
 
 	public AVLNode<T> getHijoDerecho() {

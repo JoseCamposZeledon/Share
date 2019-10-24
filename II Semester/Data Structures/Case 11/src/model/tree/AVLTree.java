@@ -100,52 +100,68 @@ public class AVLTree<T extends Comparable<T>> {
 	/*
 	 * Inserta un valor nuevo en un nodo especifico
 	 */
-	public void insertar(AVLNode<T> pRoot, T pValor) {
+	public AVLNode<T> insertar(AVLNode<T> pRoot, T pValor) {
 		// Caso 1 - pRoot es nulo, quiere decir que se encontro el lugar de insercion
 		if (pRoot == null) {
 			pRoot = new AVLNode<T>(pValor);
-			return;
+			return pRoot;
 		}
 		
 		// Caso 2 - pValor es menor a pRoot
 		else if (pRoot.mayor(pValor)) {
-			insertar(pRoot.getHijoIzquierdo(), pValor);
+			pRoot.setHijoIzquierdo(insertar(pRoot.getHijoIzquierdo(), pValor));
 		}
 		
 		// Caso 3 - pValor es mayor a pRoot
 		else if (pRoot.menor(pValor)) {
-			insertar(pRoot.getHijoDerecho(), pValor);
+			pRoot.setHijoDerecho(insertar(pRoot.getHijoDerecho(), pValor));
 		}
 		
 		pRoot.setAltura(pRoot.getAltura() + 1);
 		
-		balancear(pRoot);
+		pRoot = balancear(pRoot);
+		return pRoot;
 	}
 	
 	/*
 	 * Balancea el arbol de ser necesario
 	 */
-	public void balancear(AVLNode<T> pRoot) {
+	public AVLNode<T> balancear(AVLNode<T> pRoot) {
 		int balance = calcularNuevoBalance(pRoot);
 		
 		// Caso 1 -  Izquierdo dominante
 		if (balance == -2) {
 			
 			// Caso 1.1 - [Izquierdo - Izquierdo]
-			
+			if (pRoot.getHijoIzquierdo().getBalance() <= 0) {
+				pRoot = rotacionDerecha(pRoot);
+			}
 			
 			// Caso 1.2 - [Izquierdo - Derecho]
-			
+			else {
+				pRoot.setHijoIzquierdo(rotacionIzquierda(pRoot.getHijoIzquierdo()));
+				pRoot = rotacionIzquierda(pRoot);
+			}
+
 		}
 		
 		// Caso 2 - Derecho dominante
 		else if (balance == 2) {
 			
 			// Caso 2.1 - [Derecho - Derecho]
+			if (pRoot.getHijoDerecho().getBalance() >= 0) {
+				return rotacionIzquierda(pRoot);
+			}			
 			
 			// Caso 2.2 - [Derecho - Izquierdo]
+			else {
+				pRoot.setHijoDerecho(rotacionDerecha(pRoot.getHijoDerecho()));
+				pRoot = rotacionDerecha(pRoot);
+			}
 			
 		}
+		
+		return pRoot;
 	}
 	
 	/*
@@ -178,10 +194,41 @@ public class AVLTree<T extends Comparable<T>> {
 	/*
 	 * Rotacion hacia la derecha
 	 */
-	public void rotacionDerecha(AVLNode<T> pRoot) {
-		AVLNode<T> nuevoPadre = pRoot.getHijoIzquierdo();
+	public AVLNode<T> rotacionDerecha(AVLNode<T> pRoot) {
+		AVLNode<T> nuevoPadre = new AVLNode<T>();
+		nuevoPadre = pRoot.getHijoIzquierdo();
 		
+		pRoot.setHijoIzquierdo(nuevoPadre.getHijoDerecho());
 		
+		nuevoPadre.setHijoDerecho(pRoot);
+		
+		pRoot.setBalance(calcularNuevoBalance(pRoot));
+		nuevoPadre.setBalance(calcularNuevoBalance(nuevoPadre));
+		return nuevoPadre;
+	}
+	
+	/*
+	 * Rotacion hacia la izquierda
+	 */
+	public AVLNode<T> rotacionIzquierda(AVLNode<T> pRoot) {
+		AVLNode<T> nuevoPadre = new AVLNode<T>();
+		nuevoPadre = pRoot.getHijoDerecho();
+		
+		pRoot.setHijoDerecho(nuevoPadre.getHijoIzquierdo());
+		nuevoPadre.setHijoIzquierdo(pRoot);
+		
+		pRoot.setBalance(calcularNuevoBalance(pRoot));
+		nuevoPadre.setBalance(calcularNuevoBalance(nuevoPadre));
+		return nuevoPadre;
+	}
+	
+	public static void main(String[] args) {
+		AVLTree<Integer> test = new AVLTree<Integer>(6);
+		test.insertar(14);
+		test.insertar(21);
+		
+		System.out.println(test.getRaiz().getValor());
+		System.out.println(test.getRaiz().getHijoDerecho().getValor());
 	}
 }
 	
