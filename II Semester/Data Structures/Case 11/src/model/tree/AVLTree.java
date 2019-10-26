@@ -1,14 +1,23 @@
 package model.tree;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
+import model.parser.PalabrasRepetidas;
+
 public class AVLTree<T extends Comparable<T>> {
+	
+	private HashMap<String, Link> mapaLinks;
 	private AVLNode<T> raiz;
 	private int cantidadNodos;
+	private int iteraciones;
 	
 	/*
 	 * CONSTRUCTORES
 	 */
 	public AVLTree() {
 		raiz = null;
+		iteraciones = 0;
 	}
 	
 	public AVLTree(T pValor) {
@@ -28,10 +37,34 @@ public class AVLTree<T extends Comparable<T>> {
 		return cantidadNodos;
 	}
 	
+	public int getIteraciones() {
+		return iteraciones;
+	}
+	
+	public void resetIteraciones() {
+		iteraciones = 0;
+	}
+	
 	/*
 	 * METODOS CREADOS
 	 */
 	
+	public HashMap<String, Link> getMapaLinks() {
+		return mapaLinks;
+	}
+
+	public void setMapaLinks(HashMap<String, Link> mapaLinks) {
+		this.mapaLinks = mapaLinks;
+	}
+
+	public void setCantidadNodos(int cantidadNodos) {
+		this.cantidadNodos = cantidadNodos;
+	}
+
+	public void setIteraciones(int iteraciones) {
+		this.iteraciones = iteraciones;
+	}
+
 	// Busqueda
 	public T buscar(T pValor) {
 		// Caso 1 - Raiz nula
@@ -42,6 +75,7 @@ public class AVLTree<T extends Comparable<T>> {
 	}
 	
 	public T buscar(AVLNode<T> pRoot ,T pValor) {
+		iteraciones++;
 		// Caso 1 - No existe
 		if (pRoot == null) {
 			return null;
@@ -70,6 +104,26 @@ public class AVLTree<T extends Comparable<T>> {
 		}
 		
 		return pRoot.getValor();
+	}
+	
+	public ArrayList<PalabrasRepetidas> get5Max(String link) {
+		ArrayList<PalabrasRepetidas> resultado = new ArrayList<PalabrasRepetidas>();
+		getMaxAux(raiz, resultado, mapaLinks.get(link).getMax());
+		for (PalabrasRepetidas lista : resultado) {
+			s
+		}
+		return resultado;
+	}
+	
+	private void getMaxAux(AVLNode<T> nodoActual, ArrayList<PalabrasRepetidas> array, int maxValue) {
+		if (nodoActual != null) {
+			iteraciones++;
+			if (((PalabrasRepetidas) nodoActual.getValor()).getRepeticiones() <= maxValue) {
+				getMaxAux(nodoActual.getHijoDerecho(), array, maxValue);
+				array.add((PalabrasRepetidas) nodoActual.getValor());
+				getMaxAux(nodoActual.getHijoIzquierdo(), array, maxValue);
+			}
+		}
 	}
 	
 	public T buscarMin(AVLNode<T> pRoot) {
