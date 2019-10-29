@@ -162,7 +162,13 @@ public class Parser implements ParserConstant {
 			word = "";
 		}
 		for (String p : palabras) {
-			System.out.println(p);
+			if (arbol.getRaiz() != null ) {
+				System.out.println("raiz: " + arbol.getRaiz().getValor().getPalabra());
+			} else {
+				System.out.println("raiz: null");
+			}
+			System.out.println("actual: " + p + "\n");
+			
 			arbol.insertar(new Palabra(p));
 		}
 		//Parser.get().computeSites();
