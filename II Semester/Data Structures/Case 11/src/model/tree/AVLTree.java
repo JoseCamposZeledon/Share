@@ -7,10 +7,10 @@ import model.parser.PalabrasRepetidas;
 
 public class AVLTree<T extends Comparable<T>> {
 	
-	private HashMap<String, Link> mapaLinks;
+	private static HashMap<String, Link> mapaLinks;
 	private AVLNode<T> raiz;
 	private int cantidadNodos;
-	private int iteraciones;
+	private static int iteraciones;
 	
 	/*
 	 * CONSTRUCTORES
@@ -108,16 +108,55 @@ public class AVLTree<T extends Comparable<T>> {
 		return pRoot.getValor();
 	}
 	
-	public ArrayList<PalabrasRepetidas> get5Max(String link) {
-		ArrayList<PalabrasRepetidas> resultado = new ArrayList<PalabrasRepetidas>();
-		getMaxAux(raiz, resultado, mapaLinks.get(link).getMax());
-		for (PalabrasRepetidas lista : resultado) {
-			
+	public HashMap<String, Integer> get5Max(String link) {
+		HashMap<String, Integer> resultado = new HashMap<String, Integer>();
+		ArrayList<PalabrasRepetidas> aux = new ArrayList<PalabrasRepetidas>();
+		getMaxAux(raiz, aux, mapaLinks.get(link).getMax());
+		while (resultado.size() != 5) {
+			for (PalabrasRepetidas lista : aux) {
+				if (resultado.size() != 5) {
+					for (String palabra : lista.getPalabras()) {
+						if (resultado.size() != 5) {
+							resultado.put(palabra, lista.getRepeticiones() - mapaLinks.get(link).getMin());
+						}
+					}
+				}
+			}
 		}
 		return resultado;
 	}
 	
 	private void getMaxAux(AVLNode<T> nodoActual, ArrayList<PalabrasRepetidas> array, int maxValue) {
+		if (nodoActual != null) {
+			iteraciones++;
+			if (((PalabrasRepetidas) nodoActual.getValor()).getRepeticiones() <= maxValue) {
+				getMaxAux(nodoActual.getHijoDerecho(), array, maxValue);
+				array.add((PalabrasRepetidas) nodoActual.getValor());
+				getMaxAux(nodoActual.getHijoIzquierdo(), array, maxValue);
+			}
+		}
+	}
+	
+	public ArrayList<Link> getMinMax(int min, int max) {
+		ArrayList<Link> resultado = new ArrayList<Link>();
+		for (Link link : mapaLinks.values()) {
+			int currentMin, currentMax;
+			if (min + link.getMin() <= link.getMax()) {
+				currentMin = min + link.getMin();
+				if (max + link.getMin() <= link.getMax()) {
+					currentMax = max + link.getMin();
+				} else {
+					currentMax = link.getMax();
+				}
+				if (getMinMaxAux(raiz, currentMin, currentMax)) {
+					resultado.add(link);
+				}
+			} 
+		}
+		return null;
+	}
+	
+	public boolean getMinMaxAux(AVLNode<T> nodoActual, int min, int max) {
 		if (nodoActual != null) {
 			iteraciones++;
 			if (((PalabrasRepetidas) nodoActual.getValor()).getRepeticiones() <= maxValue) {

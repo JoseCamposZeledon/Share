@@ -3,7 +3,7 @@ package model.parser;
 import java.util.ArrayList;
 
 
-public class PalabrasRepetidas {
+public class PalabrasRepetidas implements Comparable<PalabrasRepetidas> {
 	
 	private int repeticiones;
 	private ArrayList<String> palabras;
@@ -46,6 +46,11 @@ public class PalabrasRepetidas {
 
 	public int compareTo(int o) {
 		return Integer.compare(repeticiones, o);	
+	}
+
+	@Override
+	public int compareTo(PalabrasRepetidas o) {
+		return o.compareTo(repeticiones);
 	}
 	
 }

@@ -13,7 +13,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
 import model.jsonReader.JsonParser;
-import model.tree.AVLNode;
 import model.tree.AVLTree;
 import model.tree.Link;
 
@@ -27,8 +26,12 @@ public class Parser implements ParserConstant {
 	private Queue<Sitio> sitios;
 	private SitioFactory factory;
 	private AVLTree<Palabra> avlPalabras;
+	private AVLTree<PalabrasRepetidas> avlPalabrasRepetidas;
 	private ArrayList<SitioPadre> listaSitiosPalabras;
 	private int currentBias;
+	
+	private int palabrasTotales;
+	private int palabrasUnicas;
 	
 	private Parser() throws InstantiationException, IllegalAccessException {
 		this.ancho = JsonParser.get().getData().getAncho();
@@ -43,7 +46,8 @@ public class Parser implements ParserConstant {
 			listaSitiosPalabras.add(padre);
 		}
 		avlPalabras = new AVLTree<Palabra>();
-		currentBias = 0;
+		avlPalabrasRepetidas = new AVLTree<PalabrasRepetidas>();
+		currentBias = palabrasTotales = palabrasUnicas = 0;
 	}
 	
 	public static Parser get() throws InstantiationException, IllegalAccessException {
@@ -132,9 +136,11 @@ public class Parser implements ParserConstant {
 				    	
 				    	nodoBuscado = new Palabra(key);
 				    	if (avlPalabras.getRaiz() != null ) {
-				    	System.out.println(nodoBuscado.getPalabra() + "   " + avlPalabras.getRaiz().getValor().getPalabra());
 				    	}
 				    	avlPalabras.insertar(nodoBuscado);
+				    }
+				    if (!mapa.containsKey(biasedvalue)) {
+				    	avlPalabrasRepetidas.insertar(listaPalabras);
 				    }
 				    nodoBuscado.getPalabras().add(listaPalabras);
 				}
