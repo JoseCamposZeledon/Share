@@ -10,7 +10,7 @@ public class AVLTree2<T extends Comparable<T>> {
 	public static HashMap<String, Link> mapaLinks;
 	private AVLNode<T> raiz;
 	private int cantidadNodos;
-	private static int iteraciones;
+	public static int iteraciones;
 	
 	/*
 	 * CONSTRUCTORES

@@ -19,7 +19,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
 import model.jsonReader.JsonParser;
-import model.tree.AVLTree;
 import model.tree.AVLTree2;
 import model.tree.Link;
 

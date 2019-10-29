@@ -3,13 +3,13 @@ package model.parser;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import model.tree.AVLTree;
+import model.tree.AVLTree2;
 
 public class SitioPadre extends Sitio {
 	
 	private HashMap<String, Sitio> map;
 	private ArrayList<SitioDerivado> derivados;
-	private AVLTree arbol;
+	private AVLTree2 arbol;
 	
 	SitioPadre() {
 		super();

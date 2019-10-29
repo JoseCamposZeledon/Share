@@ -2,7 +2,6 @@ package model.parser;
 
 import java.util.ArrayList;
 
-import model.tree.AVLTree;
 import model.tree.AVLTree2;
 import model.tree.Link;
 
