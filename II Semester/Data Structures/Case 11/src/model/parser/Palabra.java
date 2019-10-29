@@ -31,6 +31,7 @@ public class Palabra implements Comparable<Palabra> {
 	public void setPalabras(ArrayList<PalabrasRepetidas> palabras) {
 		this.palabras = palabras;
 	}
+
 	
 	public ArrayList<String> getLinks() {
 		ArrayList<String> resultado = new ArrayList<String>();
@@ -45,5 +46,6 @@ public class Palabra implements Comparable<Palabra> {
 		// TODO Auto-generated method stub
 		return o.getPalabra().compareTo(this.palabra);
 	}
+	
 	
 }
