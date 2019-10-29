@@ -177,7 +177,7 @@ public class Parser implements ParserConstant {
 				
 				int maxRep = 0;
 				HashMap<String, Integer> mapaPalabrasRep = new HashMap<String, Integer>();
-				for (Element e : document.select("p")) {
+				for (Element e : document.select("p, h, div")) {
 					String text = e.text();
 					for (String word : text.split(" ")) {
 						word.replace(" ", "");
