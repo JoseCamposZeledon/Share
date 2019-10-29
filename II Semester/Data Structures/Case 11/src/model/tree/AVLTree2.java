@@ -192,16 +192,24 @@ public class AVLTree2<T extends Comparable<T>> {
 		}
 	}
 	
-	// Insercion
+	public T buscarMin(AVLNode<T> pRoot) {
+
+		while(pRoot.getHijoDerecho() != null) {
+			pRoot = pRoot.getHijoIzquierdo();
+		}
+		
+		return pRoot.getValor();
+	}
+	
 	public void insertar(T pValue) {
-	    if (pValue == null) return;
-	    if (buscar(pValue) == null) {
-	      raiz = insertar(raiz, pValue);
-	      cantidadNodos++;
-	      return;
+		if (pValue == null) return;
+		if (buscar(pValue) == null) {
+			raiz = insertar(raiz, pValue);
+			cantidadNodos++;
+			return;
 	    }
 	}
-
+	
 	// Inserta a pValue en el nodo necesario
 	private AVLNode<T> insertar(AVLNode<T> pRoot, T pValue) {
 
@@ -212,28 +220,60 @@ public class AVLTree2<T extends Comparable<T>> {
 		if (this.menor(pRoot.getValor(), pValue)) {
 			pRoot.setHijoIzquierdo(insertar(pRoot.getHijoIzquierdo(), pValue));
 
-	    // Caso 3 - pValue es mayor que el valor en pRoot
+			// Caso 3 - pValue es mayor que el valor en pRoot
 		} else {
 			pRoot.setHijoDerecho(insertar(pRoot.getHijoDerecho(), pValue));
-	    }
+		}
 
-	    // Actualiza el balancear y la altura del nodo
+		    // Actualiza el balancear y la altura del nodo
 		actualizarAlturas(pRoot);
 
-	    // Se balanceara el arbol
+		    // Se balanceara el arbol
 		return balancear(pRoot);
-	}
+		}
+	// Balanceo
+	
+	 // Re-Balancea el arbol
+	private AVLNode<T> balancear(AVLNode<T> pRoot) {
 
-	  // Actualiza las alturas y balances de pRoot
+		// Izquierda dominante
+		if (pRoot.getBalance() == -2) {
+
+			// IZQ - IZQ
+			if (pRoot.getHijoIzquierdo().getBalance() <= 0) {
+				return izquierdaIzquierda(pRoot);
+
+				// IZQ - DRCH
+			} else {
+				return izquierdaDerecha(pRoot);
+			}
+
+			// Derecha dominante
+		} else if (pRoot.getBalance() == 2) {
+
+			// DRCH - DRCH
+			if (pRoot.getHijoDerecho().getBalance() >= 0) {
+				return derechaDerecha(pRoot);
+
+				// DRCH - IZQ
+			} else {
+				return derechaIzquierda(pRoot);
+			}
+		}
+
+		// Esta balanceado
+		return pRoot;
+	}
+	
+	 // Actualiza las alturas y balances de pRoot
 	private void actualizarAlturas(AVLNode<T> pRoot) {
 		int alturaIzq;
-		  
+
 		if (pRoot.getHijoIzquierdo() == null) {
 			alturaIzq = -1;
 		} else {
 			alturaIzq = pRoot.getHijoIzquierdo().getAltura();
 		}
-	    
 		int alturaDrch; 
 		if (pRoot.getHijoDerecho() == null) {
 			alturaDrch = -1;
@@ -246,74 +286,58 @@ public class AVLTree2<T extends Comparable<T>> {
 
 		// Actualiza el balance
 		pRoot.setBalance(alturaDrch - alturaIzq);
-	  }
-
-	  // Re-Balancea el arbol
-	private AVLNode<T> balancear(AVLNode<T> pRoot) {
-
-		// Izquierda dominante
-		if (pRoot.getBalance() == -2) {
-
-			// IZQ - IZQ
-			if (pRoot.getHijoIzquierdo().getBalance() <= 0) {
-				return izquierdaIzquierda(pRoot);
-
-			// IZQ - DRCH
-			} else {
-				return izquierdaDerecha(pRoot);
-			}
-
-	    // Derecha dominante
-		} else if (pRoot.getBalance() == 2) {
-
-	      // DRCH - DRCH
-			if (pRoot.getHijoDerecho().getBalance() >= 0) {
-				return derechaDerecha(pRoot);
-
-	        // DRCH - IZQ
-			} else {
-				return derechaIzquierda(pRoot);
-			}
-		}
-
-	    // Esta balanceado
-		return pRoot;
 	}
-
+			
+	// Rotaciones
 	private AVLNode<T> izquierdaIzquierda(AVLNode<T> node) {
-		return rightRotation(node);
+		return rotacionDerecha(node);
 	}
-
+	
 	private AVLNode<T> izquierdaDerecha(AVLNode<T> node) {
-		node.setHijoIzquierdo(leftRotation(node.getHijoIzquierdo()));
+		node.setHijoIzquierdo(rotacionIzquierda(node.getHijoIzquierdo()));
 		return izquierdaIzquierda(node);
 	}
 
 	private AVLNode<T> derechaDerecha(AVLNode<T> node) {
-		return leftRotation(node);
+		return rotacionIzquierda(node);
 	}
 
 	private AVLNode<T> derechaIzquierda(AVLNode<T> node) {
-		node.setHijoDerecho(rightRotation(node.getHijoDerecho()));
+		node.setHijoDerecho(rotacionDerecha(node.getHijoDerecho()));
 		return derechaDerecha(node);
 	}
 
-	private AVLNode<T> leftRotation(AVLNode<T> node) {
-		AVLNode<T> newParent = node.getHijoDerecho();
-		node.setHijoDerecho(newParent.getHijoIzquierdo());
-		newParent.setHijoIzquierdo(node);
+	private AVLNode<T> rotacionIzquierda(AVLNode<T> node) {
+		AVLNode<T> nuevoNodo = node.getHijoDerecho();
+		node.setHijoDerecho(nuevoNodo.getHijoIzquierdo());
+		nuevoNodo.setHijoIzquierdo(node);
 		actualizarAlturas(node);
-		actualizarAlturas(newParent);
-		return newParent;
+		actualizarAlturas(nuevoNodo);
+		return nuevoNodo;
 	}
 
-	private AVLNode<T> rightRotation(AVLNode<T> node) {
-		AVLNode<T> newParent = node.getHijoIzquierdo();
-	    node.setHijoIzquierdo(newParent.getHijoDerecho());
-	    newParent.setHijoDerecho(node);
+	private AVLNode<T> rotacionDerecha(AVLNode<T> node) {
+		AVLNode<T> nuevoNodo = node.getHijoIzquierdo();
+	    node.setHijoIzquierdo(nuevoNodo.getHijoDerecho());
+	    nuevoNodo.setHijoDerecho(node);
 	    actualizarAlturas(node);
-	    actualizarAlturas(newParent);
-	    return newParent;
+	    actualizarAlturas(nuevoNodo);
+	    return nuevoNodo;
+	}
+	
+	// Remover
+	public AVLNode<T> remover(T pValor) {
+		// Caso 1 - Raiz nula
+		if (raiz == null) {
+			return null;
+		}
+		
+		// Caso 2 - Buscar el valor a remover desde la raiz
+		else {
+			raiz = remover(raiz, pValor);
+			this.cantidadNodos--;
+			return raiz;
+		}
 	}
 	
 	public AVLNode<T> remover(AVLNode<T> pRoot, T pValor) {
