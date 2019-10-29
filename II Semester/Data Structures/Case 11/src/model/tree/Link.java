@@ -46,6 +46,6 @@ public class Link {
 	
 	public void setWordCountUnique(int wordCountUnique) {
 		this.wordCountUnique = wordCountUnique;
-	}s
+	}
 	
 }

@@ -9,6 +9,17 @@ public class PalabrasRepetidas {
 	private ArrayList<String> palabras;
 	private String sitioWeb;
 	
+	public PalabrasRepetidas() {
+		repeticiones = 0;
+		palabras = new ArrayList<String>();
+	}
+	
+	public PalabrasRepetidas(String link, int repeticiones) {
+		this();
+		this.sitioWeb = link;
+		this.repeticiones = repeticiones;
+	}
+	
 	public int getRepeticiones() {
 		return repeticiones;
 	}

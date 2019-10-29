@@ -18,9 +18,11 @@ public class AVLTree<T extends Comparable<T>> {
 	public AVLTree() {
 		raiz = null;
 		iteraciones = 0;
+		mapaLinks = new HashMap<String, Link>();
 	}
 	
 	public AVLTree(T pValor) {
+		this();
 		raiz = new AVLNode<T>(pValor);
 	}
 	
@@ -110,7 +112,7 @@ public class AVLTree<T extends Comparable<T>> {
 		ArrayList<PalabrasRepetidas> resultado = new ArrayList<PalabrasRepetidas>();
 		getMaxAux(raiz, resultado, mapaLinks.get(link).getMax());
 		for (PalabrasRepetidas lista : resultado) {
-			s
+			
 		}
 		return resultado;
 	}
