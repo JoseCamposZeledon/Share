@@ -191,15 +191,7 @@ public class AVLTree2<T extends Comparable<T>> {
 			return getMinMaxAux(pRoot.getHijoIzquierdo(), min, max);
 		}
 	}
-	
-	public T buscarMin(AVLNode<T> pRoot) {
 
-		while(pRoot.getHijoDerecho() != null) {
-			pRoot = pRoot.getHijoIzquierdo();
-		}
-		
-		return pRoot.getValor();
-	}
 	
 	public void insertar(T pValue) {
 		if (pValue == null) return;
