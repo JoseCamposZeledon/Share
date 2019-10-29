@@ -17,7 +17,7 @@ public class Structure {
 	}
 
 	public int getProfundidad() {
-		return profundidad;
+		return profundidad - 1;
 	}
 
 	public void setProfundidad(int profundidad) {

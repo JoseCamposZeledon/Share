@@ -2,6 +2,10 @@ package model.parser;
 
 import java.util.ArrayList;
 
+import model.tree.AVLTree;
+import model.tree.AVLTree2;
+import model.tree.Link;
+
 public class Palabra implements Comparable<Palabra> {
 	
 	private String palabra;
@@ -33,10 +37,10 @@ public class Palabra implements Comparable<Palabra> {
 	}
 
 	
-	public ArrayList<String> getLinks() {
-		ArrayList<String> resultado = new ArrayList<String>();
+	public ArrayList<Link> getLinks() {
+		ArrayList<Link> resultado = new ArrayList<Link>();
 		for (PalabrasRepetidas palabra : palabras) {
-			resultado.add(palabra.getSitioWeb());
+			resultado.add(AVLTree2.mapaLinks.get(palabra.getSitioWeb()));
 		}
 		return resultado;
 	}

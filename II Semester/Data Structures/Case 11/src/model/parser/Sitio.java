@@ -1,15 +1,21 @@
 package model.parser;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 public class Sitio {
 	
 	private int profundidadActual;
 	private int anchuraActual;
 	private String link;
 	protected SitioPadre padre;
+	public HashMap<Integer, PalabrasRepetidas> repetidas;
+	
 	
 	public Sitio() {
 		this.profundidadActual = 1;
 		this.anchuraActual = 1;
+		repetidas =  new HashMap<Integer, PalabrasRepetidas>();
 	}
 	
 	public Sitio(String link) {
@@ -27,6 +33,16 @@ public class Sitio {
 		return profundidadActual;
 	}
 	
+	
+
+	public HashMap<Integer, PalabrasRepetidas> getRepetidas() {
+		return repetidas;
+	}
+
+	public void setRepetidas(HashMap<Integer, PalabrasRepetidas> repetidas) {
+		this.repetidas = repetidas;
+	}
+
 	public void setProfundidadActual(int profundidadActual) {
 		this.profundidadActual = profundidadActual;
 	}
