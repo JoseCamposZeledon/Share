@@ -27,9 +27,9 @@ public class Palabra implements Comparable {
 		this.palabras = palabras;
 	}
 
-	public int compareTo(String o) {
-		return o.compareTo(palabra);
-	}
+//	public int compareTo(String o) {
+//		return o.compareTo(palabra);
+//	}
 	
 	public ArrayList<String> getLinks() {
 		ArrayList<String> resultado = new ArrayList<String>();
