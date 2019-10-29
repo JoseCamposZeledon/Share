@@ -57,6 +57,24 @@ public class Parser implements ParserConstant {
 		return instance;
 	}
 	
+	
+	
+	public int getPalabrasTotales() {
+		return palabrasTotales;
+	}
+
+	public void setPalabrasTotales(int palabrasTotales) {
+		this.palabrasTotales = palabrasTotales;
+	}
+
+	public int getPalabrasUnicas() {
+		return palabrasUnicas;
+	}
+
+	public void setPalabrasUnicas(int palabrasUnicas) {
+		this.palabrasUnicas = palabrasUnicas;
+	}
+
 	public void computeSites() {
 		int counterSitios = 1;
 		int iteraciones = 1;
@@ -133,10 +151,7 @@ public class Parser implements ParserConstant {
 				    
 				    if (nodoBuscado == null) {
 				    	// palabra unica no en arbol
-				    	
 				    	nodoBuscado = new Palabra(key);
-				    	if (avlPalabras.getRaiz() != null ) {
-				    	}
 				    	avlPalabras.insertar(nodoBuscado);
 				    }
 				    if (!mapa.containsKey(biasedvalue)) {
@@ -145,13 +160,35 @@ public class Parser implements ParserConstant {
 				    nodoBuscado.getPalabras().add(listaPalabras);
 				}
 				
-				
+				palabrasTotales += link.getWordCountTotal();
+				palabrasUnicas += link.getWordCountUnique();
 				
 			} catch (IOException e1) {
 				// Timeout al conectarse
 				System.out.println("Timeout en: " + current.getLink() + " " + iteraciones);
 			}
 		}
+	}
+	
+	public ArrayList<Link> desplegarLinksSitio (String palabra) {
+		ArrayList<Link> resultado = new ArrayList<Link>();
+		Palabra nodoPalabra = avlPalabras.buscar(new Palabra(palabra));
+		if (nodoPalabra  != null) {
+			for (PalabrasRepetidas lista : nodoPalabra.getPalabras()) {
+				resultado.add(avlPalabras.getMapaLinks().get(lista.getSitioWeb()));
+			}
+		}
+		return resultado;
+	}
+	
+	public HashMap<String, Integer> top5Palabras(String link) {
+		// Palabra y las veces que se repiten
+		return avlPalabrasRepetidas.get5Max(link);
+	}
+	
+	public ArrayList<Link> indexSitios(int min, int max) {
+		// Links de sitios con palabras que se repiten entre min y max
+		return avlPalabrasRepetidas.getMinMax(min, max);
 	}
 	
 	public static void main(String[] args) throws InstantiationException, IllegalAccessException, IOException {
