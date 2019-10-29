@@ -48,4 +48,8 @@ public class Link {
 		this.wordCountUnique = wordCountUnique;
 	}
 	
+	
+	public String toString() {
+		return link;
+	}
 }
