@@ -66,6 +66,10 @@ public class VistaPrincipal extends JFrame {
 	 * Getters & Setters 
 	 */
 	
+	public JLabel getLabelComparacionesTotal() {
+		return this.labelComparacionesTotal;
+	}
+	
 	public JTextField getBusquedaInput() {
 		return busquedaInput;
 	}

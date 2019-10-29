@@ -23,7 +23,7 @@ public class ControllerPrincipal {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-//		model.computeSites();
+		model.computeSites();
 		
 		view.getBusquedaInput().addKeyListener(new EventoBusqueda(this));
 		

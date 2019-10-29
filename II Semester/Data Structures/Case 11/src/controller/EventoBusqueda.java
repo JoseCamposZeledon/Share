@@ -38,55 +38,60 @@ public class EventoBusqueda implements KeyListener {
 
 	@Override
 	public void keyReleased(KeyEvent e) {
-		String inputText = controller.getView().getBusquedaInput().getText().trim();
 		
-		controller.getView().getInformacionTree().setModel(null);
-		controller.getView().getLabelBuscado().setText(inputText);
-		
-		// Patron para dominios
-		webMatch = WEBSITE.matcher(inputText);
-		
-		// Patron para intervalos
-		intervaloMatch = INTERVALO.matcher(inputText);
-		
-		DefaultTreeModel newModel = null;
-		DefaultMutableTreeNode root = new DefaultMutableTreeNode(inputText);
-		
-		// Encuentra un link
-		if (webMatch.find()) {
-			HashMap<String, Integer> palabras = controller.getModel().top5Palabras(inputText);
+		if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+			String inputText = controller.getView().getBusquedaInput().getText().trim();
 			
-			palabras.forEach((Key, Value) -> root.add(new DefaultMutableTreeNode(Key)));
+			controller.getView().getInformacionTree().setModel(null);
+			controller.getView().getLabelBuscado().setText(inputText);
+			
+			// Patron para dominios
+			webMatch = WEBSITE.matcher(inputText);
+			
+			// Patron para intervalos
+			intervaloMatch = INTERVALO.matcher(inputText);
+			
+			DefaultTreeModel newModel = null;
+			DefaultMutableTreeNode root = new DefaultMutableTreeNode(inputText);
+			
+			// Encuentra un link
+			if (webMatch.find()) {
+				HashMap<String, Integer> palabras = controller.getModel().top5Palabras(inputText);
+				
+				palabras.forEach((Key, Value) -> root.add(new DefaultMutableTreeNode(Key)));
+			}
+			
+			// Encuentra un intervalo
+			else if (intervaloMatch.find()) {
+				String numerosString[] = inputText.split(" ");
+				int[] numeros = new int[2];
+				for (int i = 0; i < 2; i++) {
+					numeros[i] = Integer.parseInt(numerosString[i]);
+				}
+				
+				ArrayList<Link> links = controller.getModel().indexSitios(numeros[0], numeros[1]);
+				for(Link linkActual : links) {
+					root.add(new DefaultMutableTreeNode(linkActual));
+				}
+				
+			} 
+			
+			// Encuentra una palabra
+			else {
+				ArrayList<Link> links = controller.getModel().desplegarLinksSitio(inputText);
+				System.out.println(links.size());
+				for (Link linkActual : links) {
+					root.add(new DefaultMutableTreeNode(linkActual));
+				}
+				
+			}
+			
+			controller.getView().getLabelComparacionesTotal().setText(String.valueOf(controller.getModel().getAvlPalabras().getIteraciones()));
+			
+			newModel = new DefaultTreeModel(root);
+			
+			controller.getView().getInformacionTree().setModel(newModel);
 		}
-		
-		// Encuentra un intervalo
-		else if (intervaloMatch.find()) {
-			String numerosString[] = inputText.split(" ");
-			int[] numeros = new int[2];
-			for (int i = 0; i < 2; i++) {
-				numeros[i] = Integer.parseInt(numerosString[i]);
-			}
-			
-			ArrayList<Link> links = controller.getModel().indexSitios(numeros[0], numeros[1]);
-			for(Link linkActual : links) {
-				root.add(new DefaultMutableTreeNode(linkActual));
-			}
-			
-		} 
-		
-		// Encuentra una palabra
-		else {
-			ArrayList<Link> links = controller.getModel().desplegarLinksSitio(inputText);
-			
-			for (Link linkActual : links) {
-				root.add(new DefaultMutableTreeNode(linkActual));
-			}
-			
-		}
-		
-		newModel = new DefaultTreeModel(root);
-		
-		controller.getView().getInformacionTree().setModel(newModel);
 	}
 
 }
