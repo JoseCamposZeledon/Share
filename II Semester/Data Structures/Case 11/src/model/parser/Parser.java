@@ -21,7 +21,7 @@ public class Parser implements ParserConstant {
 	private int profundidad;
 	private Queue<Sitio> sitios;
 	private SitioFactory factory;
-	private AVLTree avlPalabras;
+	private AVLTree<Palabra> avlPalabras;
 	private ArrayList<SitioPadre> listaSitiosPalabras;
 	
 	private Parser() throws InstantiationException, IllegalAccessException {

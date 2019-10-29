@@ -2,7 +2,7 @@ package model.parser;
 
 import java.util.ArrayList;
 
-public class Palabra implements Comparable {
+public class Palabra implements Comparable<Palabra>  {
 	
 	private String palabra;
 	private ArrayList<PalabrasRepetidas> palabras;
@@ -38,10 +38,11 @@ public class Palabra implements Comparable {
 		}
 		return resultado;
 	}
-
+	
 	@Override
-	public int compareTo(Object o) {
-		return ((Palabra)o).getPalabra().compareTo(this.palabra);
+	public int compareTo(Palabra o) {
+		// TODO Auto-generated method stub
+		return o.getPalabra().compareTo(this.palabra);
 	}
 	
 }
