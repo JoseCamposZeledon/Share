@@ -43,6 +43,13 @@ public class Grafo<T> {
 				
 				if (!visitados.contains(arcoActual.getConexion()[1])) {
 					
+					int nuevaDistancia = menoresPesos.get(nuevoMin) + arcoActual.getPeso();
+					if (nuevaDistancia < menoresPesos.get(arcoActual.getConexion()[1])) {
+						
+						menoresPesos.put(key, value)
+						
+					}
+					
 				}
 				
 				
