@@ -1,63 +1,128 @@
 package model.grafo;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
-import java.util.Map;
-import java.util.PriorityQueue;
-
 import model.cola.Cola;
 
 public class Grafo<T> {
 	private LinkedList<Nodo<T>> nodos;
 	
-	public void agregarNodo(Nodo<T> pNodo) {
-		nodos.add(pNodo);
+	public Grafo() {
+		nodos = new LinkedList<Nodo<T>>();
 	}
 	
-	public ArrayList<Nodo<T>> dijkstra(Nodo<T> pInicio) {
-		if (!nodos.contains(pInicio)) return null; 
+	public void agregarNodo(Nodo<T> pNodo) {
+		nodos.addLast(pNodo);
+	}
+	
+	/*
+	 * Obtiene la ruta propuesta por los diferentes algoritmos
+	 */
+	public LinkedList<Nodo<T>> backTrack(Nodo<T> pOrigen, Nodo<T> pDestino) {
+		//El origen o destino no existen dentro del grafo
+		if (!(nodos.contains(pOrigen) && nodos.contains(pDestino))) return null;
+		
+		LinkedList<Nodo<T>> ruta = new LinkedList<Nodo<T>>();
+		
+		// Inserta todos los nodos hasta llegar a pDestino
+		Nodo<T> nodoActual = pOrigen; 
+		
+		System.out.println(nodoActual.getValor());
+		
+		while (nodoActual != pDestino) {
+			ruta.addFirst(nodoActual);
+			nodoActual = nodoActual.getPrevio();
+		}
+		
+		ruta.addFirst(pDestino);
+		
+		return ruta;
+	}
+	
+	
+	/*
+	 * Busca la ruta mas pequena, por medio del algoritmo de Dijkstra
+	 */
+	public LinkedList<Nodo<T>> dijkstra(Nodo<T> pOrigen, Nodo<T> pDestino) {
+		// El origen o destino no existen dentro del grafo
+		if (!(nodos.contains(pOrigen) && nodos.contains(pDestino))) return null; 
 		
 		HashSet<Nodo<T>> visitados = new HashSet<Nodo<T>>();
-		Cola<Nodo<T>> minimaPrioridad = new Cola<Nodo<T>>();
+		Cola<Nodo<T>> menorPrioridad = new Cola<Nodo<T>>();
 		HashMap<Nodo<T>, Integer> menoresPesos = new HashMap<Nodo<T>, Integer>();
 		
-		menoresPesos.put(pInicio, 0);
-		minimaPrioridad.enqueue(pInicio);
+		// Revisa el origen
+		menoresPesos.put(pOrigen, 0);
+		menorPrioridad.enqueue(pOrigen);
 		
+		// Inserta todos los nodos con el mayor peso posible
 		for (Nodo<T> nodoActual : this.nodos) {
-			if (nodoActual != pInicio) {
+			if (nodoActual != pOrigen) {
 				menoresPesos.put(nodoActual, Integer.MAX_VALUE);
 			}
 		}
 		
-		while (!minimaPrioridad.isEmpty()) {
+		while (!menorPrioridad.isEmpty()) {
 			
-			// Remueve el que tiene el valor más pequeño
-			Nodo<T> nuevoMin = minimaPrioridad.dequeue();
+			// Se remueve el menor elemento de la cola
+			Nodo<T> nodoActual = menorPrioridad.dequeue();
+			visitados.add(nodoActual);
 			
-			for (int posActual = 0; posActual < nuevoMin.getConexiones().size(); posActual++) {
+			// Se insertan todos los vecinos del actual en la cola
+			for (Arco<T> arcoActual : nodoActual.getConexiones()) {
 				
-				Arco<T> arcoActual = nuevoMin.getConexiones().get(posActual);
+				Nodo<T> vecino = arcoActual.getConexion()[1];
 				
-				if (!visitados.contains(arcoActual.getConexion()[1])) {
+				// Si el vecino no esta visitado entonces revisa la distancia y cambia su prioridad (distancia total)
+				if (!visitados.contains(vecino)) {
 					
-					int nuevaDistancia = menoresPesos.get(nuevoMin) + arcoActual.getPeso();
-					if (nuevaDistancia < menoresPesos.get(arcoActual.getConexion()[1])) {
-						
-						menoresPesos.put(key, value)
-						
-					}
+					int distanciaAlterna = menoresPesos.get(nodoActual) + arcoActual.getPeso();
 					
-				}
-				
-				
+					// Revisa si la distanciaAlterna es menor la que ya esta puesta para cambiarla
+					if (distanciaAlterna < menoresPesos.get(vecino)) {
+						menoresPesos.replace(vecino, menoresPesos.get(vecino), distanciaAlterna);
+						menorPrioridad.enqueue(vecino, distanciaAlterna);
+						vecino.setPrevio(nodoActual);
+					}	
+				}	
 			}
-			
-			
 		}
 		
-		return null;
+		return backTrack(pDestino, pOrigen);
+	}
+	
+	public static void main(String[] args) {
+		
+		Grafo<String> test = new Grafo<String>();
+		
+		Nodo<String> nodoA = new Nodo<String>("A");
+		Nodo<String> nodoB = new Nodo<String>("B");
+		Nodo<String> nodoC = new Nodo<String>("C");
+		Nodo<String> nodoD = new Nodo<String>("D");
+		Nodo<String> nodoE = new Nodo<String>("E");
+		
+		nodoA.conectar(nodoB, 3);
+		nodoA.conectar(nodoC, 5);
+		nodoA.conectar(nodoD, 4);
+		
+		nodoB.conectar(nodoD, 5);
+		
+		nodoC.conectar(nodoE, 2);
+		
+		nodoD.conectar(nodoE, 7);
+		
+		test.agregarNodo(nodoA);
+		test.agregarNodo(nodoB);
+		test.agregarNodo(nodoC);
+		test.agregarNodo(nodoD);
+		test.agregarNodo(nodoE);
+		
+		for (Nodo<String> actual : test.dijkstra(nodoA, nodoE)) {
+			System.out.println("Actual: " + actual.getValor());
+		}
+		
+		
 	}
 }

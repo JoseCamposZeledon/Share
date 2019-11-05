@@ -19,12 +19,13 @@ public class Cola<T> extends Lista<T>{
 			this.addEnd(nuevoNodo);
 			
 		} else {
-			
-			if (nuevoNodo.getPrioridad() >= this.getEnd().getPrioridad() ) {
-				System.out.println("Insertando: " + nuevoNodo.getValue());
+			// Numero de prioridad mayor o igual al ultimo
+			if (nuevoNodo.getPrioridad() >= this.getEnd().getPrioridad() ) { 
+
 				this.addEnd(nuevoNodo);
 			
-			} else if (nuevoNodo.getPrioridad() <= this.getInicio().getPrioridad()) {
+			// Numero de prioridad menor al inicio de la cola
+			} else if (nuevoNodo.getPrioridad() < this.getInicio().getPrioridad()) {
 				
 				this.addStart(nuevoNodo);
 			
@@ -67,4 +68,5 @@ public class Cola<T> extends Lista<T>{
 		this.enqueue(this.remove(pValor), nuevaPrioridad);
 		
 	}
+
 }
