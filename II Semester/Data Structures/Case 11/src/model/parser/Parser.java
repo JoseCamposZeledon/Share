@@ -123,7 +123,7 @@ public class Parser implements ParserConstant {
 	}
 	
 	public int bs() {
-		return random.nextInt((int) (palabrasTotales*.05));
+		return random.nextInt((int) (palabrasTotales*.02));
 	}
 	
 	public void computeSites() {

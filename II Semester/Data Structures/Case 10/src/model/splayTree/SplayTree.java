@@ -126,16 +126,17 @@ public class SplayTree<T extends Comparable<T>> {
 	
 	public void borrar(T pValor) {
 		NodoSplay<T> buscado = buscar(pValor);
-		buscado.getHijoIzquierdo().setPadre(null);
-		buscado.getHijoDerecho().setPadre(null);
 		if (buscado != null) {
 			if (buscado.getHijoIzquierdo() == null) {
 				setRaiz(buscado.getHijoDerecho());
 			} else {
+				buscado.getHijoIzquierdo().setPadre(null);
 				NodoSplay<T> hojaMaxima = getMax(buscado.getHijoIzquierdo());
 				convertirEnRaiz(hojaMaxima);
 				hojaMaxima.setHijoDerecho(buscado.getHijoDerecho());
-				buscado.getHijoDerecho().setPadre(hojaMaxima);
+				if (buscado.getHijoDerecho() != null) {
+					buscado.getHijoDerecho().setPadre(hojaMaxima);
+				}
 				setRaiz(hojaMaxima);
 			}
 			buscado = null;

@@ -1,7 +1,5 @@
 package main;
 
-import java.awt.EventQueue;
-
 import controller.MenuPrincipalController;
 import model.arbolnario.NodoJTree;
 import model.sensor.Sensor;
@@ -24,7 +22,6 @@ public class Main implements IConstants{
 						controller.actualizarConsumos(root);
 						controller.detectarInalcanzables(root);
 						controller.actualizarNodos();
-						
 						
 						
 						try {

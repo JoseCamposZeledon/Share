@@ -47,7 +47,7 @@ public class Palabra implements Comparable<Palabra> {
 	@Override
 	public int compareTo(Palabra o) {
 		// TODO Auto-generated method stub
-		return o.getPalabra().compareTo(this.palabra);
+		return this.palabra.compareTo(o.getPalabra());
 	}
 	
 	

@@ -1,32 +1,24 @@
 package controller;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.IOException;
+import java.util.ArrayList;
+
+import javax.swing.JOptionPane;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.MutableTreeNode;
+
+import com.google.gson.JsonIOException;
+
+import model.arbolnario.NodoJTree;
+import model.sensor.Sensor;
 import view.MenuPrincipal;
 import view.MyTreeCellRenderer;
 import view.VentanaConectar;
 import view.VentanaInfo;
-
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.awt.event.WindowAdapter;
-import java.util.concurrent.TimeUnit;
-
-import javax.swing.JOptionPane;
-import javax.swing.JTree;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeCellRenderer;
-import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.MutableTreeNode;
-
-import com.sun.glass.events.WindowEvent;
-
-import model.*;
-import model.arbolnario.ArbolNArio;
-import model.arbolnario.NodoJTree;
-import model.arbolnario.NodoNArio;
-import model.sensor.Sensor;
 
 public class MenuPrincipalController {
 	
@@ -39,6 +31,20 @@ public class MenuPrincipalController {
 		this.view.addBtnVerInfoListener(new ListenerBtnVerInfo());
 		this.view.addBtnConectarListener(new ListenerBtnConectar());
 		this.view.addBtnDesconectarListener(new ListenerBtnDesconectar());
+		this.view.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                try {
+					view.getReader().writeToFile(view.getReader().serializer(view.getArbol().getRaiz()));
+				} catch (JsonIOException | IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				};
+            	view.getSplay();
+                System.exit(0);
+            }
+        });
+		
 	}
 	
 	
@@ -141,8 +147,6 @@ public class MenuPrincipalController {
 			if (pRoot.getNodo().getPadre() == null) {
 				// Actualiza cada sensor pero no la raiz
 				
-				pRoot.getNodo().getValor().actualizarConsumo();
-				
 				for (NodoJTree<Sensor> hijoActual : pRoot.getHijos()) {
 					this.actualizarConsumos(hijoActual);
 				}
@@ -164,11 +168,13 @@ public class MenuPrincipalController {
 		}
 	}
 	
+	
 	public void detectarInalcanzables(NodoJTree<Sensor> pRoot) {
 		sensoresInalcanzables.clear();
 		sensoresInalcanzables.trimToSize();
+		
 		try {
-			if (pRoot.getNodo().tieneHijos()) {
+			if (pRoot.getNodo().tieneHijos() && pRoot.getPadre() == null) {
 				for (NodoJTree<Sensor> hijoActual : pRoot.getHijos()) {
 					this.detectarInalcanzables(hijoActual, 0);
 				}
@@ -194,7 +200,8 @@ public class MenuPrincipalController {
 				// Caso en que la suma del consumo del hijo con el de toda la rama sea mas que el consumo maximo
 				if (hijoActual.getNodo().getValor().getConsumoActual() + pRoot.getNodo().getValor().getConsumoActual()
 						> consumoMax) {
-					sensoresInalcanzables.add(hijoActual);	
+					
+					this.agregarHijosInalcanzables(hijoActual);
 					
 				} else {
 					this.detectarInalcanzables(hijoActual, pCantidadActual + pRoot.getNodo().getValor().getConsumoActual());
@@ -210,6 +217,16 @@ public class MenuPrincipalController {
 		
 		if (!view.getArbol().isEmpty()) {
 			view.getTree().setCellRenderer(render);
+		}
+	}
+	
+	public void agregarHijosInalcanzables(NodoJTree<Sensor> pRoot) {
+		sensoresInalcanzables.add(pRoot);
+		
+		if (pRoot.getNodo().tieneHijos()) {
+			for (NodoJTree<Sensor> hijoActual : pRoot.getHijos()) {
+				this.agregarHijosInalcanzables(hijoActual);
+			}
 		}
 	}
 }

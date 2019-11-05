@@ -4,9 +4,13 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Reader;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonIOException;
+
 import model.arbolnario.NodoNArio;
 import model.sensor.Sensor;
-import com.google.gson.*;
 
 public class JSonReader implements JsonConstants {
 	
