@@ -43,7 +43,7 @@ public class VistaMenuPrincipal extends JFrame implements IConstants{
 		this.add(logo);
 		
 		background = new JLabel();
-		background.setIcon(new ImageIcon(new ImageIcon(".\\static\\background.gif")
+		background.setIcon(new ImageIcon(new ImageIcon(".\\static\\media\\images\\background.gif")
 				.getImage().getScaledInstance(LARGO, ANCHO, Image.SCALE_DEFAULT)));
 		background.setBounds(0, 0, LARGO, ANCHO);
 		this.add(background);
