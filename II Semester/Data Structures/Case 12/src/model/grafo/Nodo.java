@@ -7,13 +7,15 @@ public class Nodo<T> {
 	private static int ipCount = 0;
 	
 	private int ip;
-        private Nodo<T> anterior;
+    private Nodo<T> anterior;
 	private ArrayList<Nodo<T>> adjacentes;
+	private boolean visitado;
 	
 	private T valor;
 	
 	public Nodo() {
 		setIp(ipCount);
+		setVisitado(false);
 		ipCount++;
 		setAdjacentes(new ArrayList<Nodo<T>>());
 	}
@@ -77,6 +79,14 @@ public class Nodo<T> {
 	@Override
 	public String toString() {
 		return "Nodo ip: " + getIp();
+	}
+
+	public boolean isVisitado() {
+		return visitado;
+	}
+
+	public void setVisitado(boolean visitado) {
+		this.visitado = visitado;
 	}
 	
 }
