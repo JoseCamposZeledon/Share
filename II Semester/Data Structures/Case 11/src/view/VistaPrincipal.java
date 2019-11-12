@@ -14,7 +14,8 @@ public class VistaPrincipal extends JFrame {
 	private static VistaPrincipal instancia = null;
 	private JTextField busquedaInput;
 	private JTree informacionTree;
-	private JLabel labelBuscado, labelComparaciones, labelComparacionesTotal;
+	private JLabel labelBuscado, labelComparaciones, labelComparacionesTotal,
+					labelCantidadPalabras;
 	
 	//Constructor
 	private VistaPrincipal() {
@@ -46,6 +47,10 @@ public class VistaPrincipal extends JFrame {
 		labelComparaciones = new JLabel("Comparaciones: ");
 		labelComparaciones.setBounds(5, 475, 100, 25);
 		this.add(labelComparaciones);
+		
+		labelCantidadPalabras = new JLabel("-");
+		labelCantidadPalabras.setBounds(350, 475, 300, 25);
+		this.add(labelCantidadPalabras);
 		
 		// Este es el que cambia de acuerdo a la cantidad de comparaciones
 		labelComparacionesTotal = new JLabel("----");
@@ -80,5 +85,9 @@ public class VistaPrincipal extends JFrame {
 
 	public JLabel getLabelBuscado() {
 		return labelBuscado;
+	}
+	
+	public JLabel getLabelCantidadPalabras() {
+		return labelCantidadPalabras;
 	}
 }
