@@ -1,56 +1,95 @@
 package model.user;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
-import javax.mail.internet.AddressException;
-import javax.mail.internet.InternetAddress;
-
-public class User implements Serializable, Comparable<User>{
+public class User implements Serializable, Comparable<User>, IConstants{
 	
-	private InternetAddress correo;
-	private String password;
-	private int counterVictorias;
+	private char[] user = new char[USER_SIZE]; // 200 Bytes
+	private char[] password = new char[PASSWORD_SIZE]; // 60 Bytes
+	private int counterVictorias; // 4 Bytes
 	
 	
-	public User(String pCorreo, String pPassword) {
+	public User(String pUser, String pPassword) {
 		
-		try {
-			correo = new InternetAddress(pCorreo);
-			correo.validate();
+			user = toChar(pUser, USER);
+			setPassword(toChar(pPassword, PASSWORD));
 			
-			password = pPassword;
+			for (int i = 0; i < USER_SIZE; i++) {
+				System.out.println(user[i]);
+			}
 			
 			counterVictorias = 0;
-			
-		} catch (AddressException e) {
+	}
+	
+	// Transforma un string a un array de chars, dependiendo del codigo 
+	public char[] toChar(String pString, int pCode) {
+		char[] charArray = null;
 		
-			System.out.println("Correo invalido");
+		if (pCode == USER) { 
+			charArray = new char[USER_SIZE];
+		} else if (pCode == PASSWORD) {
+			charArray = new char[PASSWORD_SIZE];
+		}
+ 		
+		return charArray;
+	}
+	
+	// Transforma la instancia en un array de bytes
+	public byte[] toByte() {
+		ByteArrayOutputStream bos = new ByteArrayOutputStream();
+		ObjectOutputStream oos;
+		try {
 			
-		}		
+			oos = new ObjectOutputStream(bos);
+			oos.writeObject(this);
+			oos.flush();
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return bos.toByteArray();
 	}
-	
-	public InternetAddress getCorreo() {
-		return correo;
-	}
-	
-	
-	public String getPassword() {
-		return password;
-	}
-	
 	
 	public int getCounterVictorias() {
 		return counterVictorias;
 	}
 	
 	public String toString() {
-		return "Correo: " + correo + " | Victorias: " + counterVictorias;
+		return "Correo: " + user.toString() + " | Victorias: " + counterVictorias;
 	}
 	
 	@Override
 	public int compareTo(User o) {
-		// TODO Auto-generated method stub
-		return this.getCorreo().toString().compareTo(o.getCorreo().toString());
+		String stringThis = "";
+		String stringO = "";
+		
+		for (int i = 0; i < USER_SIZE; i++) {
+			stringThis += this.getUser()[i];
+			stringO += this.getUser()[i];
+		}
+		
+		return stringThis.compareTo(stringO);
 	}
+
+	public char[] getPassword() {
+		return password;
+	}
+
+	public void setPassword(char[] password) {
+		this.password = password;
+	}
+	
+	public char[] getUser() {
+		return user;
+	}
+
+	public void setUser(char[] user) {
+		this.user = user;
+	}
+
 	
 }

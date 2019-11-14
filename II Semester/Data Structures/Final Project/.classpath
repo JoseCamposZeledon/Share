@@ -7,6 +7,5 @@
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="D:/Caso-10 ED/University-Shared/II Semester/Data Structures/Final Project/lib/javax.mail.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
