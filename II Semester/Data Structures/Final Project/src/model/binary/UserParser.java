@@ -14,7 +14,7 @@ import java.io.ObjectOutputStream;
 import java.io.RandomAccessFile;
 import java.lang.instrument.Instrumentation;
 
-import model.user.User;
+import model.user.Account;
 
 public class UserParser {
 
@@ -56,22 +56,34 @@ public class UserParser {
 	
 	
 	// Escribe un nuevo usuario en usersFile
-	public void write(User pUser) {
+	public void write(Account pUser) {
 		
-		// El usuario ya esta en el archivo
-		
-		if (binarySearch(pUser)) return;
+		// Revisa si el usuario ya esta en el archivo
+		if (!fileIsEmpty()) {
+			if (binarySearch(pUser)) {
+				return;
+			}
+		}
 		
 		// Se escribe el nuevo usuario en el archivo y se ordena 
 		try {
+			FileOutputStream fileOS;
+			ObjectOutputStream userOS; 
 			
-			FileOutputStream fileOS = new FileOutputStream(usersFile, true);
-			ObjectOutputStream userOS = new ObjectOutputStream(fileOS);
+			if (!fileIsEmpty()) { // Para instancia append, para que no se corrompa el archivo
+				fileOS = new FileOutputStream(usersFile, true);
+				userOS = new AppendingObjectOutputStream(fileOS);
+			} else { // Instancia normal para el primer objeto que se escribe
+				 fileOS = new FileOutputStream(usersFile);
+				 userOS = new ObjectOutputStream(fileOS);
+			}
 			
-			userOS.writeObject((Object) pUser);
+			userOS.flush();
+			userOS.writeObject(pUser);
+			
+			mezclaNatural();
 			
 			userOS.close();
-			fileOS.close();
 			
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -81,26 +93,81 @@ public class UserParser {
 	}
 	
 	// TODO - Busqueda Binaria
-	public boolean binarySearch(User pUser) {
+	public boolean binarySearch(Account pUser) {
 		try {
-			RandomAccessFile raf = new RandomAccessFile(usersFile, "r");
-			
-			return false;
+			FileInputStream FileIS = new FileInputStream(usersFile);
+			ObjectInputStream OIS = new ObjectInputStream(FileIS);
+			Object obj = OIS.readObject();
+			if (pUser.getCorreo().equals(((Account) obj).getCorreo())) {
+				System.out.println(pUser.getCorreo() + " | " + ((Account) obj).getCorreo());
+				return true;
+			}
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+		
 		return false;
+	}
+	
+	public boolean fileIsEmpty() {
+		return usersFile.length() == 0;
+	}
+	
+	public void readAll() {
+		boolean finArchivo = false;
+		FileInputStream FileIS;
+		try {
+			FileIS = new FileInputStream(usersFile);
+			ObjectInputStream OIS = new ObjectInputStream(FileIS);
+			
+			while (!finArchivo) {
+				
+				try {
+					System.out.println("READING: " + OIS.readObject());
+				} catch (EOFException e) {
+					finArchivo = true;
+				}
+			}
+			
+			OIS.close();
+			if (this.eliminarArchivo(usersFile)) System.out.println("Eliminado");
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+	}
+ 	
+	public void mezclaNatural() {
+		
+	}
+	
+	public boolean eliminarArchivo(File pFile) {
+		return pFile.delete();
 	}
 	
 	public static void main(String[] args) {
 		
 		UserParser test = UserParser.getInstancia();
-		
-		test.write(user3);
+		Account test1 = new Account("aa@aa.com", "134");
+		Account test2 = new Account("aa32@aa.com", "131313");
+		Account test3 = new Account("asda@a.net", "134jasijdak asd");
+		test.write(test1);
+		test.write(test2);
+		test.write(test3);
+		test.readAll();
 	}
 	
 }
