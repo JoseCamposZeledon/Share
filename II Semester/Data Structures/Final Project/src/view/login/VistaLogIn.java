@@ -48,7 +48,42 @@ public class VistaLogIn extends JFrame implements IConstants{
 	}
 	
 	
-	public static void main(String[] args) {
-		VistaLogIn test = new VistaLogIn();
+	
+	public JTextField getUserInput() {
+		return userInput;
+	}
+
+
+
+	public void setUserInput(JTextField userInput) {
+		this.userInput = userInput;
+	}
+
+
+
+	public JTextField getPassInput() {
+		return passInput;
+	}
+
+	
+	public void asd() {
+		System.out.println("aaa");
+	}
+	
+
+	public void setPassInput(JTextField passInput) {
+		this.passInput = passInput;
+	}
+
+
+
+	public JButton getBtnRegistrar() {
+		return btnRegistrar;
+	}
+
+
+
+	public JButton getBtnLogIn() {
+		return btnLogIn;
 	}
 }

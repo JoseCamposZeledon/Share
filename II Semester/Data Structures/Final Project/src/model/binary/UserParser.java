@@ -1,9 +1,5 @@
 package model.binary;
 
-import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.EOFException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -63,7 +59,7 @@ public class UserParser implements IConstants{
 		
 		// Revisa si el usuario ya esta en el archivo
 		if (!fileIsEmpty(pFile)) {
-			if (binarySearch(pUser)) {
+			if (binarySearch(pUser) >= 0) {
 				return;
 			}
 		}
@@ -80,8 +76,7 @@ public class UserParser implements IConstants{
 				 fileOS = new FileOutputStream(pFile, true);
 				 userOS = new ObjectOutputStream(fileOS);
 			}
-			
-//			System.out.println("WRITING POS: " + fileOS.getChannel().position());
+
 			userOS.flush();
 			userOS.writeObject(pUser);
 			
@@ -97,7 +92,8 @@ public class UserParser implements IConstants{
 		}
 	}
 	
-	public boolean binarySearch(Account pBuscado) {		
+	// Retorna la posicion donde se encuentra pBuscado en el archivo
+	public long binarySearch(Account pBuscado) {		
 		int izq = 0;
 		int drch = getUserCount() - 1;
 		
@@ -109,32 +105,32 @@ public class UserParser implements IConstants{
 				int medio = (izq + drch) / 2;
 				// Mueve el puntero antes de leer el objeto guardado
 				fileIS.getChannel().position(medio * ACCOUNT_BYTE_SIZE + OFFSET_INICIAL);
-				
 				Account accountActual = (Account) oIS.readObject();
 				
 				// Encuentra el indicado
 				if (accountActual.compareTo(pBuscado) == 0) {
-					System.out.println("ENCONTRADOS: " + accountActual + " - " + pBuscado);
+					long posEncontrado = fileIS.getChannel().position(); 
 					oIS.close();
 					fileIS.close();
-					return true;
+					return posEncontrado;
 				}
 				
-				// pBuscado es menor, se ignora la mitad mayor
-				else if (accountActual.compareTo(pBuscado) < 0) {
-					izq = medio + 1;
-				}
-				
-				// pBuscado es mayor, se ignora la mitad menor
-				else {
+				// pBuscado es menor, se ignora la mayor mitad
+				else if (pBuscado.compareTo(accountActual) < 0) {
 					drch = medio - 1;
+				}
+				
+				// pBuscado es mayor, se ignora la menor mitad
+				else {
+					izq = medio + 1;
 				}	
+				
 			}
-			
+			// No esta en el archivo
 			fileIS.close();
 			oIS.close();
 			
-			return false;
+			return -1;
 			
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -144,7 +140,7 @@ public class UserParser implements IConstants{
 			e.printStackTrace();
 		} 
 		
-		return false;
+		return -1;
 	}
 	
 	
@@ -155,6 +151,8 @@ public class UserParser implements IConstants{
 	
 	// Hace un print de todos los Objects en usuarios.bin
 	public void readAll() {
+		if (fileIsEmpty(usersFile)) return;
+		
 		FileInputStream FileIS;
 		
 		try {
@@ -188,10 +186,24 @@ public class UserParser implements IConstants{
 	public void mezclaNatural() {
 		File auxiliar1 = crearArchivo("auxiliar1.bin");
 		File auxiliar2 = crearArchivo("auxiliar2.bin");
-		File auxiliar3 = crearArchivo("auxiliar3.bin");
 		
+		try {
+			
+			FileInputStream fileIS = new FileInputStream(usersFile);
+			ObjectInputStream oIS = new ObjectInputStream(fileIS);
+			Account temp = new Account("", "");
+			int posActual = 0;
+			
+			// Particion inicial
+			while (posActual < getUserCount()) {
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		
 	}
+	
 	
 	
 	// Hay que asegurarse de hacer .close() en pFile antes de llamarlo
@@ -222,13 +234,30 @@ public class UserParser implements IConstants{
 	public static void main(String[] args) {
 		
 		UserParser test = UserParser.getInstancia();
-		Account test1 = new Account("a2@aa.com", "134jasijdak asd");
-		Account test2 = new Account("aa@aa.com", "134");
-		Account test3 = new Account("aa3@aa.com", "131313");
+		Account test1 = new Account("1", "134jasijdak asd");
+		Account test2 = new Account("2", "134");
+		Account test3 = new Account("3", "131313");
+		Account test4 = new Account("4", "asdoiasdi 13 sada");
+		Account test5 = new Account("5", "asdkiasdijij q9wdes");
+		Account test6 = new Account("6", "askasm 13oi");
+		Account test7 = new Account("7", "askasm 13oi");
+		Account test8 = new Account("8", "askasm 13oi");
+		Account test9 = new Account("9", "askasm 13oi");
+		Account test10 = new Account("91", "askasm 13oi");
+		Account test11 = new Account("92", "askasm 13oi");
 		
 		test.write(test1);
 		test.write(test2);
 		test.write(test3);
+		test.write(test4);
+		test.write(test5);
+		test.write(test6);
+		test.write(test7);
+		test.write(test8);
+		test.write(test9);
+		test.write(test10);
+		test.write(test11);
+		
 		test.readAll();
 	}
 	
