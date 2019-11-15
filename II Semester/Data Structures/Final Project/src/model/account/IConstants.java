@@ -1,4 +1,4 @@
-package model.user;
+package model.account;
 
 public interface IConstants {
 	public static final int USER = 1;
@@ -6,6 +6,4 @@ public interface IConstants {
 	
 	public static final int PASSWORD = 2;
 	public static final int PASSWORD_SIZE = 30;
-	
-	public static final int ACCOUNT_SIZE = 380;
 }

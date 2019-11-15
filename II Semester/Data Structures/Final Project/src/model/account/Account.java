@@ -1,4 +1,4 @@
-package model.user;
+package model.account;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -6,8 +6,6 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 public class Account implements Serializable, Comparable<Account>, IConstants{
-	
-	private static int userCount = 0;
 	
 	private char[] user = new char[USER_SIZE]; // 200 Bytes
 	private char[] password = new char[PASSWORD_SIZE]; // 60 Bytes
@@ -19,7 +17,6 @@ public class Account implements Serializable, Comparable<Account>, IConstants{
 			setPassword(toChar(pPassword, PASSWORD));
 			
 			counterVictorias = 0;
-			userCount++;
 	}
 	
 	// Transforma un string a un array de chars, dependiendo del codigo 
@@ -87,7 +84,7 @@ public class Account implements Serializable, Comparable<Account>, IConstants{
 	public void setUser(char[] user) {
 		this.user = user;
 	}
-
+	
 	public String getCorreo() {
 		String correo = String.copyValueOf(this.getUser()).trim();
 		return correo;
