@@ -21,6 +21,7 @@ public class VistaLogIn extends JFrame implements IConstants{
 		this.setSize(LARGO, ANCHO);
 		this.setTitle("PROYECTO FINAL");
 		this.setResizable(false);
+		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		
 		userInput = new JTextField();
 		userInput.setBounds(300, 200, 400, 20);

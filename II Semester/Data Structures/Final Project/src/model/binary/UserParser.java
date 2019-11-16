@@ -11,6 +11,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
+
 import model.account.Account;
 
 public class UserParser implements IConstants{
@@ -50,18 +53,18 @@ public class UserParser implements IConstants{
 	}
 	
 	// Escribe un nuevo usuario en usersFile
-	public void write(Account pUser) {
+	public void write(Account pUser) throws ExistingUserException {
 		write(pUser, usersFile);
 	}
 	
 	
 	// Escribe un nuevo usuario en el file especificado
-	public void write(Account pUser, File pFile) {
+	public void write(Account pUser, File pFile) throws ExistingUserException {
 		
 		// Revisa si el usuario ya esta en el archivo
 		if (!fileIsEmpty(pFile)) {
 			if (binarySearch(pUser, pFile) >= 0) {
-				return;
+				throw new ExistingUserException();
 			}
 		}
 		
@@ -101,7 +104,12 @@ public class UserParser implements IConstants{
 		eliminarArchivo(usersFile);
 		usersFile = this.crearArchivo("usuarios.bin");
 			for (Account actual: accounts) {
-				this.write(actual, usersFile);
+				try {
+					this.write(actual, usersFile);
+				} catch (ExistingUserException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 			
 	}
@@ -119,11 +127,7 @@ public class UserParser implements IConstants{
 			while (izq <= drch) {
 				int medio = (izq + drch) / 2;
 				// Mueve el puntero antes de leer el objeto guardado
-				if (pFile == usersFile) {
-					fileIS.getChannel().position(medio * ACCOUNT_BYTE_SIZE + OFFSET_INICIAL);
-				} else {
-					fileIS.getChannel().position(medio * ACCOUNT_BYTE_SIZE);
-				}
+				fileIS.getChannel().position(medio * ACCOUNT_BYTE_SIZE + OFFSET_INICIAL);
 				Account accountActual = (Account) oIS.readObject();
 				
 				// Encuentra el indicado
@@ -131,7 +135,7 @@ public class UserParser implements IConstants{
 					long posEncontrado = fileIS.getChannel().position(); 
 					oIS.close();
 					fileIS.close();
-					return posEncontrado;
+					return (posEncontrado - OFFSET_INICIAL) / ACCOUNT_BYTE_SIZE;
 				}
 				
 				// pBuscado es menor, se ignora la mayor mitad
@@ -203,12 +207,6 @@ public class UserParser implements IConstants{
 		} 
 	}
  	
-	
-	public void mezclaNatural() {
-//		File auxiliar1 = crearArchivo("auxiliar1.bin");
-//		File auxiliar2 = crearArchivo("auxiliar2.bin");
-	}
-	
 
 	public Account[] mezclaDirecta() {
 		return mezclaDirecta(toArray());
@@ -263,6 +261,30 @@ public class UserParser implements IConstants{
 			}
 		}
 		return pAccounts;
+	}
+	
+	
+	public void validarMail(Account pAccount) throws AddressException {
+		InternetAddress correo = new InternetAddress(pAccount.getCorreo());
+		correo.validate();
+	}
+	
+	public Account getAccountByPos(long pPos) {
+		if (pPos < 0) return null;
+		Account account = null;
+		try {
+			FileInputStream fileIS = new FileInputStream(usersFile);
+			ObjectInputStream oIS = new ObjectInputStream(fileIS);
+			fileIS.getChannel().position(pPos * ACCOUNT_BYTE_SIZE + OFFSET_INICIAL);
+			account = (Account) oIS.readObject();
+			
+			oIS.close();
+			fileIS.close();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return account;
 	}
 	
 	public Account[] toArray() {
