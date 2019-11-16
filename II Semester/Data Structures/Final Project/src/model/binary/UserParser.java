@@ -9,6 +9,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Arrays;
 
 import model.account.Account;
 
@@ -31,7 +32,7 @@ public class UserParser implements IConstants{
 	
 	// Crea un nuevo archivo archivo, retorna el existe si ya existe
 	@SuppressWarnings("finally")
-	public static File crearArchivo(String pNombreArchivo) {
+	public File crearArchivo(String pNombreArchivo) {
 		String tempPath = BINARIES_PATH + "\\" + pNombreArchivo;
 		File nuevoArchivo = new File(tempPath);
 		
@@ -59,7 +60,7 @@ public class UserParser implements IConstants{
 		
 		// Revisa si el usuario ya esta en el archivo
 		if (!fileIsEmpty(pFile)) {
-			if (binarySearch(pUser) >= 0) {
+			if (binarySearch(pUser, pFile) >= 0) {
 				return;
 			}
 		}
@@ -80,8 +81,6 @@ public class UserParser implements IConstants{
 			userOS.flush();
 			userOS.writeObject(pUser);
 			
-//			mezclaNatural();
-			
 			userOS.close();
 			fileOS.close();
 			
@@ -92,19 +91,39 @@ public class UserParser implements IConstants{
 		}
 	}
 	
+	public long binarySearch(Account pBuscado) {
+		return binarySearch(pBuscado, usersFile);
+	}
+	
+	
+	public void rewriteAccounts() {
+		Account[] accounts = mezclaDirecta();
+		eliminarArchivo(usersFile);
+		usersFile = this.crearArchivo("usuarios.bin");
+			for (Account actual: accounts) {
+				this.write(actual, usersFile);
+			}
+			
+	}
+	
+	
 	// Retorna la posicion donde se encuentra pBuscado en el archivo
-	public long binarySearch(Account pBuscado) {		
+	public long binarySearch(Account pBuscado, File pFile) {		
 		int izq = 0;
-		int drch = getUserCount() - 1;
+		int drch = getUserCount(pFile) - 1;
 		
 		try {
-			FileInputStream fileIS = new FileInputStream(usersFile);
+			FileInputStream fileIS = new FileInputStream(pFile);
 			ObjectInputStream oIS = new ObjectInputStream(fileIS);
 			
 			while (izq <= drch) {
 				int medio = (izq + drch) / 2;
 				// Mueve el puntero antes de leer el objeto guardado
-				fileIS.getChannel().position(medio * ACCOUNT_BYTE_SIZE + OFFSET_INICIAL);
+				if (pFile == usersFile) {
+					fileIS.getChannel().position(medio * ACCOUNT_BYTE_SIZE + OFFSET_INICIAL);
+				} else {
+					fileIS.getChannel().position(medio * ACCOUNT_BYTE_SIZE);
+				}
 				Account accountActual = (Account) oIS.readObject();
 				
 				// Encuentra el indicado
@@ -151,19 +170,21 @@ public class UserParser implements IConstants{
 	
 	// Hace un print de todos los Objects en usuarios.bin
 	public void readAll() {
-		if (fileIsEmpty(usersFile)) return;
+		readAll(usersFile);
+	}
+	
+	public void readAll(File pFile) {
+		if (fileIsEmpty(pFile)) return;
 		
 		FileInputStream FileIS;
 		
 		try {
 		
-			FileIS = new FileInputStream(usersFile);
+			FileIS = new FileInputStream(pFile);
 			ObjectInputStream OIS = new ObjectInputStream(FileIS);
 			int counter = 0;
 			
-			while (counter < getUserCount()) {
-				// Mueve al puntero de posicion hasta el proximo Account
-				FileIS.getChannel().position(counter * ACCOUNT_BYTE_SIZE + OFFSET_INICIAL);
+			while (counter < getUserCount(pFile)) {
 				System.out.println("READING: " + OIS.readObject());
 				counter++;
 			}
@@ -184,28 +205,93 @@ public class UserParser implements IConstants{
  	
 	
 	public void mezclaNatural() {
-		File auxiliar1 = crearArchivo("auxiliar1.bin");
-		File auxiliar2 = crearArchivo("auxiliar2.bin");
-		
-		try {
-			
-			FileInputStream fileIS = new FileInputStream(usersFile);
-			ObjectInputStream oIS = new ObjectInputStream(fileIS);
-			Account temp = new Account("", "");
-			int posActual = 0;
-			
-			// Particion inicial
-			while (posActual < getUserCount()) {
-			}
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
+//		File auxiliar1 = crearArchivo("auxiliar1.bin");
+//		File auxiliar2 = crearArchivo("auxiliar2.bin");
+	}
+	
+
+	public Account[] mezclaDirecta() {
+		return mezclaDirecta(toArray());
 	}
 	
 	
+	public Account[] mezclaDirecta(Account[] pAccounts) {
+		
+		if (pAccounts.length > 1) {
+			int cantidadIzq = pAccounts.length / 2;
+			int cantidadDrch = pAccounts.length - cantidadIzq;
+			Account[] auxiliar1 = new Account[cantidadIzq];
+			Account[] auxiliar2 = new Account[cantidadDrch];
+			
+			for (int i = 0; i < cantidadIzq; i++) {
+				auxiliar1[i] = pAccounts[i];
+			}
+			
+			for (int i = cantidadIzq; i < cantidadIzq + cantidadDrch; i++) {
+				auxiliar2[i - cantidadIzq] = pAccounts[i];
+			}
+			
+			auxiliar1 = mezclaDirecta(auxiliar1);
+			auxiliar2 = mezclaDirecta(auxiliar2);
+			
+			int posPAccounts = 0;
+			int posAux1 = 0;
+			int posAux2 = 0;
+			
+			while (auxiliar1.length != posAux1 && auxiliar2.length != posAux2) {
+				if (auxiliar1[posAux1].compareTo(auxiliar2[posAux2]) < 0) {
+					pAccounts[posPAccounts] = auxiliar1[posAux1];
+					posPAccounts++;
+					posAux1++;
+				} else {
+					pAccounts[posPAccounts] = auxiliar2[posAux2];
+					posPAccounts++;
+					posAux2++;
+				}
+			}
+			
+			while (auxiliar1.length != posAux1) {
+				pAccounts[posPAccounts] = auxiliar1[posAux1];
+				posPAccounts++;
+				posAux1++;
+			}
+			
+			while (auxiliar2.length != posAux2) {
+				pAccounts[posPAccounts] = auxiliar2[posAux2];
+				posPAccounts++;
+				posAux2++;
+			}
+		}
+		return pAccounts;
+	}
 	
+	public Account[] toArray() {
+		Account[] accounts = new Account[getUserCount()];
+		
+		FileInputStream fileIS;
+		try {
+			fileIS = new FileInputStream(usersFile);
+			ObjectInputStream oIS = new ObjectInputStream(fileIS);
+			
+			for (int actual = 0; actual < getUserCount(); actual++) {
+				fileIS.getChannel().position(actual * ACCOUNT_BYTE_SIZE + OFFSET_INICIAL);
+				accounts[actual] = (Account) oIS.readObject();
+			}
+			fileIS.close();
+			oIS.close();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return accounts;
+	}
+
 	// Hay que asegurarse de hacer .close() en pFile antes de llamarlo
 	public boolean eliminarArchivo(File pFile) {
 		File filePath = pFile.getAbsoluteFile();
@@ -227,38 +313,11 @@ public class UserParser implements IConstants{
 	
 	
 	public int getUserCount() {
-		return (int) Math.floor(usersFile.length() / ACCOUNT_BYTE_SIZE);
+		return getUserCount(usersFile);
 	}
 	
-	
-	public static void main(String[] args) {
-		
-		UserParser test = UserParser.getInstancia();
-		Account test1 = new Account("1", "134jasijdak asd");
-		Account test2 = new Account("2", "134");
-		Account test3 = new Account("3", "131313");
-		Account test4 = new Account("4", "asdoiasdi 13 sada");
-		Account test5 = new Account("5", "asdkiasdijij q9wdes");
-		Account test6 = new Account("6", "askasm 13oi");
-		Account test7 = new Account("7", "askasm 13oi");
-		Account test8 = new Account("8", "askasm 13oi");
-		Account test9 = new Account("9", "askasm 13oi");
-		Account test10 = new Account("91", "askasm 13oi");
-		Account test11 = new Account("92", "askasm 13oi");
-		
-		test.write(test1);
-		test.write(test2);
-		test.write(test3);
-		test.write(test4);
-		test.write(test5);
-		test.write(test6);
-		test.write(test7);
-		test.write(test8);
-		test.write(test9);
-		test.write(test10);
-		test.write(test11);
-		
-		test.readAll();
+	public int getUserCount(File pFile) {
+		return (int) Math.floor(pFile.length() / ACCOUNT_BYTE_SIZE);
 	}
 	
 }
