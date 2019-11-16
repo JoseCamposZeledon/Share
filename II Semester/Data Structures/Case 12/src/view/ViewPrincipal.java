@@ -51,7 +51,7 @@ public class ViewPrincipal extends JFrame implements Observer, IConstants{
 		
 		BufferedImage background = null;
 		try {
-			background = ImageIO.read(new File("C://University-Shared//II Semester//Data Structures//Case 12//src//view//MAPA.png"));
+			background = ImageIO.read(new File("D:\\Caso-10 ED\\University-Shared\\II Semester\\Data Structures\\Case 12\\static\\MAPA.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
