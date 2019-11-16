@@ -40,6 +40,7 @@ public final class LogInEvent extends MouseAdapter {
 		
 		if (cuentaEnArchivo == null) {
 			showError("No existe esa cuenta");
+			return;
 		} 
 		
 		String passArchivo = String.copyValueOf(cuentaEnArchivo.getPassword()).trim(); 

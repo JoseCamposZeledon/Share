@@ -117,6 +117,8 @@ public class UserParser implements IConstants{
 	
 	// Retorna la posicion donde se encuentra pBuscado en el archivo
 	public long binarySearch(Account pBuscado, File pFile) {		
+		if (getUserCount() == 0) return -1;
+		
 		int izq = 0;
 		int drch = getUserCount(pFile) - 1;
 		
