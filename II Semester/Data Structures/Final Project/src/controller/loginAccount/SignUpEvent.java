@@ -44,9 +44,9 @@ public final class SignUpEvent extends MouseAdapter {
 		
 		controller.getVista().getUserInput().setText("");
 		controller.getVista().getPassInput().setText("");
-		JOptionPane.showMessageDialog(null, "Cuenta creada, proceda a hacer Log In");
+		JOptionPane.showMessageDialog(null, "Cuenta creada, proceda a hacer log in");
 		
-		controller.getModelo().readAll();
+//		controller.getModelo().readAll();
 	}
 	
 	public void showError(String pMessage) {

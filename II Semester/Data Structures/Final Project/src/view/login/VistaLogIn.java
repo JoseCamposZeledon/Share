@@ -6,6 +6,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
 import view.IConstants;
@@ -13,7 +14,8 @@ import view.IConstants;
 public class VistaLogIn extends JFrame implements IConstants{
 	JLabel background, logo;
 	
-	JTextField userInput, passInput;
+	JTextField userInput; 
+	JPasswordField passInput;
 	JButton btnRegistrar, btnLogIn;
 	
 	public VistaLogIn() {
@@ -27,7 +29,7 @@ public class VistaLogIn extends JFrame implements IConstants{
 		userInput.setBounds(275, 230, 400, 20);
 		this.add(userInput);
 		
-		passInput = new JTextField();
+		passInput = new JPasswordField();
 		passInput.setBounds(275, 260, 400, 20);
 		this.add(passInput);
 		
@@ -72,13 +74,8 @@ public class VistaLogIn extends JFrame implements IConstants{
 		return passInput;
 	}
 
-	
-	public void asd() {
-		System.out.println("aaa");
-	}
-	
 
-	public void setPassInput(JTextField passInput) {
+	public void setPassInput(JPasswordField passInput) {
 		this.passInput = passInput;
 	}
 
