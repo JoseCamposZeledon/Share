@@ -20,7 +20,7 @@ public class VistaMenuPrincipal extends JFrame implements IConstants{
 	
 	public VistaMenuPrincipal() {
 		this.getContentPane().setLayout(null);
-		this.setSize(LARGO, ANCHO);
+		this.setSize(LARGO_MENU, ANCHO_MENU);
 		this.setTitle("PROYECTO FINAL");
 		this.setResizable(false);
 		
@@ -44,8 +44,8 @@ public class VistaMenuPrincipal extends JFrame implements IConstants{
 		
 		background = new JLabel();
 		background.setIcon(new ImageIcon(new ImageIcon(".\\static\\media\\images\\background.gif")
-				.getImage().getScaledInstance(LARGO, ANCHO, Image.SCALE_DEFAULT)));
-		background.setBounds(0, 0, LARGO, ANCHO);
+				.getImage().getScaledInstance(LARGO_MENU, ANCHO_MENU, Image.SCALE_DEFAULT)));
+		background.setBounds(0, 0, LARGO_MENU, ANCHO_MENU);
 		this.add(background);
 		
 		this.setVisible(true);
