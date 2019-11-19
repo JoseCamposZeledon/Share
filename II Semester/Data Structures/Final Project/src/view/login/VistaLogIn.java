@@ -26,25 +26,25 @@ public class VistaLogIn extends JFrame implements IConstants{
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		
 		userInput = new JTextField();
-		userInput.setBounds(275, 230, 400, 20);
+		userInput.setBounds(295, 250, 400, 20);
 		this.add(userInput);
 		
 		passInput = new JPasswordField();
-		passInput.setBounds(275, 260, 400, 20);
+		passInput.setBounds(295, 280, 400, 20);
 		this.add(passInput);
 		
 		btnLogIn = new JButton("Log In");
-		btnLogIn.setBounds(275, 290, 195, 20);
+		btnLogIn.setBounds(295, 310, 195, 20);
 		this.add(btnLogIn);
 		
 		btnRegistrar = new JButton("Registrar");
-		btnRegistrar.setBounds(480, 290, 195, 20);
+		btnRegistrar.setBounds(500, 310, 195, 20);
 		this.add(btnRegistrar);
 		
 		logo = new JLabel();
 		logo.setIcon(new ImageIcon(new ImageIcon(".\\static\\media\\images\\logo.png")
-				.getImage().getScaledInstance(550, 200, Image.SCALE_SMOOTH)));
-		logo.setBounds(200, 10, 550, 300);
+				.getImage().getScaledInstance(LOGO_LARGO, LOGO_ANCHO, Image.SCALE_SMOOTH)));
+		logo.setBounds(220, 10, 550, 300);
 		this.add(logo);
 		
 		background = new JLabel();

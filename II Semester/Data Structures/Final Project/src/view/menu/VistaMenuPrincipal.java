@@ -28,8 +28,8 @@ public class VistaMenuPrincipal extends JFrame implements IConstants{
 		
 		logo = new JLabel();
 		logo.setIcon(new ImageIcon(new ImageIcon(".\\static\\media\\images\\logo.png")
-				.getImage().getScaledInstance(550, 200, Image.SCALE_SMOOTH)));
-		logo.setBounds(200, 10, 550, 300);
+				.getImage().getScaledInstance(LOGO_LARGO, LOGO_ANCHO, Image.SCALE_SMOOTH)));
+		logo.setBounds(220, 10, 550, 300);
 		this.add(logo);
 		
 		background = new JLabel();
