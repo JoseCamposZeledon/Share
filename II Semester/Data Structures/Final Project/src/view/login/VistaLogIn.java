@@ -48,7 +48,7 @@ public class VistaLogIn extends JFrame implements IConstants{
 		this.add(logo);
 		
 		background = new JLabel();
-		background.setIcon(new ImageIcon(new ImageIcon(".\\static\\media\\images\\background.gif")
+		background.setIcon(new ImageIcon(new ImageIcon(".\\static\\media\\images\\background_login.gif")
 				.getImage().getScaledInstance(LARGO_MENU, ANCHO_MENU, Image.SCALE_DEFAULT)));
 		background.setBounds(0, 0, LARGO_MENU, ANCHO_MENU);
 		this.add(background);

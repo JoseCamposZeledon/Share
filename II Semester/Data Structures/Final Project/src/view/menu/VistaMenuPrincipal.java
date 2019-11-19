@@ -15,26 +15,16 @@ import view.IConstants;
 
 public class VistaMenuPrincipal extends JFrame implements IConstants{
 	
-	JButton btnHostear, btnConectar, btnSalir;
 	JLabel background, logo;
 	
 	public VistaMenuPrincipal() {
 		this.getContentPane().setLayout(null);
 		this.setSize(LARGO_MENU, ANCHO_MENU);
 		this.setTitle("PROYECTO FINAL");
+		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		this.setResizable(false);
 		
-		btnHostear = new JButton("Hostear Partida");
-		btnHostear.setBounds(375, 225, 250, 25);
-		this.add(btnHostear);
-		
-		btnConectar = new JButton("Conectar a Partida");
-		btnConectar.setBounds(375, 270, 250, 25);
-		this.add(btnConectar);
-		
-		btnSalir = new JButton("Salir");
-		btnSalir.setBounds(375, 315, 250, 25);
-		this.add(btnSalir);
+		this.setContentPane(new ContentSeleccionMapa());
 		
 		logo = new JLabel();
 		logo.setIcon(new ImageIcon(new ImageIcon(".\\static\\media\\images\\logo.png")

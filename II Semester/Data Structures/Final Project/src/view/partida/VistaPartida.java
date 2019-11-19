@@ -1,14 +1,14 @@
 package view.partida;
 
-import java.awt.Color;
 import java.awt.Image;
 
-import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import model.json.MapParser;
+import model.mapComponents.ObstaculoGrafico;
 import view.IConstants;
 
 public class VistaPartida extends JFrame implements IConstants{
@@ -18,6 +18,7 @@ public class VistaPartida extends JFrame implements IConstants{
 	public VistaPartida() {
 		this.getContentPane().setLayout(null);
 		this.setSize(GAME_WINDOW_LARGO, GAME_WINDOW_ANCHO);
+		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		
 		// TABLERO
 		tableroPane = new JPanel();
@@ -35,7 +36,12 @@ public class VistaPartida extends JFrame implements IConstants{
 		
 		this.add(boardBorder);
 		
-		// TILES DE TABLERO
+//		 TILES DE TABLERO
+	
+		for(ObstaculoGrafico obstaculo: MapParser.getInstance().loadMap("mapa1.json").getObstaculos()) {
+			tableroPane.add(obstaculo.getGraphicObstaculo());
+		}
+		
 		ImageIcon tileTexture = new ImageIcon(new ImageIcon(".\\static\\media\\images\\game_tile1.png")
 				.getImage().getScaledInstance(TILE_SIZE, TILE_SIZE, Image.SCALE_SMOOTH));
 		
@@ -48,11 +54,14 @@ public class VistaPartida extends JFrame implements IConstants{
 				tableroPane.add(tile);
 			}
 		}
+	
+		// INFO JUGADORES
+		
+		
+		
 		
 		this.setVisible(true);
 	}
-	
-	// INFO JUGADORES
 	
 	
 	public static void main(String[] args) {
