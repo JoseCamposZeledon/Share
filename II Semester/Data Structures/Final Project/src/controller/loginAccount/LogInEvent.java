@@ -6,6 +6,7 @@ import java.awt.event.MouseEvent;
 import javax.mail.internet.AddressException;
 import javax.swing.JOptionPane;
 
+import controller.menu.MenuPrincipalController;
 import model.account.Account;
 
 public final class LogInEvent extends MouseAdapter {
@@ -47,7 +48,9 @@ public final class LogInEvent extends MouseAdapter {
 		String passLogIn = String.copyValueOf(cuentaLogIn.getPassword()).trim();
 		
 		if (passArchivo.equals(passLogIn)) {
-			showError("BIENVENIDO");
+			controller.getVista().dispose();
+			
+			MenuPrincipalController newController = new MenuPrincipalController(cuentaLogIn);
 		} else {
 			showError("Password incorrecta");
 		}

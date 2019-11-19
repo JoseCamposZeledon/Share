@@ -27,10 +27,4 @@ public class LoginController {
 	public VistaLogIn getVista() {
 		return vista;
 	}
-
-
-
-	public static void main(String[] args) {
-		LoginController test = new LoginController();
-	}
 }

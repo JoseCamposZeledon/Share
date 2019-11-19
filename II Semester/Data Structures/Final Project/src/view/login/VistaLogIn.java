@@ -1,6 +1,8 @@
 package view.login;
 
+import java.awt.Dimension;
 import java.awt.Image;
+import java.awt.Toolkit;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -24,6 +26,9 @@ public class VistaLogIn extends JFrame implements IConstants{
 		this.setTitle("PROYECTO FINAL");
 		this.setResizable(false);
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+		
+		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+		this.setLocation(dim.width/2-this.getSize().width/2, dim.height/2-this.getSize().height/2);
 		
 		userInput = new JTextField();
 		userInput.setBounds(295, 250, 400, 20);

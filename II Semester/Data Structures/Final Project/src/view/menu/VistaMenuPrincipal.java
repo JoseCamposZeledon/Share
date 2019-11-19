@@ -1,6 +1,9 @@
 package view.menu;
 
+import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Image;
+import java.awt.Toolkit;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -15,7 +18,8 @@ import view.IConstants;
 
 public class VistaMenuPrincipal extends JFrame implements IConstants{
 	
-	JLabel background, logo;
+	JLabel background, logo, userLabel;
+	JButton btnHostear, btnConectar, btnSalir;
 	
 	public VistaMenuPrincipal() {
 		this.getContentPane().setLayout(null);
@@ -24,7 +28,25 @@ public class VistaMenuPrincipal extends JFrame implements IConstants{
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		this.setResizable(false);
 		
-		this.setContentPane(new ContentSeleccionMapa());
+		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+		this.setLocation(dim.width/2-this.getSize().width/2, dim.height/2-this.getSize().height/2);
+		
+		userLabel = new JLabel("");
+		userLabel.setBounds(10, 10, LARGO_MENU, 25);
+		userLabel.setForeground(Color.yellow);
+		this.add(userLabel);
+		
+		btnHostear = new JButton("Hostear Partida");
+		btnHostear.setBounds(375, 225, 250, 25);
+		this.add(btnHostear);
+		
+		btnConectar = new JButton("Conectar a Partida");
+		btnConectar.setBounds(375, 270, 250, 25);
+		this.add(btnConectar);
+		
+		btnSalir = new JButton("Salir");
+		btnSalir.setBounds(375, 315, 250, 25);
+		this.add(btnSalir);
 		
 		logo = new JLabel();
 		logo.setIcon(new ImageIcon(new ImageIcon(".\\static\\media\\images\\logo.png")
@@ -41,7 +63,21 @@ public class VistaMenuPrincipal extends JFrame implements IConstants{
 		this.setVisible(true);
 	}
 	
-	public static void main(String[] args) {
-		VistaMenuPrincipal test = new VistaMenuPrincipal();
+
+	public JLabel getUserLabel() {
+		return userLabel;
+	}
+
+
+	public JButton getBtnHostear() {
+		return btnHostear;
+	}
+
+	public JButton getBtnConectar() {
+		return btnConectar;
+	}
+
+	public JButton getBtnSalir() {
+		return btnSalir;
 	}
 }
