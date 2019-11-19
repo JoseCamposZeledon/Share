@@ -1,11 +1,12 @@
 package controller.menu;
 
 import controller.menu.eventosSeleccion.EventoCargarMapa;
+import controller.menu.eventosSeleccion.EventoSeleccionDefault;
 import controller.menu.eventosSeleccion.EventoVolver;
 import model.account.Account;
 import view.menu.VistaSeleccionMapa;
 
-public class MenuSeleccionController {
+public class MenuSeleccionController implements IConstants{
 	
 	VistaSeleccionMapa vista = new VistaSeleccionMapa();
 	Account usuario;
@@ -17,6 +18,11 @@ public class MenuSeleccionController {
 		
 		// Evento cargar mapa
 		vista.getBtnCargarMapa().addMouseListener(new EventoCargarMapa(this));
+		
+		// Evento seleccion mapas default
+		vista.getPreviewMapa1().addMouseListener(new EventoSeleccionDefault(this, MAPA_1));
+		vista.getPreviewMapa2().addMouseListener(new EventoSeleccionDefault(this, MAPA_2));
+		vista.getPreviewMapa3().addMouseListener(new EventoSeleccionDefault(this, MAPA_3));
 		
 		// Evento Hostear partida
 		

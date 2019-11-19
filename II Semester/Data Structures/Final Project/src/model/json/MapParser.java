@@ -29,12 +29,10 @@ public class MapParser implements IConstants {
 		gson = new GsonBuilder().setPrettyPrinting().create();
 	}
 	
-	public Obstaculo loadMap(String pNombreArchivo) {
-		
-		String pathMapa = MAPS_PATH + "\\" +pNombreArchivo;
+	public Obstaculo loadMap(String pPathMapa) {
 		
 		try {
-			Reader reader = new FileReader(pathMapa);
+			Reader reader = new FileReader(pPathMapa);
 			obstaculos = gson.fromJson(reader, Obstaculo.class);
 			return obstaculos;
 		} catch (FileNotFoundException e) {

@@ -23,6 +23,10 @@ public class EventoCargarMapa extends MouseAdapter{
 		if (Files.exists(path) && !controller.getVista().getMapaPathInput().getText().trim().equals("")) {
 			controller.setPathSeleccionado(controller.getVista().getMapaPathInput().getText().trim());
 			controller.getVista().getMapaPathInput().setText("");
+			
+			controller.getVista().getBorderMapa1().setBorder(null);
+			controller.getVista().getBorderMapa2().setBorder(null);
+			controller.getVista().getBorderMapa3().setBorder(null);
 		} else {
 			controller.getVista().getMapaPathInput().setText("");
 			JOptionPane.showMessageDialog(null, "Path invalido");

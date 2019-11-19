@@ -1,6 +1,7 @@
 package view.menu;
 
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.Toolkit;
@@ -41,6 +42,8 @@ public class VistaSeleccionMapa extends JFrame implements IConstants {
 		previewMapa1.setBounds(200, 275, 150, 100);
 		this.add(previewMapa1);
 		
+		previewMapa1.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		
 		borderMapa1 = new JLabel("");
 		borderMapa1.setIcon(new ImageIcon(new ImageIcon(".\\static\\media\\images\\board_border.png")
 				.getImage().getScaledInstance(157, 107, Image.SCALE_SMOOTH)));
@@ -53,6 +56,8 @@ public class VistaSeleccionMapa extends JFrame implements IConstants {
 		previewMapa2.setBounds(425, 275, 150, 100);
 		this.add(previewMapa2);
 		
+		previewMapa2.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		
 		borderMapa2 = new JLabel("");
 		borderMapa2.setIcon(new ImageIcon(new ImageIcon(".\\static\\media\\images\\board_border.png")
 				.getImage().getScaledInstance(157, 107, Image.SCALE_SMOOTH)));
@@ -64,6 +69,8 @@ public class VistaSeleccionMapa extends JFrame implements IConstants {
 				.getImage().getScaledInstance(150, 100, Image.SCALE_SMOOTH)));
 		previewMapa3.setBounds(650, 275, 150, 100);
 		this.add(previewMapa3);
+		
+		previewMapa3.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		
 		borderMapa3 = new JLabel("");
 		borderMapa3.setIcon(new ImageIcon(new ImageIcon(".\\static\\media\\images\\board_border.png")

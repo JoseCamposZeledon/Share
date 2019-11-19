@@ -38,7 +38,7 @@ public class VistaPartida extends JFrame implements IConstants{
 		
 //		 TILES DE TABLERO
 	
-		for(ObstaculoGrafico obstaculo: MapParser.getInstance().loadMap("mapa3.json").getObstaculos()) {
+		for(ObstaculoGrafico obstaculo: MapParser.getInstance().loadMap(".\\static\\maps\\mapa1.json").getObstaculos()) {
 			tableroPane.add(obstaculo.getGraphicObstaculo());
 		}
 		
