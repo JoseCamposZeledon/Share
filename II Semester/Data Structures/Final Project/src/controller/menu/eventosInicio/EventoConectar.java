@@ -2,6 +2,7 @@ package controller.menu.eventosInicio;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
 
 import javax.swing.JOptionPane;
 
@@ -18,8 +19,8 @@ public class EventoConectar extends MouseAdapter {
 	
 	public void mouseClicked(MouseEvent e) {
 		try {
-			PartidaClientController newController = new PartidaClientController(controller.getUsuario());
-		} catch (Exception ex) {
+			PartidaClientController newController = PartidaClientController.createInstance(controller.getUsuario());
+		} catch (IOException ex) {
 			JOptionPane.showMessageDialog(null, "No se encuentra ninguna partida");
 			return;
 		}

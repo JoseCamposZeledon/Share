@@ -52,12 +52,26 @@ public class VistaPartidaHost extends JFrame implements IConstants {
 		ImageIcon tileTexture = new ImageIcon(new ImageIcon(".\\static\\media\\images\\game_tile1.png")
 				.getImage().getScaledInstance(TILE_SIZE, TILE_SIZE, Image.SCALE_SMOOTH));
 		
+		ImageIcon crownTile = new ImageIcon(new ImageIcon(".\\static\\media\\images\\crown_tile.png")
+				.getImage().getScaledInstance(TILE_SIZE, TILE_SIZE, Image.SCALE_SMOOTH));
+		
+		ImageIcon groupTile = new ImageIcon(new ImageIcon(".\\static\\media\\images\\player_tile.png")
+				.getImage().getScaledInstance(TILE_SIZE, TILE_SIZE, Image.SCALE_SMOOTH));;
+		
 		for (int i = 0; i < (MAP_LARGO / TILE_SIZE); i++) {
 			for (int j = 0; j < (MAP_ANCHO/ TILE_SIZE); j++) {
-				
 				JLabel tile = new JLabel();
 				tile.setBounds(i * TILE_SIZE, j * TILE_SIZE, TILE_SIZE, TILE_SIZE);
-				tile.setIcon(tileTexture);
+				
+				if ((i == 0 || i == 31) && (j == 0 || j == 12 || j == 24)) {
+					tile.setIcon(crownTile);
+				}
+				else if ((i == 1 || i ==30) && (j == 0 || j == 12 || j == 24)) {
+					tile.setIcon(groupTile);
+				}
+				else {
+					tile.setIcon(tileTexture);
+				}
 				tableroPane.add(tile, 0);
 			}
 		}
@@ -270,10 +284,5 @@ public class VistaPartidaHost extends JFrame implements IConstants {
 	
 	public void setTableroPane(JLayeredPane tableroPane) {
 		this.tableroPane = tableroPane;
-	}
-
-
-	public static void main(String[] args) {
-		VistaPartidaHost test = new VistaPartidaHost();
 	}
 }

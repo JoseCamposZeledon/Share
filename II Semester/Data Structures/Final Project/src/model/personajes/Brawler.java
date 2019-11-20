@@ -1,6 +1,6 @@
 package model.personajes;
 
-public class Golpeador extends Personaje{
+public class Brawler extends Personaje{
 	private final static int FUERZA_ATAQUE = 20;
 	private final static int TIEMPO_ATAQUE = 1000;
 	

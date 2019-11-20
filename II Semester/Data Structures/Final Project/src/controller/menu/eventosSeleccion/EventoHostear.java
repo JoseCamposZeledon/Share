@@ -9,6 +9,7 @@ import javax.swing.JOptionPane;
 
 import controller.menu.MenuSeleccionController;
 import controller.partida.PartidaHostController;
+import model.threadsPool.ThreadManager;
 
 public class EventoHostear extends MouseAdapter {
 	
@@ -27,10 +28,11 @@ public class EventoHostear extends MouseAdapter {
 		
 		controller.getVista().dispose();
 		
-		PartidaHostController newController = new PartidaHostController(
-				controller.getPathSeleccionado(), 
-				controller.getUsuario());
+		PartidaHostController newController = PartidaHostController.createInstance(
+				controller.getPathSeleccionado(), controller.getUsuario());
 		
+		// Inicia el servidor de partida 
+		ThreadManager.getInstance().startThread(newController);
 	}
 	
 }

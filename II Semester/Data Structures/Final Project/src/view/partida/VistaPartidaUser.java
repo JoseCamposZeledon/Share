@@ -7,6 +7,7 @@ import java.awt.Image;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 
 import model.json.MapParser;
@@ -15,7 +16,7 @@ import view.IConstants;
 
 public class VistaPartidaUser extends JFrame implements IConstants {
 	
-	private JPanel tableroPane;
+	private JLayeredPane tableroPane;
 	
 	private JLabel columnaHost, columnaClient;
 	
@@ -28,9 +29,10 @@ public class VistaPartidaUser extends JFrame implements IConstants {
 			this.getContentPane().setLayout(null);
 			this.setSize(GAME_WINDOW_LARGO, GAME_WINDOW_ANCHO);
 			this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+			this.setResizable(false);
 			
 			// TABLERO
-			tableroPane = new JPanel();
+			tableroPane = new JLayeredPane();
 			tableroPane.setLayout(null);
 			tableroPane.setBounds(238, 10, MAP_LARGO, MAP_ANCHO);
 			this.add(tableroPane);
@@ -49,13 +51,27 @@ public class VistaPartidaUser extends JFrame implements IConstants {
 			ImageIcon tileTexture = new ImageIcon(new ImageIcon(".\\static\\media\\images\\game_tile1.png")
 					.getImage().getScaledInstance(TILE_SIZE, TILE_SIZE, Image.SCALE_SMOOTH));
 			
+			ImageIcon crownTile = new ImageIcon(new ImageIcon(".\\static\\media\\images\\crown_tile.png")
+					.getImage().getScaledInstance(TILE_SIZE, TILE_SIZE, Image.SCALE_SMOOTH));
+			
+			ImageIcon groupTile = new ImageIcon(new ImageIcon(".\\static\\media\\images\\player_tile.png")
+					.getImage().getScaledInstance(TILE_SIZE, TILE_SIZE, Image.SCALE_SMOOTH));;
+			
 			for (int i = 0; i < (MAP_LARGO / TILE_SIZE); i++) {
 				for (int j = 0; j < (MAP_ANCHO/ TILE_SIZE); j++) {
-					
 					JLabel tile = new JLabel();
 					tile.setBounds(i * TILE_SIZE, j * TILE_SIZE, TILE_SIZE, TILE_SIZE);
-					tile.setIcon(tileTexture);
-					tableroPane.add(tile);
+					
+					if ((i == 0 || i == 31) && (j == 0 || j == 12 || j == 24)) {
+						tile.setIcon(crownTile);
+					}
+					else if ((i == 1 || i ==30) && (j == 0 || j == 12 || j == 24)) {
+						tile.setIcon(groupTile);
+					}
+					else {
+						tile.setIcon(tileTexture);
+					}
+					tableroPane.add(tile, 0);
 				}
 			}
 		
@@ -157,11 +173,13 @@ public class VistaPartidaUser extends JFrame implements IConstants {
 		this.setVisible(true);
 	}
 
-	public JPanel getTableroPane() {
+
+
+	public JLayeredPane getTableroPane() {
 		return tableroPane;
 	}
 
-	public void setTableroPane(JPanel tableroPane) {
+	public void setTableroPane(JLayeredPane tableroPane) {
 		this.tableroPane = tableroPane;
 	}
 

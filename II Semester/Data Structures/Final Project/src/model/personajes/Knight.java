@@ -1,8 +1,8 @@
 package model.personajes;
 
-public class Arquero extends Personaje{
-	private final static int FUERZA_ATAQUE = 40;
-	private final static int TIEMPO_ATAQUE = 1500;
+public class Knight extends Personaje{
+	private final static int FUERZA_ATAQUE = 80;
+	private final static int TIEMPO_ATAQUE = 2000;
 	
 	
 	@Override
@@ -14,4 +14,6 @@ public class Arquero extends Personaje{
 	public void recargar() {
 		this.energia += FUERZA_ATAQUE / 2;
 	}
+	
+	
 }
