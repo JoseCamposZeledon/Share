@@ -11,7 +11,7 @@ import model.account.Account;
 
 public final class LogInEvent extends MouseAdapter {
 	
-	LoginController controller;
+	private LoginController controller;
 	
 	public LogInEvent(LoginController pController) {
 		controller = pController;

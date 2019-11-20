@@ -8,7 +8,7 @@ import controller.menu.MenuSeleccionController;
 
 public class EventoVolver extends MouseAdapter {
 	
-	MenuSeleccionController controller;
+	private MenuSeleccionController controller;
 	
 	public EventoVolver(MenuSeleccionController pController) {
 		controller = pController;

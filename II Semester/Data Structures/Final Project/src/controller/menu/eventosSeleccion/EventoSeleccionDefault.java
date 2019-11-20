@@ -4,6 +4,9 @@ import java.awt.Color;
 import java.awt.Image;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
+import java.net.Socket;
+import java.net.UnknownHostException;
 
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
@@ -29,8 +32,6 @@ public class EventoSeleccionDefault extends MouseAdapter implements IConstants{
 	}
 	
 	public void mouseEntered(MouseEvent e) {
-		
-		
 		switch (seleccionado) {
 			case MAPA_1:
 				controller.getVista().getBorderMapa1().setIcon(borderSelected);

@@ -11,7 +11,7 @@ import javax.swing.JOptionPane;
 import controller.menu.MenuSeleccionController;
 
 public class EventoCargarMapa extends MouseAdapter{
-	MenuSeleccionController controller;
+	private MenuSeleccionController controller;
 	
 	public EventoCargarMapa(MenuSeleccionController pController) {
 		controller = pController;

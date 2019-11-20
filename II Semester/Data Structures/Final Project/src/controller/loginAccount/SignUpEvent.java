@@ -11,7 +11,7 @@ import model.binary.ExistingUserException;
 
 public final class SignUpEvent extends MouseAdapter {
 	
-	LoginController controller;
+	private LoginController controller;
 	
 	public SignUpEvent(LoginController pController) {
 		controller = pController;

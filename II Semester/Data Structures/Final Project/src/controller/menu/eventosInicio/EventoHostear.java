@@ -8,7 +8,7 @@ import controller.menu.MenuSeleccionController;
 
 public class EventoHostear extends MouseAdapter {
 	
-	MenuPrincipalController controller;
+	private MenuPrincipalController controller;
 	
 	public EventoHostear(MenuPrincipalController pController) {
 		controller = pController;

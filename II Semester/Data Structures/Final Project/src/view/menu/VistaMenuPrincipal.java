@@ -18,8 +18,8 @@ import view.IConstants;
 
 public class VistaMenuPrincipal extends JFrame implements IConstants{
 	
-	JLabel background, logo, userLabel;
-	JButton btnHostear, btnConectar, btnSalir;
+	private JLabel background, logo, userLabel;
+	private JButton btnHostear, btnConectar, btnSalir;
 	
 	public VistaMenuPrincipal() {
 		this.getContentPane().setLayout(null);

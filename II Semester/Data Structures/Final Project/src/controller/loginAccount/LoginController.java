@@ -5,8 +5,8 @@ import view.login.VistaLogIn;
 
 public class LoginController {
 	
-	UserParser modelo;
-	VistaLogIn vista;
+	private UserParser modelo;
+	private VistaLogIn vista;
 	
 	public LoginController () {
 		modelo = UserParser.getInstancia();

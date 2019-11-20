@@ -1,5 +1,6 @@
 package controller.menu;
 
+import controller.menu.eventosSeleccion.EventoHostear;
 import controller.menu.eventosSeleccion.EventoCargarMapa;
 import controller.menu.eventosSeleccion.EventoSeleccionDefault;
 import controller.menu.eventosSeleccion.EventoVolver;
@@ -8,9 +9,9 @@ import view.menu.VistaSeleccionMapa;
 
 public class MenuSeleccionController implements IConstants{
 	
-	VistaSeleccionMapa vista = new VistaSeleccionMapa();
-	Account usuario;
-	String pathSeleccionado;
+	private VistaSeleccionMapa vista = new VistaSeleccionMapa();
+	private Account usuario;
+	private String pathSeleccionado;
 	
 	public MenuSeleccionController(Account pUsuario) {
 		usuario = pUsuario;
@@ -25,7 +26,7 @@ public class MenuSeleccionController implements IConstants{
 		vista.getPreviewMapa3().addMouseListener(new EventoSeleccionDefault(this, MAPA_3));
 		
 		// Evento Hostear partida
-		
+		vista.getBtnHostear().addMouseListener(new EventoHostear(this));
 		
 		// Evento volver
 		vista.getBtnVolver().addMouseListener(new EventoVolver(this));

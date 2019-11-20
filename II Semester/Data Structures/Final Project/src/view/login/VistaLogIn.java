@@ -14,11 +14,11 @@ import javax.swing.JTextField;
 import view.IConstants;
 
 public class VistaLogIn extends JFrame implements IConstants{
-	JLabel background, logo;
+	private JLabel background, logo;
 	
-	JTextField userInput; 
-	JPasswordField passInput;
-	JButton btnRegistrar, btnLogIn;
+	private JTextField userInput; 
+	private JPasswordField passInput;
+	private JButton btnRegistrar, btnLogIn;
 	
 	public VistaLogIn() {
 		this.getContentPane().setLayout(null);

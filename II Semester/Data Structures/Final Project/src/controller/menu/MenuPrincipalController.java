@@ -1,14 +1,15 @@
 package controller.menu;
 
+import controller.menu.eventosInicio.EventoConectar;
 import controller.menu.eventosInicio.EventoHostear;
 import controller.menu.eventosInicio.EventoSalir;
 import model.account.Account;
 import view.menu.VistaMenuPrincipal;
 
 public class MenuPrincipalController {
-	VistaMenuPrincipal vista = new VistaMenuPrincipal();
+	private VistaMenuPrincipal vista = new VistaMenuPrincipal();
 	
-	Account usuario;
+	private Account usuario;
 	
 	public MenuPrincipalController(Account pUsuario) {
 		usuario = pUsuario;
@@ -17,6 +18,7 @@ public class MenuPrincipalController {
 		vista.getBtnSalir().addMouseListener(new EventoSalir(this));
 		
 		// Evento conectar
+		vista.getBtnConectar().addMouseListener(new EventoConectar(this));
 		
 		// Evento hostear
 		vista.getBtnHostear().addMouseListener(new EventoHostear(this));
@@ -32,11 +34,5 @@ public class MenuPrincipalController {
 	
 	public Account getUsuario() {
 		return usuario;
-	}
-
-
-
-	public static void main(String[] args) {
-		MenuPrincipalController a = new MenuPrincipalController(new Account("correo@ac.om", "A"));
 	}
 }

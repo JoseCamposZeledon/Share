@@ -7,7 +7,7 @@ import controller.menu.MenuPrincipalController;
 
 public class EventoSalir extends MouseAdapter {
 	
-	MenuPrincipalController controller;
+	private MenuPrincipalController controller;
 	
 	public EventoSalir(MenuPrincipalController pController) {
 		controller = pController;
