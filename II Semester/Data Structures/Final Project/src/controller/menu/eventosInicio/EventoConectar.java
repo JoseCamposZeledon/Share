@@ -8,6 +8,7 @@ import javax.swing.JOptionPane;
 
 import controller.menu.MenuPrincipalController;
 import controller.partida.PartidaClientController;
+import model.threadsPool.ThreadManager;
 
 public class EventoConectar extends MouseAdapter {
 	

@@ -39,5 +39,5 @@ public class ThreadManager extends Thread {
 	public void setPool(ExecutorService pool) {
 		this.pool = pool;
 	}
-	
+
 }

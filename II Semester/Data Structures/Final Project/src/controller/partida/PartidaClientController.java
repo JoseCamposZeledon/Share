@@ -1,6 +1,7 @@
 package controller.partida;
 
 import java.awt.Image;
+import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -123,31 +124,42 @@ public class PartidaClientController implements Runnable, Serializable, IConstan
 	public synchronized void run() {
 		try {
 			Socket hostConnected, connect, infoUpdate;
-			ServerSocket server = new ServerSocket(CLIENT_PORT);
+			ServerSocket server = new ServerSocket(CLIENT_PORT, 2);
 			
+			boolean connected = true;
 			// Espera a que el host se pueda conectar
 			while (true) {
 				hostConnected = server.accept();	
-				if (hostConnected.isConnected()) {
-					break;
+				
+				// Carga el mapa & la informacion del host de partida
+				if (hostConnected.isConnected() && connected == true) {
+					ObjectInputStream oIS = new ObjectInputStream(hostConnected.getInputStream());
+					
+					hostController = (PartidaHostController) oIS.readObject();
+					
+					this.getVista().getInfoHost().setText(
+							hostController.getHost().getCorreo() + " | " + 
+							hostController.getHost().getCounterVictorias());
+					this.loadMap(hostController.getMapPath());
+					
+					this.getVista().revalidate();
+					this.getVista().repaint();
+					
+					connected = false;
+					continue;
 				}
+				
+				// Cambia el estado del boton READY cuando host hace click
+				if (hostConnected != null) {
+					ObjectInputStream oIS = new ObjectInputStream(hostConnected.getInputStream());
+					hostController = (PartidaHostController) oIS.readObject();
+					this.updateReadyButton(hostController.isReadyHost());
+					oIS.close();
+					hostConnected.close();
+				}
+				
 			}
-			
-			ObjectInputStream oIS = new ObjectInputStream(hostConnected.getInputStream());
-			
-			hostController = (PartidaHostController) oIS.readObject();
-			
-			this.getVista().getInfoHost().setText(
-					hostController.getHost().getCorreo() + " | " + 
-					hostController.getHost().getCounterVictorias());
-			this.loadMap(hostController.getMapPath());
-			
-			this.getVista().revalidate();
-			this.getVista().repaint();
-			oIS.close();
-			
-			// Actualiza el Boton Ready cada vez que se le hace click 
-
+	
 		} catch (IOException | ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -156,17 +168,16 @@ public class PartidaClientController implements Runnable, Serializable, IConstan
 	}
 	
 	public void updateReadyButton(boolean pReady) {
-		if (pReady) {
-			hostController.getVista().getReadyHostLabel().setIcon(new ImageIcon(new ImageIcon(".\\static\\media\\images\\notready_button.png")
+		if (!pReady) {
+			this.getVista().getReadyHostLabel().setIcon(new ImageIcon(new ImageIcon(".\\static\\media\\images\\notready_button.png")
 					.getImage().getScaledInstance(75, 75, Image.SCALE_SMOOTH)));
-			hostController.setReadyHost(false);
 		} else {
-			hostController.getVista().getReadyHostLabel().setIcon(new ImageIcon(new ImageIcon(".\\static\\media\\images\\ready_button.png")
+			this.getVista().getReadyHostLabel().setIcon(new ImageIcon(new ImageIcon(".\\static\\media\\images\\ready_button.png")
 					.getImage().getScaledInstance(75, 75, Image.SCALE_SMOOTH)));
-			hostController.setReadyHost(true);
 		}
 		
 		this.getVista().revalidate();
+		this.getVista().repaint();
 	}
 	 
 	

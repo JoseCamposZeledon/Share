@@ -1,5 +1,9 @@
 package controller.partida;
 
+import java.awt.Event;
+import java.awt.Image;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -7,6 +11,8 @@ import java.io.Serializable;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
+
+import javax.swing.ImageIcon;
 
 import controller.partida.hostEventos.EventoReady;
 import model.account.Account;
@@ -27,6 +33,7 @@ public class PartidaHostController implements Runnable, Serializable, IConstants
 	
 	private boolean readyHost;
 	
+	private PartidaClientController controllerClient;
 	
 	private PartidaHostController(String pMapPath, Account pHost) {
 		
@@ -90,34 +97,45 @@ public class PartidaHostController implements Runnable, Serializable, IConstants
 	@Override
 	public synchronized void run() {
 		try {
-			
 			// Crea un servidor en el puerto 9999
-			ServerSocket server = new ServerSocket(HOST_PORT);
+			ServerSocket server = new ServerSocket(HOST_PORT, 1);
 			Socket clientConnected, connect;
+			
+			boolean connected = true;
+			
 			while (true) {
 				clientConnected = server.accept();
 				// Conecta al host de la partida con el servidor del cliente
-				if (clientConnected.isConnected()) {
+				if (clientConnected.isConnected() && connected == true) {
 					connect = new Socket(IP, CLIENT_PORT);
-					break;
+					ObjectOutputStream oOS = new ObjectOutputStream(connect.getOutputStream());
+					oOS.writeObject(this);
+					oOS.close();
+					
+					ObjectInputStream oIS = new ObjectInputStream(clientConnected.getInputStream());
+					controllerClient = (PartidaClientController) oIS.readObject();
+					
+					this.getVista().getInfoClient().setText(
+							controllerClient.getClient().getCorreo() + " | " + 
+							controllerClient.getClient().getCounterVictorias());
+					
+					this.getVista().revalidate();
+					this.getVista().repaint();
+					
+					connected = false;
+					continue;
 				}
+				
+				// Actualiza el boton READY en la pantalla del host cuando el client le da click
+				if (clientConnected != null) {
+					ObjectInputStream oIS = new ObjectInputStream(clientConnected.getInputStream());
+					controllerClient = (PartidaClientController) oIS.readObject();
+					this.updateReadyButton(controllerClient.isReadyClient());
+					oIS.close();
+					clientConnected.close();
+				}
+				
 			}
-			
-			ObjectOutputStream oOS = new ObjectOutputStream(connect.getOutputStream());
-			oOS.writeObject(this);
-			oOS.close();
-			
-			ObjectInputStream oIS = new ObjectInputStream(clientConnected.getInputStream());
-			PartidaClientController controllerClient = (PartidaClientController) oIS.readObject();
-			
-			this.getVista().getInfoClient().setText(
-					controllerClient.getClient().getCorreo() + " | " + 
-					controllerClient.getClient().getCounterVictorias());
-			
-			this.getVista().revalidate();
-			this.getVista().repaint();
-			
-			oIS.close();
 			
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
@@ -132,7 +150,20 @@ public class PartidaHostController implements Runnable, Serializable, IConstants
 		
 	}
 
-
+	public void updateReadyButton(boolean pReady) {
+		if (!pReady) {
+			this.getVista().getReadyClientLabel().setIcon(new ImageIcon(new ImageIcon(".\\static\\media\\images\\notready_button.png")
+					.getImage().getScaledInstance(75, 75, Image.SCALE_SMOOTH)));
+		} else {
+			this.getVista().getReadyClientLabel().setIcon(new ImageIcon(new ImageIcon(".\\static\\media\\images\\ready_button.png")
+					.getImage().getScaledInstance(75, 75, Image.SCALE_SMOOTH)));
+		}
+		
+		this.getVista().revalidate();
+		this.getVista().repaint();
+	}
+	
+	
 	public String getMapPath() {
 		return mapPath;
 	}
