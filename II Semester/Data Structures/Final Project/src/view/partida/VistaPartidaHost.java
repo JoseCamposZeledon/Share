@@ -12,6 +12,7 @@ import javax.swing.JPanel;
 
 import model.json.MapParser;
 import model.mapComponents.ObstaculoGrafico;
+import model.mapComponents.Tablero;
 import view.IConstants;
 
 public class VistaPartidaHost extends JFrame implements IConstants {
@@ -31,7 +32,7 @@ public class VistaPartidaHost extends JFrame implements IConstants {
 		this.setResizable(false);
 		
 		// TABLERO
-		tableroPane = new JLayeredPane();
+		tableroPane = new Tablero();
 		tableroPane.setLayout(null);
 		tableroPane.setBounds(238, 10, MAP_LARGO, MAP_ANCHO);
 		this.add(tableroPane);
@@ -46,35 +47,6 @@ public class VistaPartidaHost extends JFrame implements IConstants {
 		boardBorder.setIcon(borderTexture);
 		
 		this.add(boardBorder);
-		
-		// TILES DE TABLERO
-		
-		ImageIcon tileTexture = new ImageIcon(new ImageIcon(".\\static\\media\\images\\game_tile1.png")
-				.getImage().getScaledInstance(TILE_SIZE, TILE_SIZE, Image.SCALE_SMOOTH));
-		
-		ImageIcon crownTile = new ImageIcon(new ImageIcon(".\\static\\media\\images\\crown_tile.png")
-				.getImage().getScaledInstance(TILE_SIZE, TILE_SIZE, Image.SCALE_SMOOTH));
-		
-		ImageIcon groupTile = new ImageIcon(new ImageIcon(".\\static\\media\\images\\player_tile.png")
-				.getImage().getScaledInstance(TILE_SIZE, TILE_SIZE, Image.SCALE_SMOOTH));;
-		
-		for (int i = 0; i < (MAP_LARGO / TILE_SIZE); i++) {
-			for (int j = 0; j < (MAP_ANCHO/ TILE_SIZE); j++) {
-				JLabel tile = new JLabel();
-				tile.setBounds(i * TILE_SIZE, j * TILE_SIZE, TILE_SIZE, TILE_SIZE);
-				
-				if ((i == 0 || i == 31) && (j == 0 || j == 12 || j == 24)) {
-					tile.setIcon(crownTile);
-				}
-				else if ((i == 1 || i ==30) && (j == 0 || j == 12 || j == 24)) {
-					tile.setIcon(groupTile);
-				}
-				else {
-					tile.setIcon(tileTexture);
-				}
-				tableroPane.add(tile, 0);
-			}
-		}
 	
 		// INFO JUGADORES
 		readyHostLabel = new JLabel("");
