@@ -10,7 +10,7 @@ public class Arco<T> {
 	public Arco(Nodo<T> pInicio, Nodo<T> pFin) {
 		conexion[0] = pInicio;
 		conexion[1] = pFin;
-		setPeso(Integer.MAX_VALUE);
+		setPeso(100);
 	}
 	
 	public Arco(Nodo<T> pInicio, Nodo<T> pFin, int pPeso) {
@@ -30,3 +30,4 @@ public class Arco<T> {
 		this.peso = peso;
 	}
 }
+

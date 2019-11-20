@@ -94,6 +94,12 @@ public class Grafo<T> {
 		return backTrack(pDestino, pOrigen);
 	}
 	
+	public void limpiarPrevios() {
+		for (Nodo nodo : nodos) {
+			nodo.setPrevio(null);
+		}
+	}
+	
 	public static void main(String[] args) {
 		
 		Grafo<String> test = new Grafo<String>();
