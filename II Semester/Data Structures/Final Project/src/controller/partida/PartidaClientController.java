@@ -41,7 +41,7 @@ public class PartidaClientController implements Runnable, IConstants{
 
 	private ArrayList<CrownTile> tilesCorona;
 	
-	private Player clientPlayer = new Player();
+	private Player clientPlayer = new Player(2);
 	
 	private int idPersonajeSelected = 0;
 

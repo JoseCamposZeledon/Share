@@ -5,6 +5,7 @@ import java.util.Random;
 
 import javax.swing.JLabel;
 
+import controller.partida.JuegoController;
 import controller.partida.PartidaHostController;
 import model.grafo.GrafoTile;
 import model.grafo.Nodo;
@@ -15,6 +16,7 @@ import model.personajes.Personaje;
 
 public class Group {
 	
+	private int id;
 	private LinkedList<Nodo<GrafoTile>> ruta;
 	private LinkedList<Personaje> personajes;
 	private int vidaTeam;
@@ -22,20 +24,31 @@ public class Group {
 	private Random r;
 	private boolean vivo;
 	private boolean enConflicto;
+	private Group conflictoCon;
 	
 	private JLabel personajesLabel;
 
-	public Group() {
+	public Group(int id) {
 		personajes = new LinkedList<Personaje>();
 		ruta = new LinkedList<Nodo<GrafoTile>>();
 		vidaTeam = 0;
 		r = new Random();
 		vivo = true;
 		enConflicto = false;
+		this.id = id;
 	}
 	
 	public LinkedList<Personaje> getPersonajes() {
 		return personajes;
+	}
+	
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	public void setPersonajes(LinkedList<Personaje> personajes) {
@@ -81,7 +94,39 @@ public class Group {
 	public void setEnConflicto(boolean enConflicto) {
 		this.enConflicto = enConflicto;
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Group other = (Group) obj;
+		if (id != other.id)
+			return false;
+		return true;
+	}
 
+	public Random getR() {
+		return r;
+	}
+
+	public void setR(Random r) {
+		this.r = r;
+	}
+	
+	public Group getConflictoCon() {
+		return conflictoCon;
+	}
+
+	public void setConflictoCon(Group conflictoCon) {
+		this.conflictoCon = conflictoCon;
+	}
+	
+	
+	
 	public void agregarPersonaje(Personaje pPersonaje) throws IndexOutOfBoundsException {
 		if (personajes.size() == 4) {
 			throw new IndexOutOfBoundsException();
@@ -101,6 +146,7 @@ public class Group {
 	
 	public boolean restarVida(int vida) {
 		vidaTeam -= vida;
+		System.out.println("Restando vida a " + this + " cantidad: " + vidaTeam);
 		if (vida <= 0) {
 			return true;
 		} 
@@ -112,7 +158,7 @@ public class Group {
 	}
 	
 	public boolean calcularRuta(Nodo<GrafoTile> nodoDestino) {
-		ruta = PartidaHostController.getInstance().getGrafoNodos().dijkstra(nodoActual, nodoDestino);
+		ruta = JuegoController.getInstance().getGrafoNodos().dijkstra(nodoActual, nodoDestino);
 		if (ruta.isEmpty()) {
 			return false;
 		} else {
@@ -131,7 +177,7 @@ public class Group {
 	
 	public static void main(String[] args) {
 		
-		Group g = new Group();
+		Group g = new Group(1);
 		g.agregarPersonaje(new Archer());
 		g.agregarPersonaje(new Brawler());
 		g.agregarPersonaje(new Knight());

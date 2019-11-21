@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 
+import controller.partida.JuegoController;
 import controller.partida.PartidaHostController;
 import model.mapComponents.CrownTile;
 
@@ -41,7 +42,7 @@ public class EventoHostCorona extends MouseAdapter{
 			}
 			
 			else if (actual.isSelected()) {
-				PartidaHostController.getInstance().getMapaNodos().get(new Point(
+				JuegoController.getInstance().getMapaNodos().get(new Point(
 						myTile.getX(),
 						myTile.getY()
 						)).getValor().setActivo(0);
@@ -53,7 +54,7 @@ public class EventoHostCorona extends MouseAdapter{
 		}
 		
 		PartidaHostController.getInstance().getHostPlayer().setCrownPlaced(true);
-		PartidaHostController.getInstance().getMapaNodos().get(new Point(
+		JuegoController.getInstance().getMapaNodos().get(new Point(
 				myTile.getParent().getX(),
 				myTile.getParent().getY()
 				)).getValor().setActivo(2);

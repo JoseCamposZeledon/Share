@@ -7,6 +7,7 @@ import java.io.IOException;
 
 import javax.swing.JOptionPane;
 
+import controller.partida.JuegoController;
 import controller.partida.PartidaClientController;
 import controller.partida.PartidaHostController;
 import model.grafo.Arco;
@@ -23,7 +24,7 @@ public class EventoGetNodo extends MouseAdapter {
 		int truncatedX = (x1 / 32) * 32;
 		int truncatedY = (y1 /32) * 32;
 		
-		Nodo<GrafoTile> nodo = PartidaHostController.getInstance().getMapaNodos().get(new Point(truncatedX, truncatedY));
+		Nodo<GrafoTile> nodo = JuegoController.getInstance().getMapaNodos().get(new Point(truncatedX, truncatedY));
 	}
 	
 }

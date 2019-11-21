@@ -51,17 +51,10 @@ public class PartidaHostController implements Runnable, IConstants {
 	
 	private boolean readyHost, readyClient;
 	
-	private HashMap<Point, Nodo<GrafoTile>> mapaNodos;
-	private Grafo<GrafoTile> grafoNodos;
-	
-	private HashMap<Nodo<GrafoTile>, Group> mapaGrupos;
-	
-	private boolean conectado = false;
-	
-	private Player hostPlayer = new Player();
+	private Player hostPlayer = new Player(1);
 
-	private int addBuffer = 1000;
 	private int idPersonajeSelected = 0;
+	
 	
 	private PartidaHostController(String pMapPath, Account pHost) {
 		host = pHost;
@@ -78,9 +71,6 @@ public class PartidaHostController implements Runnable, IConstants {
 		vista.getInfoHost().setText(host.getCorreo() + " | " + host.getCounterVictorias());
 		vista.getInfoClient().setText("USUARIO DESCONECTADO");
 		
-		mapaNodos = new HashMap<Point, Nodo<GrafoTile>>();
-		grafoNodos = new Grafo<GrafoTile>();
-		mapaGrupos = new HashMap<Nodo<GrafoTile>, Group>();
 		
 		vista.getArcherLabel().addMouseListener(new EventoPersonajeHost(ID_ARCHER, vista.getArcherLabel()));
 		vista.getKnightLabel().addMouseListener(new EventoPersonajeHost(ID_KNIGHT, vista.getKnightLabel()));
@@ -88,9 +78,8 @@ public class PartidaHostController implements Runnable, IConstants {
 		
 		this.getVista().getTableroPane().addMouseListener(new EventoGetNodo());
 		
-		this.generarGrafo(mapPath);
+		JuegoController.getInstance().iniciar(mapPath);
 		
-		vista.getTableroPane().removeEvents(1);
 		
 //		for (Nodo<GrafoTile> actual : this.grafoNodos.dijkstra(
 //				mapaNodos.get(new Point(32, 0)), mapaNodos.get(new Point(0, 128))
@@ -146,139 +135,6 @@ public class PartidaHostController implements Runnable, IConstants {
 		this.readyHost = readyHost;
 	}
 	
-	public HashMap<Point, Nodo<GrafoTile>> getMapaNodos() {
-		return mapaNodos;
-	}
-
-
-	public void setMapaNodos(HashMap<Point, Nodo<GrafoTile>> mapaNodos) {
-		this.mapaNodos = mapaNodos;
-	}
-
-
-	public Grafo<GrafoTile> getGrafoNodos() {
-		return grafoNodos;
-	}
-
-
-	public void setGrafoNodos(Grafo<GrafoTile> grafoNodos) {
-		this.grafoNodos = grafoNodos;
-	}
-
-
-	public int getAddBuffer() {
-		return addBuffer;
-	}
-
-
-	public void setAddBuffer(int addBuffer) {
-		this.addBuffer = addBuffer;
-	}
-
-	public HashMap<Nodo<GrafoTile>, Group> getMapaGrupos() {
-		return mapaGrupos;
-	}
-
-
-	public void setMapaGrupos(HashMap<Nodo<GrafoTile>, Group> mapaGrupos) {
-		this.mapaGrupos = mapaGrupos;
-	}
-
-
-	private void generarGrafoNodos() {
-		int x1 = 0;
-		while (x1 < 1024) {
-			int y1 = 0;
-			while (y1 < 800) {
-				Nodo<GrafoTile> nodito = new Nodo<GrafoTile>(new GrafoTile(x1, y1, false));
-				mapaNodos.put(new Point(x1, y1), nodito);
-				grafoNodos.agregarNodo(nodito);
-				y1 += 32;
-			}
-			x1 += 32;
-		}
-	}
-	
-	private void conectarNodoAux(Nodo<GrafoTile> nodo, Nodo<GrafoTile> nodoDestino) {
-		if (!conectado) {
-			if (!nodo.getValor().isEsObstaculo() && !nodoDestino.getValor().isEsObstaculo()) {
-				nodo.conectar(nodoDestino, 1);
-			}
-		} else {
-			int arco = 1;
-			if (nodo.getValor().isEsObstaculo() || nodoDestino.getValor().isEsObstaculo()) {
-				arco = addBuffer;
-			}
-			nodo.conectar(nodoDestino, arco);
-		}
-	}
-	
-	private void conectarGrafoNodos() {
-		
-		for (Nodo<GrafoTile> nodo : grafoNodos.getNodos()) {
-			
-			int x = nodo.getValor().getX1();
-			int y = nodo.getValor().getY1();
-			
-			if (y >= 32) {
-				// arriba
-				conectarNodoAux(nodo, mapaNodos.get(new Point(x, y-32)));
-				// arriba derecha
-				if (x < 992) {
-					conectarNodoAux(nodo, mapaNodos.get(new Point(x+32, y-32)));
-				}
-				// arriba izquierda 
-				if (x >= 32) {
-					conectarNodoAux(nodo, mapaNodos.get(new Point(x-32, y-32)));
-				}
-			}
-			if (y < 768) {
-				// abajo
-				conectarNodoAux(nodo, mapaNodos.get(new Point(x, y+32)));
-				// abajo derecha
-				if (x < 992) {
-					conectarNodoAux(nodo, mapaNodos.get(new Point(x+32, y+32)));
-				}
-				// abajo izquierda 
-				if (x >= 32) {
-					conectarNodoAux(nodo, mapaNodos.get(new Point(x-32, y+32)));
-				}
-			}
-			if (x >= 32) {
-				// izquierda
-				conectarNodoAux(nodo, mapaNodos.get(new Point(x-32, y)));
-			}
-			if (x < 992) {
-				// derecha
-				conectarNodoAux(nodo, mapaNodos.get(new Point(x+32, y)));
-			}
-			
-		}
-	}
-	
-	private void computarNodosObstaculos(String pPath) {
-		for(ObstaculoGrafico obstaculo: MapParser.getInstance().loadMap(pPath).getObstaculos()) {
-			int x1 = obstaculo.getX1();
-			int truncatedX = (x1 / 32) * 32;
-			while (truncatedX < obstaculo.getX2()) {
-				int y1 = obstaculo.getY1();
-				int truncatedY = (y1 / 32) * 32;
-				while (truncatedY < obstaculo.getY2()) {
-					Nodo<GrafoTile> nodo = mapaNodos.get(new Point(truncatedX, truncatedY));
-					nodo.getValor().setEsObstaculo(true);
-					truncatedY += 32;
-				}
-				truncatedX += 32;
-			}
-		}
-	}
-	
-	public void generarGrafo(String pPath) {
-		generarGrafoNodos();
-		computarNodosObstaculos(pPath);
-		conectarGrafoNodos();
-	}
-
 	public Player getHostPlayer() {
 		return hostPlayer;
 	}
@@ -292,60 +148,180 @@ public class PartidaHostController implements Runnable, IConstants {
 	public synchronized void run() {
 		try {
 			
-			hostPlayer.agregarArcher(0);
-			hostPlayer.agregarArcher(0);
-			hostPlayer.agregarBrawler(0);
-			hostPlayer.agregarKnight(0);
+			HashMap<Point, Nodo<GrafoTile>> mapaNodos = JuegoController.getInstance().getMapaNodos();
 			
-			hostPlayer.agregarKnight(1);
-			hostPlayer.agregarArcher(1);
-			hostPlayer.agregarBrawler(1);
-			hostPlayer.agregarKnight(1);
+			Player clients = new Player(2);
+			Player clientePlayerLogica = clients;
+						
+			Player hostPlayerLogica = hostPlayer; 
 			
-			hostPlayer.agregarBrawler(2);
-			hostPlayer.agregarArcher(2);
-			hostPlayer.agregarBrawler(2);
-			hostPlayer.agregarKnight(2);
+			JuegoController.getInstance().setPlayerCasa(hostPlayerLogica);
+			JuegoController.getInstance().setPlayerCasa(clientePlayerLogica);
 			
-			hostPlayer.getGrupos()[0].setNodoActual(mapaNodos.get(new Point(32,0)));
-			hostPlayer.getGrupos()[1].setNodoActual(mapaNodos.get(new Point(32,384)));
-			hostPlayer.getGrupos()[2].setNodoActual(mapaNodos.get(new Point(32,768)));
+			clientePlayerLogica.agregarArcher(0);
+			clientePlayerLogica.agregarArcher(0);
+			clientePlayerLogica.agregarBrawler(0);
+			clientePlayerLogica.agregarKnight(0);
+			
+			clientePlayerLogica.agregarKnight(1);
+			clientePlayerLogica.agregarArcher(1);
+			clientePlayerLogica.agregarBrawler(1);
+			clientePlayerLogica.agregarKnight(1);
+			
+			clientePlayerLogica.getGrupos()[0].setNodoActual(mapaNodos.get(new Point(960,0)));
+			clientePlayerLogica.getGrupos()[1].setNodoActual(mapaNodos.get(new Point(960,384)));
+			clientePlayerLogica.getGrupos()[2].setNodoActual(mapaNodos.get(new Point(960,768)));
+			
+			clientePlayerLogica.agregarBrawler(2);
+			clientePlayerLogica.agregarArcher(2);
+			clientePlayerLogica.agregarBrawler(2);
+			clientePlayerLogica.agregarKnight(2);
 			
 			boolean state;
 			
-			state = hostPlayer.calcularRuta(mapaNodos.get(new Point(960,0)), 0);
+			state = clientePlayerLogica.calcularRuta(mapaNodos.get(new Point(32,0)), 0);
 			System.out.println(state);
-			state = hostPlayer.calcularRuta(mapaNodos.get(new Point(960,384)), 1);
+			state = clientePlayerLogica.calcularRuta(mapaNodos.get(new Point(32,384)), 1);
 			System.out.println(state);
-			state = hostPlayer.calcularRuta(mapaNodos.get(new Point(960,768)), 2);
+			state = clientePlayerLogica.calcularRuta(mapaNodos.get(new Point(32,768)), 2);
 			System.out.println(state +"\n");
 			
-			while (hostPlayer.enSeguimiento()) {
+			hostPlayerLogica.agregarArcher(0);
+			hostPlayerLogica.agregarArcher(0);
+			hostPlayerLogica.agregarBrawler(0);
+			hostPlayerLogica.agregarKnight(0);
+			
+			hostPlayerLogica.agregarKnight(1);
+			hostPlayerLogica.agregarArcher(1);
+			hostPlayerLogica.agregarBrawler(1);
+			hostPlayerLogica.agregarKnight(1);
+			
+			hostPlayerLogica.agregarBrawler(2);
+			hostPlayerLogica.agregarArcher(2);
+			hostPlayerLogica.agregarBrawler(2);
+			hostPlayerLogica.agregarKnight(2);
+			
+			hostPlayerLogica.getGrupos()[0].setNodoActual(mapaNodos.get(new Point(32,0)));
+			hostPlayerLogica.getGrupos()[1].setNodoActual(mapaNodos.get(new Point(32,384)));
+			hostPlayerLogica.getGrupos()[2].setNodoActual(mapaNodos.get(new Point(32,768)));
+			
+			state = hostPlayerLogica.calcularRuta(mapaNodos.get(new Point(960,0)), 0);
+			System.out.println(state);
+			state = hostPlayerLogica.calcularRuta(mapaNodos.get(new Point(960,384)), 1);
+			System.out.println(state);
+			state = hostPlayerLogica.calcularRuta(mapaNodos.get(new Point(960,768)), 2);
+			System.out.println(state +"\n");
+			
+			int turno = 0;
+			
+			while (hostPlayerLogica.enSeguimiento() || clientePlayerLogica.enSeguimiento()) {
+				
 				for (int i = 0; i < 3; i++) {
-					Group grupo = hostPlayer.getGrupos()[i];
-					Nodo<GrafoTile> nodoActual = hostPlayer.getGrupos()[i].getNodoActual();
-					System.out.println("Grupo " + i + " se encuentra en x: " + nodoActual.getValor().getX1() + " y: " + nodoActual.getValor().getY1());
+					Group grupo = hostPlayerLogica.getGrupos()[i];
+					Nodo<GrafoTile> nodoActual = hostPlayerLogica.getGrupos()[i].getNodoActual();
+					System.out.println("Grupo Aliado " + i + " se encuentra en x: " + nodoActual.getValor().getX1() + " y: " + nodoActual.getValor().getY1());
 					if (grupo.isVivo()) {
-						System.out.println("Grupo " + i +  " esta vivo.");
+						System.out.println("Grupo Aliado" + i +  " esta vivo.");
 						if (!grupo.isEnConflicto()) {
-							boolean states;
-							states = hostPlayer.mover(i);
-							if (states) {
-								System.out.println("Grupo " + i +  " moviendose.");
-								if (!hostPlayer.revisar(i).isEmpty()) {
-									grupo.setEnConflicto(true);
+							if (turno%2==0) {
+								boolean states;
+								states = hostPlayerLogica.mover(i);
+								if (states ) {
+									System.out.println("Grupo Aliado" + i +  " moviendose.");
 								}
 							} else {
-								System.out.println("Grupo " + i +  " estatico.");
+								System.out.println("Grupo Aliado" + i +  " estatico.");
 							}
 								
 						} else {
-							System.out.println("Grupo " + i +  " en conflicto.");
+							System.out.println("Grupo Aliado " + i +  " en conflicto. ");
+							int dano = grupo.danoPorMedioSegundo();
+							System.out.println("Dano es " + dano);
+							boolean vida = grupo.getConflictoCon().restarVida(dano);
+							if (vida) {
+								System.out.append("Que ha pasado?");
+								grupo.getConflictoCon().setVivo(false);
+								grupo.getConflictoCon().setEnConflicto(false);
+							}
 						}
 					} else {
-						System.out.println("Grupo " + i +  " esta muerto.");
+						System.out.println("Grupo Aliado " + i +  " esta muerto.");
 					}
 				}
+				
+				for (int i = 0; i < 3; i++) {
+					Player player = clientePlayerLogica;
+					Group grupo = player.getGrupos()[i];
+					Nodo<GrafoTile> nodoActual = player.getGrupos()[i].getNodoActual();
+					System.out.println("Grupo Enemigo " + i + " se encuentra en x: " + nodoActual.getValor().getX1() + " y: " + nodoActual.getValor().getY1());
+					if (grupo.isVivo()) {
+						System.out.println("Grupo Enemigo " + i +  " esta vivo.");
+						if (!grupo.isEnConflicto()) {
+							if (turno%2==0) {
+								boolean states;
+								states = player.mover(i);
+								if (states) {
+									System.out.println("Grupo Enemigo " + i +  " moviendose.");
+									
+								} 
+							} else {
+								System.out.println("Grupo Enemigo " + i +  " estatico.");
+							}
+								
+						} else {
+							System.out.println("Grupo Enemigo " + i +  " en conflicto.");
+							int dano = grupo.danoPorMedioSegundo();
+							System.out.println("Dano es " + dano);
+							boolean vida = grupo.getConflictoCon().restarVida(dano);
+							if (vida) {
+								System.out.append("Que ha pasado?");
+								grupo.getConflictoCon().setVivo(false);
+								grupo.getConflictoCon().setEnConflicto(false);
+							}
+						}
+					} else {
+						System.out.println("Grupo Enemigo " + i +  " esta muerto.");
+					}
+				}
+				
+				HashMap<Group, Integer> mapaDano = new HashMap<Group, Integer>();
+				boolean clientGane, hostGane;
+				
+				
+				for (int i = 0; i < 3; i++) {
+					if (!hostPlayerLogica.getGrupos()[i].isEnConflicto() && hostPlayerLogica.getGrupos()[i].isVivo()) {
+						if (hostPlayerLogica.getGrupos()[i].getNodoActual().getValor().getActivo() == 2) {
+							hostGane = true;
+							System.out.println("-----------------------------------------------------------");
+							System.out.println("ganeeeeee");
+							System.out.println("-----------------------------------------------------------");
+						} else if (hostPlayerLogica.revisar(i)) {
+							hostPlayerLogica.getGrupos()[i].setEnConflicto(true);
+							System.out.println("-----------------------------------------------------------");
+							System.out.println("se detecta");
+							System.out.println("-----------------------------------------------------------");
+						} else {
+							// no gana y no en conlflcito
+						}
+					}
+					if (!clientePlayerLogica.getGrupos()[i].isEnConflicto() && clientePlayerLogica.getGrupos()[i].isVivo()) {
+						if (clientePlayerLogica.getGrupos()[i].getNodoActual().getValor().getActivo() == 2) {
+							clientGane = true;
+							System.out.println("-----------------------------------------------------------");
+							System.out.println("ganeeeeee");
+							System.out.println("-----------------------------------------------------------");
+						} else if (clientePlayerLogica.revisar(i)) {
+							clientePlayerLogica.getGrupos()[i].setEnConflicto(true);
+							System.out.println("-----------------------------------------------------------");
+							System.out.println("se detecta");
+							System.out.println("-----------------------------------------------------------");
+						} else {
+							// no gana y no en conlflcito
+						}
+					}
+				}
+				
+				turno++;
 			}
 			
 			
@@ -391,26 +367,16 @@ public class PartidaHostController implements Runnable, IConstants {
 				
 				// Actualiza el boton READY en la pantalla del host cuando el client le da click
 				if (clientConnected != null && inicio) {
-					
-					if (inicio) {
-						DataInputStream oIS = new DataInputStream(clientConnected.getInputStream());
-						readyClient = oIS.readBoolean();
-						this.updateReadyButton(readyClient);
-						oIS.close();
-						clientConnected.close();
-					}
+					DataInputStream oIS = new DataInputStream(clientConnected.getInputStream());
+					readyClient = oIS.readBoolean();
+					this.updateReadyButton(readyClient);
+					oIS.close();
+					clientConnected.close();
 					
 					// Ambos estan listos para jugar
 					if (readyClient && readyHost && inicio) {
-						
 						vista.getReadyHostLabel().removeMouseListener(vista.getReadyHostLabel().getMouseListeners()[0]);
 						inicio = false;
-						
-						Socket socketEvento = new Socket(IP, CLIENT_PORT);
-						
-						DataOutputStream streamOS = new DataOutputStream(socketEvento.getOutputStream());
-						streamOS.writeBoolean(this.isReadyHost());
-						streamOS.close();
 						
 						continue;
 					}
@@ -446,7 +412,8 @@ public class PartidaHostController implements Runnable, IConstants {
 					.getImage().getScaledInstance(75, 75, Image.SCALE_SMOOTH)));
 		}
 		
-		this.notifyView();
+		this.getVista().revalidate();
+		this.getVista().repaint();
 	}
 	
 	
@@ -465,7 +432,8 @@ public class PartidaHostController implements Runnable, IConstants {
 	public void setReadyHost(boolean readyHost) {
 		this.readyHost = readyHost;
 	}
-	
+
+
 	public void setMapPath(String mapPath) {
 		this.mapPath = mapPath;
 	}

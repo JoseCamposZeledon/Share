@@ -27,7 +27,16 @@ public class Grafo<T> {
 	public void setNodos(LinkedList<Nodo<T>> nodos) {
 		this.nodos = nodos;
 	}
-
+	
+	public Nodo<T> getNodo(T valor) {
+		for (Nodo<T> nodo : nodos) {
+			if (nodo.getValor().equals(valor)) {
+				return nodo;
+			}
+		}
+		return null;
+	}
+	
 	/*
 	 * Obtiene la ruta propuesta por los diferentes algoritmos
 	 */

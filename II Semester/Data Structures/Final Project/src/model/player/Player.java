@@ -3,6 +3,7 @@ package model.player;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
+import controller.partida.JuegoController;
 import controller.partida.PartidaHostController;
 import model.grafo.Arco;
 import model.grafo.GrafoTile;
@@ -16,18 +17,28 @@ public class Player implements controller.partida.IConstants {
 	
 	private boolean crownPlaced;
 	
+	private int id;
 	private int cantidadArcher = 4;
 	private int cantidadBrawler = 6;
 	private int cantidadKnight = 2;
 	
 	private Group[] grupos = new Group[3];
 	
-	public Player() {
-		grupos[0] = new Group();
-		grupos[1] = new Group();
-		grupos[2] = new Group();
+	public Player(int id) {
+		this.id = id;
+		grupos[0] = new Group(id);
+		grupos[1] = new Group(id);
+		grupos[2] = new Group(id);
 	}
 	
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
 	public Group[] getGrupos() {
 		return grupos;
 	}
@@ -59,7 +70,7 @@ public class Player implements controller.partida.IConstants {
 		if (!grupo.getRuta().isEmpty() && grupo.isVivo()) { 
 			grupo.getNodoActual().getValor().setActivo(0);
 			grupo.setNodoActual(grupo.getRuta().get(0));
-			PartidaHostController.getInstance().getMapaGrupos().put(grupo.getNodoActual(), grupo);
+			JuegoController.getInstance().getMapaGrupos().put(grupo.getNodoActual(), grupo);
 			grupo.getRuta().get(0).getValor().setActivo(1);
 			grupo.getRuta().remove(0);
 			return true;
@@ -68,15 +79,49 @@ public class Player implements controller.partida.IConstants {
 		}
 	}
 	
-	public ArrayList<Group> revisar(int pGroupIndex) {
+	public Player playerOpuesto() {
+		if (this.equals(JuegoController.getInstance().getPlayerCasa())) {
+			return JuegoController.getInstance().getPlayerVisita();
+		} else {
+			return JuegoController.getInstance().getPlayerCasa();
+		}
+	}
+	
+	public boolean revisar(int pGroupIndex) {
 		// grupo para atacar
 		ArrayList<Group> grupo = new ArrayList<Group>();
 		for (Arco<GrafoTile> arco : grupos[pGroupIndex].getNodoActual().getConexiones()) {
 			if (arco.getConexion()[1].getValor().getActivo() == 1) {
-				grupo.add(PartidaHostController.getInstance().getMapaGrupos().get(arco.getConexion()[1]));
+				boolean factible = true;
+				for (int i = 0; i<3; i++) {
+					Nodo<GrafoTile> nodoDestino =  arco.getConexion()[1];
+					System.out.println("-----------------------------------------------------------");
+					System.out.println("Grupo Actual " + i + " se encuentra en x: " +  grupos[pGroupIndex].getNodoActual().getValor().getX1() + " y: " + grupos[pGroupIndex].getNodoActual().getValor().getY1());
+					System.out.println("-----------------------------------------------------------");
+					if (JuegoController.getInstance().getMapaGrupos().get(nodoDestino).getId() == id) {
+						factible = false;
+						System.out.println("-----------------------------------------------------------");
+						System.out.println("Grupo Destino Amigo " + i + " se encuentra en x: " + nodoDestino.getValor().getX1() + " y: " + nodoDestino.getValor().getY1());
+						System.out.println("-----------------------------------------------------------");
+					} else {
+						System.out.println("-----------------------------------------------------------");
+						System.out.println("Grupo Enemigo " + i + " se encuentra en x: " + nodoDestino.getValor().getX1() + " y: " + nodoDestino.getValor().getY1());
+						System.out.println("-----------------------------------------------------------");
+					}
+					System.out.println();
+				}
+				if (factible) {
+					grupo.add(JuegoController.getInstance().getMapaGrupos().get(arco.getConexion()[1]));
+				}
 			}
 		}
-		return grupo;
+		if (!grupo.isEmpty()) {
+			grupos[pGroupIndex].setConflictoCon(grupo.get(grupo.get(0).getR().nextInt(grupo.size())));
+			return true; 
+		} else {
+			return false;
+		}
+
 	}
 	
 	public void agregar(int pIdGrupo, int pIdAgregar) {
