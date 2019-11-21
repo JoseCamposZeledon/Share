@@ -1,4 +1,4 @@
-package controller.partida.hostEventos;
+package controller.partida.clientEventos;
 
 import java.awt.Color;
 import java.awt.event.MouseAdapter;
@@ -8,12 +8,11 @@ import java.util.ArrayList;
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 
+import controller.partida.PartidaClientController;
 import controller.partida.PartidaHostController;
-import model.mapComponents.CrownTile;
 import model.mapComponents.GroupTile;
-import model.player.Player;
 
-public class EventoHostGrupo extends MouseAdapter implements controller.partida.IConstants{
+public class EventoClientGrupo extends MouseAdapter implements controller.partida.IConstants{
 	
 	private static ArrayList<GroupTile> tiles = new ArrayList<GroupTile>();
 	private GroupTile myTile;
@@ -21,7 +20,7 @@ public class EventoHostGrupo extends MouseAdapter implements controller.partida.
 	
 	private JLabel personajesGrupo;
 	
-	public EventoHostGrupo(GroupTile pTile, int pIdTile) {
+	public EventoClientGrupo(GroupTile pTile, int pIdTile) {
 		tiles.add(pTile);
 		myTile = pTile;
 		idTile = pIdTile;
@@ -33,7 +32,7 @@ public class EventoHostGrupo extends MouseAdapter implements controller.partida.
 		JLabel personaje = new JLabel("  ");
 		
 		// Colores
-		switch (PartidaHostController.getInstance().getIdPersonajeSelected()) {
+		switch (PartidaClientController.getInstance().getIdPersonajeSelected()) {
 			case(ID_ARCHER):
 				personaje.setBorder(BorderFactory.createLineBorder(Color.GREEN));
 				break;
@@ -45,10 +44,10 @@ public class EventoHostGrupo extends MouseAdapter implements controller.partida.
 				break;
 		}
 		
-		PartidaHostController.getInstance().getHostPlayer()
-		.agregar(idTile, PartidaHostController.getInstance().getIdPersonajeSelected());
+		PartidaClientController.getInstance().getClientPlayer()
+		.agregar(idTile, PartidaClientController.getInstance().getIdPersonajeSelected());
 		
-		int size = PartidaHostController.getInstance().getHostPlayer()
+		int size = PartidaClientController.getInstance().getClientPlayer()
 				.getGrupos()[idTile].getPersonajes().size();
 		
 		if (size == 1) {
@@ -67,12 +66,11 @@ public class EventoHostGrupo extends MouseAdapter implements controller.partida.
 			System.out.println("Hay problemas");
 		}
 		
-		PartidaHostController.getInstance().getHostPlayer().getGrupos()[idTile]
+		PartidaClientController.getInstance().getClientPlayer().getGrupos()[idTile]
 				.setPersonajesLabel(personajesGrupo);
 		
-		PartidaHostController.getInstance().getVista().getTableroPane().add(personajesGrupo, 3);
+		PartidaClientController.getInstance().getVista().getTableroPane().add(personajesGrupo, 3);
 		
-		PartidaHostController.getInstance().notifyView();
+		PartidaClientController.getInstance().notifyView();
 	}
-
 }

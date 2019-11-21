@@ -90,6 +90,8 @@ public class PartidaHostController implements Runnable, IConstants {
 		
 		this.generarGrafo(mapPath);
 		
+		vista.getTableroPane().removeEvents(1);
+		
 //		for (Nodo<GrafoTile> actual : this.grafoNodos.dijkstra(
 //				mapaNodos.get(new Point(32, 0)), mapaNodos.get(new Point(0, 128))
 //				)) {
@@ -389,16 +391,26 @@ public class PartidaHostController implements Runnable, IConstants {
 				
 				// Actualiza el boton READY en la pantalla del host cuando el client le da click
 				if (clientConnected != null && inicio) {
-					DataInputStream oIS = new DataInputStream(clientConnected.getInputStream());
-					readyClient = oIS.readBoolean();
-					this.updateReadyButton(readyClient);
-					oIS.close();
-					clientConnected.close();
+					
+					if (inicio) {
+						DataInputStream oIS = new DataInputStream(clientConnected.getInputStream());
+						readyClient = oIS.readBoolean();
+						this.updateReadyButton(readyClient);
+						oIS.close();
+						clientConnected.close();
+					}
 					
 					// Ambos estan listos para jugar
 					if (readyClient && readyHost && inicio) {
+						
 						vista.getReadyHostLabel().removeMouseListener(vista.getReadyHostLabel().getMouseListeners()[0]);
 						inicio = false;
+						
+						Socket socketEvento = new Socket(IP, CLIENT_PORT);
+						
+						DataOutputStream streamOS = new DataOutputStream(socketEvento.getOutputStream());
+						streamOS.writeBoolean(this.isReadyHost());
+						streamOS.close();
 						
 						continue;
 					}
@@ -434,8 +446,7 @@ public class PartidaHostController implements Runnable, IConstants {
 					.getImage().getScaledInstance(75, 75, Image.SCALE_SMOOTH)));
 		}
 		
-		this.getVista().revalidate();
-		this.getVista().repaint();
+		this.notifyView();
 	}
 	
 	
@@ -454,8 +465,7 @@ public class PartidaHostController implements Runnable, IConstants {
 	public void setReadyHost(boolean readyHost) {
 		this.readyHost = readyHost;
 	}
-
-
+	
 	public void setMapPath(String mapPath) {
 		this.mapPath = mapPath;
 	}

@@ -17,7 +17,7 @@ import view.IConstants;
 
 public class VistaPartidaUser extends JFrame implements IConstants {
 	
-	private JLayeredPane tableroPane;
+	private Tablero tableroPane;
 	
 	private JLabel columnaHost, columnaClient;
 	
@@ -148,12 +148,8 @@ public class VistaPartidaUser extends JFrame implements IConstants {
 
 
 
-	public JLayeredPane getTableroPane() {
+	public Tablero getTableroPane() {
 		return tableroPane;
-	}
-
-	public void setTableroPane(JLayeredPane tableroPane) {
-		this.tableroPane = tableroPane;
 	}
 
 	public JLabel getColumnaHost() {

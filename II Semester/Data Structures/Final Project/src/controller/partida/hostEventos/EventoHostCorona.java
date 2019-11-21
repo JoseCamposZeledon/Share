@@ -1,6 +1,7 @@
 package controller.partida.hostEventos;
 
 import java.awt.Image;
+import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
@@ -39,12 +40,23 @@ public class EventoHostCorona extends MouseAdapter{
 				continue;
 			}
 			
+			else if (actual.isSelected()) {
+				PartidaHostController.getInstance().getMapaNodos().get(new Point(
+						myTile.getX(),
+						myTile.getY()
+						)).getValor().setActivo(0);
+			}
+			
 			// Limpia el tile
 			actual.removeAll();
 			actual.setSelected(false);
 		}
 		
 		PartidaHostController.getInstance().getHostPlayer().setCrownPlaced(true);
+		PartidaHostController.getInstance().getMapaNodos().get(new Point(
+				myTile.getParent().getX(),
+				myTile.getParent().getY()
+				)).getValor().setActivo(2);
 		PartidaHostController.getInstance().notifyView();
 		
 	}

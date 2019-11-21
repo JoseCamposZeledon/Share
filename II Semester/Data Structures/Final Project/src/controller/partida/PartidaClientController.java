@@ -18,6 +18,7 @@ import java.util.HashMap;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
+import controller.partida.clientEventos.EventoClientPersonaje;
 import controller.partida.clientEventos.EventoReady;
 import model.account.Account;
 import model.grafo.Grafo;
@@ -26,6 +27,7 @@ import model.grafo.Nodo;
 import model.json.MapParser;
 import model.mapComponents.CrownTile;
 import model.mapComponents.ObstaculoGrafico;
+import model.player.Player;
 import model.threadsPool.ThreadManager;
 import view.partida.VistaPartidaUser;
 
@@ -39,6 +41,18 @@ public class PartidaClientController implements Runnable, IConstants{
 
 	private ArrayList<CrownTile> tilesCorona;
 	
+	private Player clientPlayer = new Player();
+	
+	private int idPersonajeSelected = 0;
+
+	public int getIdPersonajeSelected() {
+		return idPersonajeSelected;
+	}
+
+	public void setIdPersonajeSelected(int idPersonajeSelected) {
+		this.idPersonajeSelected = idPersonajeSelected;
+	}
+
 	private PartidaClientController(Account pClient) throws IOException, UnknownHostException, Exception{
 		
 		client = pClient;
@@ -68,9 +82,13 @@ public class PartidaClientController implements Runnable, IConstants{
 		
 		readyClient = false;
 		
+		vista.getArcherLabel().addMouseListener(new EventoClientPersonaje(ID_ARCHER, vista.getArcherLabel()));
+		vista.getKnightLabel().addMouseListener(new EventoClientPersonaje(ID_KNIGHT, vista.getKnightLabel()));
+		vista.getBrawlerLabel().addMouseListener(new EventoClientPersonaje(ID_BRAWLER, vista.getBrawlerLabel()));
+		
 		vista.getReadyClientLabel().addMouseListener(new EventoReady(this));
 		vista.getInfoClient().setText(client.getCorreo() + " | " + client.getCounterVictorias());
-		
+		vista.getTableroPane().removeEvents(2);
 	}
 	
 	public static PartidaClientController createInstance(Account pClient) throws IOException, UnknownHostException{
@@ -104,6 +122,14 @@ public class PartidaClientController implements Runnable, IConstants{
 		this.getVista().update();
 	}
 	
+	public Player getClientPlayer() {
+		return clientPlayer;
+	}
+
+	public void setClientPlayer(Player clientPlayer) {
+		this.clientPlayer = clientPlayer;
+	}
+	
 	public static PartidaClientController getInstance() {
 		return instancia;
 	}
@@ -126,7 +152,7 @@ public class PartidaClientController implements Runnable, IConstants{
 	public void setVista(VistaPartidaUser vista) {
 		this.vista = vista;
 	}
-
+	
 
 	public boolean isReadyClient() {
 		return readyClient;
@@ -144,6 +170,7 @@ public class PartidaClientController implements Runnable, IConstants{
 			
 			boolean connected = true;
 			boolean inicio = true;
+			boolean pintarEnemigo = false;
 			
 			// Espera a que el host se pueda conectar
 			while (true) {
@@ -174,19 +201,48 @@ public class PartidaClientController implements Runnable, IConstants{
 				
 				// Cambia el estado del boton READY cuando host hace click
 				if (hostConnected != null && inicio) {
-					DataInputStream oIS = new DataInputStream(hostConnected.getInputStream());
-					readyHost = oIS.readBoolean();
-					this.updateReadyButton(readyHost);
-					oIS.close();
-					hostConnected.close();
+					if (inicio) {
+						DataInputStream oIS = new DataInputStream(hostConnected.getInputStream());
+						readyHost = oIS.readBoolean();
+						this.updateReadyButton(readyHost);
+						oIS.close();
+						hostConnected.close();
+					}
 					
 					if (readyClient && readyHost && inicio) {
+						
 						vista.getReadyClientLabel().removeMouseListener(vista.getReadyClientLabel().getMouseListeners()[0]);
 						inicio = false;
 						
+						Socket socketEvento = new Socket(IP, HOST_PORT);
+						
+						DataOutputStream streamOS = new DataOutputStream(socketEvento.getOutputStream());
+						streamOS.writeBoolean(this.isReadyClient());
+						streamOS.close();
+						
+						
+						pintarEnemigo = true;
 						continue;
 					}
 					continue;
+				}
+				
+				// Pinta los tiles del enemigo
+				if (pintarEnemigo) {
+					
+					Socket socketEvento = new Socket(IP, HOST_PORT);
+					
+					ObjectOutputStream streamOS = new ObjectOutputStream(socketEvento.getOutputStream());
+					streamOS.writeObject(this.getVista().getTableroPane().getHostCrownTiles());
+					streamOS.writeObject(this.getVista().getTableroPane().getHostGroupTiles());
+					streamOS.close();
+					
+					ObjectOutputStream streamIS = new ObjectOutputStream(socketEvento.getOutputStream());
+					streamOS.writeObject(this.getVista().getTableroPane().getHostCrownTiles());
+					streamOS.writeObject(this.getVista().getTableroPane().getHostGroupTiles());
+					streamOS.close();
+					
+					pintarEnemigo = false;
 				}
 				
 			}
@@ -206,8 +262,7 @@ public class PartidaClientController implements Runnable, IConstants{
 					.getImage().getScaledInstance(75, 75, Image.SCALE_SMOOTH)));
 		}
 		
-		this.getVista().revalidate();
-		this.getVista().repaint();
+		this.notifyView();
 	}
 	 
 	
