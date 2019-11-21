@@ -3,6 +3,8 @@ package view.partida;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Image;
+import java.util.Observable;
+import java.util.Observer;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -15,7 +17,7 @@ import model.mapComponents.ObstaculoGrafico;
 import model.mapComponents.Tablero;
 import view.IConstants;
 
-public class VistaPartidaHost extends JFrame implements IConstants {
+public class VistaPartidaHost extends JFrame implements IConstants{
 	
 	private JLayeredPane tableroPane;
 	private JLabel columnaHost, columnaClient;
@@ -256,5 +258,10 @@ public class VistaPartidaHost extends JFrame implements IConstants {
 	
 	public void setTableroPane(JLayeredPane tableroPane) {
 		this.tableroPane = tableroPane;
+	}
+	
+	public void update() {
+		this.revalidate();
+		this.repaint();
 	}
 }

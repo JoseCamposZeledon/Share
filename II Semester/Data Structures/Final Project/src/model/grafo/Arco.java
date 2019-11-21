@@ -1,5 +1,7 @@
 package model.grafo;
 
+import java.io.Serializable;
+
 public class Arco<T> {
 	private int peso;
 	

@@ -1,8 +1,9 @@
 package model.grafo;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Nodo<T>{
+public class Nodo<T> {
 	private ArrayList<Arco<T>> conexiones = new ArrayList<Arco<T>>();
 	private boolean visitado = false;
 	private Nodo<T> previo;

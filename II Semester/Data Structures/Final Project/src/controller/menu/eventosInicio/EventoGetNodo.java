@@ -24,9 +24,6 @@ public class EventoGetNodo extends MouseAdapter {
 		int truncatedY = (y1 /32) * 32;
 		
 		Nodo<GrafoTile> nodo = PartidaHostController.getInstance().getMapaNodos().get(new Point(truncatedX, truncatedY));
-		for (Arco arco : nodo.getConexiones()) {
-			System.out.println(arco.getConexion()[1].getValor());
-		}
 	}
 	
 }

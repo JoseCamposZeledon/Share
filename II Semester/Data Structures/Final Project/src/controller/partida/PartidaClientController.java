@@ -12,6 +12,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.rmi.server.ServerRef;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import javax.swing.ImageIcon;
@@ -23,23 +24,25 @@ import model.grafo.Grafo;
 import model.grafo.GrafoTile;
 import model.grafo.Nodo;
 import model.json.MapParser;
+import model.mapComponents.CrownTile;
 import model.mapComponents.ObstaculoGrafico;
 import model.threadsPool.ThreadManager;
 import view.partida.VistaPartidaUser;
 
-public class PartidaClientController implements Runnable, Serializable, IConstants{
+public class PartidaClientController implements Runnable, IConstants{
 	
 	private static PartidaClientController instancia = null;
 	
 	private Account host, client;
 	private VistaPartidaUser vista;
-	private boolean readyClient;
-	
-	private PartidaHostController hostController;
+	private boolean readyClient, readyHost;
 
+	private ArrayList<CrownTile> tilesCorona;
+	
 	private PartidaClientController(Account pClient) throws IOException, UnknownHostException, Exception{
 		
 		client = pClient;
+		tilesCorona = new ArrayList<CrownTile>();
 		
 		try {
 			// Se conecta a ese IP
@@ -47,7 +50,7 @@ public class PartidaClientController implements Runnable, Serializable, IConstan
 			
 			// Envia el usuario
 			ObjectOutputStream oOS = new ObjectOutputStream(socket.getOutputStream());
-			oOS.writeObject(this);
+			oOS.writeObject(this.client);
 			oOS.close();
 			
 			// Empieza el servido en un nuevo hilo
@@ -87,10 +90,18 @@ public class PartidaClientController implements Runnable, Serializable, IConstan
 		return instancia;
 	}
 	
+	public void addCoronaTile(CrownTile pTile) {
+		this.tilesCorona.add(pTile);
+	}
+	
 	public void loadMap(String pPath) {
 		for(ObstaculoGrafico obstaculo: MapParser.getInstance().loadMap(pPath).getObstaculos()) {
 			vista.getTableroPane().add(obstaculo.getGraphicObstaculo(), 1);
 		}
+	}
+	
+	public void notifyView() {
+		this.getVista().update();
 	}
 	
 	public static PartidaClientController getInstance() {
@@ -132,20 +143,27 @@ public class PartidaClientController implements Runnable, Serializable, IConstan
 			ServerSocket server = new ServerSocket(CLIENT_PORT, 2);
 			
 			boolean connected = true;
+			boolean inicio = true;
+			
 			// Espera a que el host se pueda conectar
 			while (true) {
 				hostConnected = server.accept();	
 				
 				// Carga el mapa & la informacion del host de partida
 				if (hostConnected.isConnected() && connected == true) {
-					ObjectInputStream oIS = new ObjectInputStream(hostConnected.getInputStream());
 					
-					hostController = (PartidaHostController) oIS.readObject();
+					ObjectInputStream oIS = new ObjectInputStream(hostConnected.getInputStream());
+					host = (Account) oIS.readObject();
+					
+					// Host es igual a client
 					
 					this.getVista().getInfoHost().setText(
-							hostController.getHost().getCorreo() + " | " + 
-							hostController.getHost().getCounterVictorias());
-					this.loadMap(hostController.getMapPath());
+							host.getCorreo() + " | " + 
+							host.getCounterVictorias());
+					
+					String mapaPath = oIS.readUTF();
+					
+					this.loadMap(mapaPath);
 					
 					this.getVista().revalidate();
 					this.getVista().repaint();
@@ -155,16 +173,23 @@ public class PartidaClientController implements Runnable, Serializable, IConstan
 				}
 				
 				// Cambia el estado del boton READY cuando host hace click
-				if (hostConnected != null) {
-					ObjectInputStream oIS = new ObjectInputStream(hostConnected.getInputStream());
-					hostController = (PartidaHostController) oIS.readObject();
-					this.updateReadyButton(hostController.isReadyHost());
+				if (hostConnected != null && inicio) {
+					DataInputStream oIS = new DataInputStream(hostConnected.getInputStream());
+					readyHost = oIS.readBoolean();
+					this.updateReadyButton(readyHost);
 					oIS.close();
 					hostConnected.close();
+					
+					if (readyClient && readyHost && inicio) {
+						vista.getReadyClientLabel().removeMouseListener(vista.getReadyClientLabel().getMouseListeners()[0]);
+						inicio = false;
+						
+						continue;
+					}
+					continue;
 				}
 				
 			}
-	
 		} catch (IOException | ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

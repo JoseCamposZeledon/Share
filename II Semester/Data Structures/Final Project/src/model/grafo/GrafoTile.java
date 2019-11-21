@@ -1,5 +1,7 @@
 package model.grafo;
 
+import java.io.Serializable;
+
 import model.mapComponents.MapTile;
 
 public class GrafoTile {

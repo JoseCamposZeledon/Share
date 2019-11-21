@@ -8,7 +8,7 @@ import java.util.LinkedList;
 
 import model.cola.Cola;
 
-public class Grafo<T> implements Serializable{
+public class Grafo<T> {
 	
 	private LinkedList<Nodo<T>> nodos;
 	
@@ -106,43 +106,5 @@ public class Grafo<T> implements Serializable{
 		for (Nodo nodo : nodos) {
 			nodo.setPrevio(null);
 		}
-	}
-	
-	public static void main(String[] args) {
-		
-		Grafo<String> test = new Grafo<String>();
-		
-		Nodo<String> nodoA = new Nodo<String>("A");
-		Nodo<String> nodoB = new Nodo<String>("B");
-		Nodo<String> nodoC = new Nodo<String>("C");
-		Nodo<String> nodoD = new Nodo<String>("D");
-		Nodo<String> nodoE = new Nodo<String>("E");
-		Nodo<String> nodoF = new Nodo<String>("F");
-		Nodo<String> nodoG = new Nodo<String>("G");
-		Nodo<String> nodoH = new Nodo<String>("H");
-		
-		nodoA.conectar(nodoB, 1);
-		nodoA.conectar(nodoC, 1000);
-		nodoA.conectar(nodoD, 1000);
-		nodoA.conectar(nodoH, 1);
-		
-		nodoB.conectar(nodoD, 1);
-		
-		nodoC.conectar(nodoE, 1);
-		
-		nodoD.conectar(nodoE, 1);
-		
-		test.agregarNodo(nodoA);
-		test.agregarNodo(nodoB);
-		test.agregarNodo(nodoC);
-		test.agregarNodo(nodoD);
-		test.agregarNodo(nodoE);
-		test.agregarNodo(nodoH);
-		
-		for (Nodo<String> actual : test.dijkstra(nodoA, nodoE)) {
-			System.out.println("Actual: " + actual.getValor());
-		}
-		
-		
 	}
 }

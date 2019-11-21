@@ -1,6 +1,5 @@
 package controller.partida;
 
-import java.awt.Event;
 import java.awt.Image;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -15,6 +14,7 @@ import java.io.Serializable;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import javax.swing.JOptionPane;
@@ -28,12 +28,13 @@ import model.grafo.Grafo;
 import model.grafo.GrafoTile;
 import model.grafo.Nodo;
 import model.json.MapParser;
+import model.mapComponents.CrownTile;
 import model.mapComponents.ObstaculoGrafico;
 import model.threadsPool.ThreadManager;
 import view.partida.VistaPartidaHost;
 import view.partida.VistaPartidaUser;
 
-public class PartidaHostController implements Runnable, Serializable, IConstants {
+public class PartidaHostController implements Runnable, IConstants {
 	
 	private static PartidaHostController instancia = null;
 	
@@ -42,9 +43,8 @@ public class PartidaHostController implements Runnable, Serializable, IConstants
 	
 	private String mapPath;
 	
-	private boolean readyHost;
+	private boolean readyHost, readyClient;
 	
-	private PartidaClientController controllerClient;
 	private HashMap<Point, Nodo<GrafoTile>> mapaNodos;
 	private Grafo<GrafoTile> grafoNodos;
 	
@@ -52,15 +52,14 @@ public class PartidaHostController implements Runnable, Serializable, IConstants
 	
 	private int addBuffer = 1000;
 	
-	
 	private PartidaHostController(String pMapPath, Account pHost) {
-		
 		host = pHost;
 		mapPath = pMapPath;
 		
 		vista = new VistaPartidaHost();
-		
 		loadMap();
+		
+		readyHost = false;
 		
 		// Evento READY
 		vista.getReadyHostLabel().addMouseListener(new EventoReady(this));
@@ -73,16 +72,14 @@ public class PartidaHostController implements Runnable, Serializable, IConstants
 		
 		this.getVista().getTableroPane().addMouseListener(new EventoGetNodo());
 		
-		this.generarGrafo(".//static//maps//mapa1.json");
+		this.generarGrafo(mapPath);
 		
-		for (Nodo<GrafoTile> actual : this.grafoNodos.dijkstra(
-				mapaNodos.get(new Point(0, 0)), mapaNodos.get(new Point(256, 0))
-				)) {
-			if (actual.getPrevio() == null) continue;
-			System.out.println("Actual: X: " + actual.getValor().getX1() + " Y: " + actual.getValor().getY1());
-		}
+//		for (Nodo<GrafoTile> actual : this.grafoNodos.dijkstra(
+//				mapaNodos.get(new Point(32, 0)), mapaNodos.get(new Point(0, 128))
+//				)) {
+//			System.out.println("Actual: X: " + actual.getValor().getX1() + " Y: " + actual.getValor().getY1());
+//		}
 	}
-	
 	
 	public static PartidaHostController createInstance(String pMapPath, Account pHost) {
 		if (instancia == null) {
@@ -121,7 +118,7 @@ public class PartidaHostController implements Runnable, Serializable, IConstants
 		return readyHost;
 	}
 
-	public void setReadyHost(boolean readyHost) {
+	public void Host(boolean readyHost) {
 		this.readyHost = readyHost;
 	}
 	
@@ -234,14 +231,12 @@ public class PartidaHostController implements Runnable, Serializable, IConstants
 				int y1 = obstaculo.getY1();
 				int truncatedY = (y1 / 32) * 32;
 				while (truncatedY < obstaculo.getY2()) {
-					System.out.println(truncatedX + " " + truncatedY);
 					Nodo<GrafoTile> nodo = mapaNodos.get(new Point(truncatedX, truncatedY));
 					nodo.getValor().setEsObstaculo(true);
 					truncatedY += 32;
 				}
 				truncatedX += 32;
 			}
-			// vista.getTableroPane().add(obstaculo.getGraphicObstaculo(), 1);
 		}
 	}
 	public void generarGrafo(String pPath) {
@@ -258,22 +253,32 @@ public class PartidaHostController implements Runnable, Serializable, IConstants
 			Socket clientConnected, connect;
 			
 			boolean connected = true;
+			boolean inicio = true;
 			
 			while (true) {
 				clientConnected = server.accept();
+				
 				// Conecta al host de la partida con el servidor del cliente
 				if (clientConnected.isConnected() && connected == true) {
+					
 					connect = new Socket(IP, CLIENT_PORT);
+					
 					ObjectOutputStream oOS = new ObjectOutputStream(connect.getOutputStream());
-					oOS.writeObject(this);
+				
+					oOS.writeObject(this.host);
+					
+					oOS.flush();
+					
+					oOS.writeUTF(this.mapPath);
+					
 					oOS.close();
 					
 					ObjectInputStream oIS = new ObjectInputStream(clientConnected.getInputStream());
-					controllerClient = (PartidaClientController) oIS.readObject();
+					client = (Account) oIS.readObject();
 					
 					this.getVista().getInfoClient().setText(
-							controllerClient.getClient().getCorreo() + " | " + 
-							controllerClient.getClient().getCounterVictorias());
+							client.getCorreo() + " | " + 
+							client.getCounterVictorias());
 					
 					this.getVista().revalidate();
 					this.getVista().repaint();
@@ -285,12 +290,22 @@ public class PartidaHostController implements Runnable, Serializable, IConstants
 				}
 				
 				// Actualiza el boton READY en la pantalla del host cuando el client le da click
-				if (clientConnected != null) {
-					ObjectInputStream oIS = new ObjectInputStream(clientConnected.getInputStream());
-					controllerClient = (PartidaClientController) oIS.readObject();
-					this.updateReadyButton(controllerClient.isReadyClient());
+				if (clientConnected != null && inicio) {
+					DataInputStream oIS = new DataInputStream(clientConnected.getInputStream());
+					readyClient = oIS.readBoolean();
+					this.updateReadyButton(readyClient);
 					oIS.close();
 					clientConnected.close();
+					
+					// Ambos estan listos para jugar
+					if (readyClient && readyHost && inicio) {
+						vista.getReadyHostLabel().removeMouseListener(vista.getReadyHostLabel().getMouseListeners()[0]);
+						inicio = false;
+						
+						continue;
+					}
+					
+					continue;
 				}
 				
 			}
@@ -308,6 +323,10 @@ public class PartidaHostController implements Runnable, Serializable, IConstants
 		
 	}
 
+	public void notifyView() {
+		vista.update();
+	}
+	
 	public void updateReadyButton(boolean pReady) {
 		if (!pReady) {
 			this.getVista().getReadyClientLabel().setIcon(new ImageIcon(new ImageIcon(".\\static\\media\\images\\notready_button.png")
@@ -327,14 +346,12 @@ public class PartidaHostController implements Runnable, Serializable, IConstants
 	}
 
 
+	public void setReadyHost(boolean readyHost) {
+		this.readyHost = readyHost;
+	}
+
+
 	public void setMapPath(String mapPath) {
 		this.mapPath = mapPath;
-	}
-	
-	public static void main(String[] args) {
-		PartidaHostController.createInstance(".//static//maps//mapa1.json", new Account("a@a.com", "123"));
-//		PartidaHostController.getInstance()
-	}
-	
-	
+	}	
 }	
