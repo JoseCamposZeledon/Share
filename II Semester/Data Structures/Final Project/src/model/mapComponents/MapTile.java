@@ -5,8 +5,6 @@ import java.awt.Image;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 
-import controller.menu.eventosInicio.EventoGetNodo;
-
 public class MapTile extends JLabel implements view.IConstants {
 
 	private static ImageIcon tileTexture = new ImageIcon(
@@ -16,7 +14,6 @@ public class MapTile extends JLabel implements view.IConstants {
 	
 	public MapTile() {
 		this.setIcon(tileTexture);
-		this.addMouseListener(new EventoGetNodo());
 	}
 	
 }

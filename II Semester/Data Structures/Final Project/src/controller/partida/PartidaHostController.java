@@ -21,6 +21,7 @@ import javax.swing.JOptionPane;
 
 import javax.swing.ImageIcon;
 
+import controller.menu.eventosInicio.EventoGetNodo;
 import controller.partida.hostEventos.EventoReady;
 import model.account.Account;
 import model.grafo.Grafo;
@@ -67,6 +68,8 @@ public class PartidaHostController implements Runnable, Serializable, IConstants
 		
 		mapaNodos = new HashMap<Point, Nodo<GrafoTile>>();
 		grafoNodos = new Grafo<GrafoTile>();
+		
+		this.getVista().getTableroPane().addMouseListener(new EventoGetNodo());
 	}
 	
 	
