@@ -30,6 +30,7 @@ import model.grafo.GrafoTile;
 import model.grafo.Nodo;
 import model.json.MapParser;
 import model.mapComponents.CrownTile;
+import model.mapComponents.GroupTile;
 import model.mapComponents.ObstaculoGrafico;
 import model.personajes.Archer;
 import model.personajes.Brawler;
@@ -292,71 +293,28 @@ public class PartidaHostController implements Runnable, IConstants {
 	public synchronized void run() {
 		try {
 			
-			hostPlayer.agregarArcher(0);
-			hostPlayer.agregarArcher(0);
-			hostPlayer.agregarBrawler(0);
-			hostPlayer.agregarKnight(0);
-			
-			hostPlayer.agregarKnight(1);
-			hostPlayer.agregarArcher(1);
-			hostPlayer.agregarBrawler(1);
-			hostPlayer.agregarKnight(1);
-			
-			hostPlayer.agregarBrawler(2);
-			hostPlayer.agregarArcher(2);
-			hostPlayer.agregarBrawler(2);
-			hostPlayer.agregarKnight(2);
-			
-			hostPlayer.getGrupos()[0].setNodoActual(mapaNodos.get(new Point(32,0)));
-			hostPlayer.getGrupos()[1].setNodoActual(mapaNodos.get(new Point(32,384)));
-			hostPlayer.getGrupos()[2].setNodoActual(mapaNodos.get(new Point(32,768)));
-			
-			boolean state;
-			
-			state = hostPlayer.calcularRuta(mapaNodos.get(new Point(960,0)), 0);
-			System.out.println(state);
-			state = hostPlayer.calcularRuta(mapaNodos.get(new Point(960,384)), 1);
-			System.out.println(state);
-			state = hostPlayer.calcularRuta(mapaNodos.get(new Point(960,768)), 2);
-			System.out.println(state +"\n");
-			
-			while (hostPlayer.enSeguimiento()) {
-				for (int i = 0; i < 3; i++) {
-					Group grupo = hostPlayer.getGrupos()[i];
-					Nodo<GrafoTile> nodoActual = hostPlayer.getGrupos()[i].getNodoActual();
-					System.out.println("Grupo " + i + " se encuentra en x: " + nodoActual.getValor().getX1() + " y: " + nodoActual.getValor().getY1());
-					if (grupo.isVivo()) {
-						System.out.println("Grupo " + i +  " esta vivo.");
-						if (!grupo.isEnConflicto()) {
-							boolean states;
-							states = hostPlayer.mover(i);
-							if (states) {
-								System.out.println("Grupo " + i +  " moviendose.");
-								if (!hostPlayer.revisar(i).isEmpty()) {
-									grupo.setEnConflicto(true);
-								}
-							} else {
-								System.out.println("Grupo " + i +  " estatico.");
-							}
-								
-						} else {
-							System.out.println("Grupo " + i +  " en conflicto.");
-						}
-					} else {
-						System.out.println("Grupo " + i +  " esta muerto.");
-					}
-				}
-			}
-			
-			
 			ServerSocket server = new ServerSocket(HOST_PORT, 1);
 			Socket clientConnected, connect;
 			
 			boolean connected = true;
 			boolean inicio = true;
+			boolean pintarEnemigo = false;
+			ArrayList<CrownTile> crowns;
+			ArrayList<GroupTile> groups;
+			
+			boolean first = false;
+			boolean second = false;
 			
 			while (true) {
 				clientConnected = server.accept();
+				
+				if (readyClient && !readyHost) {
+					first = false;
+					second = true;
+				} else if (!readyClient && readyHost){
+					first = true;
+					second = false;
+				}
 				
 				// Conecta al host de la partida con el servidor del cliente
 				if (clientConnected.isConnected() && connected == true) {
@@ -412,12 +370,61 @@ public class PartidaHostController implements Runnable, IConstants {
 						streamOS.writeBoolean(this.isReadyHost());
 						streamOS.close();
 						
+						// Quita los eventos de los tiles
+						for (CrownTile a : vista.getTableroPane().getHostCrownTiles()) {
+							a.removeMouseListener(a.getMouseListeners()[0]);
+						}
+						
+						for (GroupTile a : vista.getTableroPane().getHostGroupTiles()) {
+							a.removeMouseListener(a.getMouseListeners()[0]);
+						}
+						
+						pintarEnemigo = true;
+						
 						continue;
 					}
 					
 					continue;
 				}
 				
+				// El cliente envia los valores si es el primero en presionar el boton ready
+				if (pintarEnemigo) {
+					Socket socketEvento = new Socket(IP, CLIENT_PORT);
+					
+					ObjectOutputStream streamOS = new ObjectOutputStream(socketEvento.getOutputStream());
+					streamOS.writeObject(this.getVista().getTableroPane().getHostCrownTiles());
+					streamOS.writeObject(this.getVista().getTableroPane().getHostGroupTiles());
+					streamOS.close();
+					socketEvento.close();
+					
+					if (clientConnected.getInputStream().available() > 4) {
+						
+						Socket socketEvento2 = new Socket(IP, CLIENT_PORT);
+						
+						ObjectOutputStream streamOS2 = new ObjectOutputStream(socketEvento2.getOutputStream());
+						streamOS2.writeObject(this.getVista().getTableroPane().getHostCrownTiles());
+						streamOS2.writeObject(this.getVista().getTableroPane().getHostGroupTiles());
+						streamOS2.close();
+
+						ObjectInputStream streamIS = new ObjectInputStream(clientConnected.getInputStream());
+						crowns = (ArrayList<CrownTile>) streamIS.readObject();
+						groups = (ArrayList<GroupTile>) streamIS.readObject();
+						
+						for (CrownTile a : crowns) {
+							this.getVista().getTableroPane().add(a, 3);;
+						}
+						
+						for (GroupTile a : groups) {
+							this.getVista().getTableroPane().add(a, 3);
+						}
+						
+						pintarEnemigo = false;
+						this.notifyView();
+						
+						pintarEnemigo = false;
+					}
+					
+				}
 			}
 						
 		} catch (UnknownHostException e) {

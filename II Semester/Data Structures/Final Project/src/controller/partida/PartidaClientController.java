@@ -26,6 +26,7 @@ import model.grafo.GrafoTile;
 import model.grafo.Nodo;
 import model.json.MapParser;
 import model.mapComponents.CrownTile;
+import model.mapComponents.GroupTile;
 import model.mapComponents.ObstaculoGrafico;
 import model.player.Player;
 import model.threadsPool.ThreadManager;
@@ -171,10 +172,23 @@ public class PartidaClientController implements Runnable, IConstants{
 			boolean connected = true;
 			boolean inicio = true;
 			boolean pintarEnemigo = false;
+			boolean first = false;
+			boolean second = false;
+			
+			ArrayList<CrownTile> crowns;
+			ArrayList<GroupTile> groups;
 			
 			// Espera a que el host se pueda conectar
 			while (true) {
-				hostConnected = server.accept();	
+				hostConnected = server.accept();
+				
+				if (!readyClient && readyHost) {
+					first = false;
+					second = true;
+				} else if (readyClient && !readyHost){
+					first = true;
+					second = false;
+				}
 				
 				// Carga el mapa & la informacion del host de partida
 				if (hostConnected.isConnected() && connected == true) {
@@ -220,6 +234,14 @@ public class PartidaClientController implements Runnable, IConstants{
 						streamOS.writeBoolean(this.isReadyClient());
 						streamOS.close();
 						
+						// Quita los eventos de los tiles
+						for (CrownTile a : vista.getTableroPane().getClientCrownTiles()) {
+							a.removeMouseListener(a.getMouseListeners()[0]);
+						}
+						
+						for (GroupTile a : vista.getTableroPane().getClientGroupTiles()) {
+							a.removeMouseListener(a.getMouseListeners()[0]);
+						}
 						
 						pintarEnemigo = true;
 						continue;
@@ -227,25 +249,44 @@ public class PartidaClientController implements Runnable, IConstants{
 					continue;
 				}
 				
-				// Pinta los tiles del enemigo
+				// Pinta los tiles del enemigo y envia sus tiles
 				if (pintarEnemigo) {
-					
 					Socket socketEvento = new Socket(IP, HOST_PORT);
 					
 					ObjectOutputStream streamOS = new ObjectOutputStream(socketEvento.getOutputStream());
-					streamOS.writeObject(this.getVista().getTableroPane().getHostCrownTiles());
-					streamOS.writeObject(this.getVista().getTableroPane().getHostGroupTiles());
+					streamOS.writeObject(this.getVista().getTableroPane().getClientCrownTiles());
+					streamOS.writeObject(this.getVista().getTableroPane().getClientGroupTiles());
 					streamOS.close();
+					socketEvento.close();
 					
-					ObjectOutputStream streamIS = new ObjectOutputStream(socketEvento.getOutputStream());
-					streamOS.writeObject(this.getVista().getTableroPane().getHostCrownTiles());
-					streamOS.writeObject(this.getVista().getTableroPane().getHostGroupTiles());
-					streamOS.close();
-					
-					pintarEnemigo = false;
+					if (hostConnected.getInputStream().available() > 4) {
+						Socket socketEvento2 = new Socket(IP, HOST_PORT);
+						
+						ObjectOutputStream streamOS2 = new ObjectOutputStream(socketEvento2.getOutputStream());
+						streamOS2.writeObject(this.getVista().getTableroPane().getHostCrownTiles());
+						streamOS2.writeObject(this.getVista().getTableroPane().getHostGroupTiles());
+						streamOS2.close();
+							
+						ObjectInputStream streamIS = new ObjectInputStream(hostConnected.getInputStream());
+						crowns = (ArrayList<CrownTile>) streamIS.readObject();
+						groups = (ArrayList<GroupTile>) streamIS.readObject();
+						
+						for (CrownTile a : crowns) {
+							this.getVista().getTableroPane().add(a, 3);;
+						}
+						
+						for (GroupTile a : groups) {
+							this.getVista().getTableroPane().add(a, 3);
+						}
+						
+						pintarEnemigo = false;
+						this.notifyView();
+					}
 				}
-				
+					
+					continue;
 			}
+				
 		} catch (IOException | ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

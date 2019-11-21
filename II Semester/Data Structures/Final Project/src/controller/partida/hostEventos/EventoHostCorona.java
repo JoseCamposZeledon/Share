@@ -54,8 +54,8 @@ public class EventoHostCorona extends MouseAdapter{
 		
 		PartidaHostController.getInstance().getHostPlayer().setCrownPlaced(true);
 		PartidaHostController.getInstance().getMapaNodos().get(new Point(
-				myTile.getParent().getX(),
-				myTile.getParent().getY()
+				myTile.getX(),
+				myTile.getY()
 				)).getValor().setActivo(2);
 		PartidaHostController.getInstance().notifyView();
 		
