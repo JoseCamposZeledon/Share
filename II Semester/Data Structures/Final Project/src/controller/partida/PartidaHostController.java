@@ -22,6 +22,7 @@ import javax.swing.JOptionPane;
 import javax.swing.ImageIcon;
 
 import controller.menu.eventosInicio.EventoGetNodo;
+import controller.partida.hostEventos.EventoPersonajeHost;
 import controller.partida.hostEventos.EventoReady;
 import model.account.Account;
 import model.grafo.Grafo;
@@ -30,6 +31,7 @@ import model.grafo.Nodo;
 import model.json.MapParser;
 import model.mapComponents.CrownTile;
 import model.mapComponents.ObstaculoGrafico;
+import model.player.Player;
 import model.threadsPool.ThreadManager;
 import view.partida.VistaPartidaHost;
 import view.partida.VistaPartidaUser;
@@ -40,7 +42,7 @@ public class PartidaHostController implements Runnable, IConstants {
 	
 	private Account host, client;
 	private VistaPartidaHost vista;
-	
+
 	private String mapPath;
 	
 	private boolean readyHost, readyClient;
@@ -50,7 +52,10 @@ public class PartidaHostController implements Runnable, IConstants {
 	
 	private boolean conectado = false;
 	
+	private Player hostPlayer = new Player();
+
 	private int addBuffer = 1000;
+	private int idPersonajeSelected = 0;
 	
 	private PartidaHostController(String pMapPath, Account pHost) {
 		host = pHost;
@@ -69,6 +74,10 @@ public class PartidaHostController implements Runnable, IConstants {
 		
 		mapaNodos = new HashMap<Point, Nodo<GrafoTile>>();
 		grafoNodos = new Grafo<GrafoTile>();
+		
+		vista.getArcherLabel().addMouseListener(new EventoPersonajeHost(ID_ARCHER, vista.getArcherLabel()));
+		vista.getKnightLabel().addMouseListener(new EventoPersonajeHost(ID_KNIGHT, vista.getKnightLabel()));
+		vista.getBrawlerLabel().addMouseListener(new EventoPersonajeHost(ID_BRAWLER, vista.getBrawlerLabel()));
 		
 		this.getVista().getTableroPane().addMouseListener(new EventoGetNodo());
 		
@@ -239,12 +248,22 @@ public class PartidaHostController implements Runnable, IConstants {
 			}
 		}
 	}
+	
 	public void generarGrafo(String pPath) {
 		generarGrafoNodos();
 		computarNodosObstaculos(pPath);
 		conectarGrafoNodos();
 	}
 
+	public Player getHostPlayer() {
+		return hostPlayer;
+	}
+
+	public void setHostPlayer(Player hostPlayer) {
+		this.hostPlayer = hostPlayer;
+	}
+
+	
 	@Override
 	public synchronized void run() {
 		try {
@@ -345,7 +364,14 @@ public class PartidaHostController implements Runnable, IConstants {
 		return mapPath;
 	}
 
+	public int getIdPersonajeSelected() {
+		return idPersonajeSelected;
+	}
 
+	public void setIdPersonajeSelected(int idPersonajeSelected) {
+		this.idPersonajeSelected = idPersonajeSelected;
+	}
+	
 	public void setReadyHost(boolean readyHost) {
 		this.readyHost = readyHost;
 	}

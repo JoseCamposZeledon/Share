@@ -44,6 +44,7 @@ public class EventoHostCorona extends MouseAdapter{
 			actual.setSelected(false);
 		}
 		
+		PartidaHostController.getInstance().getHostPlayer().setCrownPlaced(true);
 		PartidaHostController.getInstance().notifyView();
 		
 	}

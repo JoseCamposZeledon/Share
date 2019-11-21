@@ -16,8 +16,6 @@ public class GroupTile extends MapTile {
 	public GroupTile() {
 
 		this.setIcon(tileTexture);
-		
-		this.addMouseListener(new EventoHostGrupo());
 	}
 			
 }

@@ -7,11 +7,12 @@ import model.personajes.Brawler;
 import model.personajes.Knight;
 import model.personajes.Personaje;
 
-public class Player {
+public class Player implements controller.partida.IConstants {
 	
 	private boolean crownPlaced;
 	
 	private int cantidadArcher = 4;
+	
 	private int cantidadBrawler = 6;
 	private int cantidadKnight = 2;
 	
@@ -21,6 +22,22 @@ public class Player {
 		grupos[0] = new Group();
 		grupos[1] = new Group();
 		grupos[2] = new Group();
+	}
+	
+	public void agregar(int pGroupIndex, int pIdPersonaje) {
+		
+		switch(pIdPersonaje) {
+			case (ID_ARCHER):
+				this.agregarArcher(pGroupIndex);
+				return;
+			case (ID_KNIGHT):
+				this.agregarKnight(pGroupIndex);
+				return;
+			case (ID_BRAWLER):
+				this.agregarBrawler(pGroupIndex);
+				return;
+		}
+		
 	}
 	
 	public void agregarArcher(int pGroupIndex) {
@@ -40,4 +57,21 @@ public class Player {
 		grupos[pGroupIndex].agregarPersonaje(new Knight());
 		cantidadBrawler--;
 	}
+	
+	public boolean isCrownPlaced() {
+		return crownPlaced;
+	}
+
+	public void setCrownPlaced(boolean crownPlaced) {
+		this.crownPlaced = crownPlaced;
+	}
+
+	public Group[] getGrupos() {
+		return grupos;
+	}
+
+	public void setGrupos(Group[] grupos) {
+		this.grupos = grupos;
+	}
+
 }
