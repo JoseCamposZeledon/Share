@@ -1,5 +1,6 @@
 package model.grafo;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -39,6 +40,7 @@ public class Grafo<T> {
 		// Inserta todos los nodos hasta llegar a pDestino
 		Nodo<T> nodoActual = pOrigen; 
 	
+		
 		while (nodoActual != pDestino) {
 			ruta.addFirst(nodoActual);
 			nodoActual = nodoActual.getPrevio();
@@ -107,38 +109,5 @@ public class Grafo<T> {
 		for (Nodo nodo : nodos) {
 			nodo.setPrevio(null);
 		}
-	}
-	
-	public static void main(String[] args) {
-		
-		Grafo<String> test = new Grafo<String>();
-		
-		Nodo<String> nodoA = new Nodo<String>("A");
-		Nodo<String> nodoB = new Nodo<String>("B");
-		Nodo<String> nodoC = new Nodo<String>("C");
-		Nodo<String> nodoD = new Nodo<String>("D");
-		Nodo<String> nodoE = new Nodo<String>("E");
-		
-		nodoA.conectar(nodoB, 3);
-		nodoA.conectar(nodoC, 5);
-		nodoA.conectar(nodoD, 4);
-		
-		nodoB.conectar(nodoD, 5);
-		
-		nodoC.conectar(nodoE, 2);
-		
-		nodoD.conectar(nodoE, 7);
-		
-		test.agregarNodo(nodoA);
-		test.agregarNodo(nodoB);
-		test.agregarNodo(nodoC);
-		test.agregarNodo(nodoD);
-		test.agregarNodo(nodoE);
-		
-		for (Nodo<String> actual : test.dijkstra(nodoA, nodoE)) {
-			System.out.println("Actual: " + actual.getValor());
-		}
-		
-		
 	}
 }

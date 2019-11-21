@@ -38,8 +38,8 @@ public class EventoReady extends MouseAdapter implements IConstants{
 		// Conecta un nuevo socket para actualizar el estado en la pantalla del client
 		try {
 			Socket socketEvento = new Socket(IP, CLIENT_PORT);
-			ObjectOutputStream streamOS = new ObjectOutputStream(socketEvento.getOutputStream());
-			streamOS.writeObject(controller);
+			DataOutputStream streamOS = new DataOutputStream(socketEvento.getOutputStream());
+			streamOS.writeBoolean(controller.isReadyHost());
 			streamOS.close();
 		} catch (UnknownHostException e1) {
 			// TODO Auto-generated catch block

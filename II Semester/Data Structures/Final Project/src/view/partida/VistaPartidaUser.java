@@ -235,4 +235,9 @@ public class VistaPartidaUser extends JFrame implements IConstants {
 	public void setFlagLabel(JLabel flagLabel) {
 		this.flagLabel = flagLabel;
 	}
+	
+	public void update() {
+		this.revalidate();
+		this.repaint();
+	}
 }

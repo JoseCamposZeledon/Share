@@ -1,5 +1,9 @@
 package model.grafo;
 
+import java.io.Serializable;
+
+import model.mapComponents.MapTile;
+
 public class GrafoTile {
 	
 	private int x1;
@@ -8,6 +12,7 @@ public class GrafoTile {
 	private int y2;
 	private boolean esObstaculo;
 	private boolean activo;
+	private MapTile tile;
 	
 	public GrafoTile(int x1, int y1, boolean esObstaculo) {
 		super();

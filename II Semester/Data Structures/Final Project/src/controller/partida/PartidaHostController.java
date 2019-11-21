@@ -1,6 +1,5 @@
 package controller.partida;
 
-import java.awt.Event;
 import java.awt.Image;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -15,6 +14,7 @@ import java.io.Serializable;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import javax.swing.JOptionPane;
@@ -22,30 +22,32 @@ import javax.swing.JOptionPane;
 import javax.swing.ImageIcon;
 
 import controller.menu.eventosInicio.EventoGetNodo;
+import controller.partida.hostEventos.EventoPersonajeHost;
 import controller.partida.hostEventos.EventoReady;
 import model.account.Account;
 import model.grafo.Grafo;
 import model.grafo.GrafoTile;
 import model.grafo.Nodo;
 import model.json.MapParser;
+import model.mapComponents.CrownTile;
 import model.mapComponents.ObstaculoGrafico;
 import model.player.Group;
+import model.player.Player;
 import model.threadsPool.ThreadManager;
 import view.partida.VistaPartidaHost;
 import view.partida.VistaPartidaUser;
 
-public class PartidaHostController implements Runnable, Serializable, IConstants {
+public class PartidaHostController implements Runnable, IConstants {
 	
 	private static PartidaHostController instancia = null;
 	
 	private Account host, client;
 	private VistaPartidaHost vista;
-	
+
 	private String mapPath;
 	
-	private boolean readyHost;
+	private boolean readyHost, readyClient;
 	
-	private PartidaClientController controllerClient;
 	private HashMap<Point, Nodo<GrafoTile>> mapaNodos;
 	private Grafo<GrafoTile> grafoNodos;
 	
@@ -53,17 +55,19 @@ public class PartidaHostController implements Runnable, Serializable, IConstants
 	
 	private boolean conectado = false;
 	
+	private Player hostPlayer = new Player();
+
 	private int addBuffer = 1000;
-	
+	private int idPersonajeSelected = 0;
 	
 	private PartidaHostController(String pMapPath, Account pHost) {
-		
 		host = pHost;
 		mapPath = pMapPath;
 		
 		vista = new VistaPartidaHost();
-		
 		loadMap();
+		
+		readyHost = false;
 		
 		// Evento READY
 		vista.getReadyHostLabel().addMouseListener(new EventoReady(this));
@@ -75,9 +79,20 @@ public class PartidaHostController implements Runnable, Serializable, IConstants
 		grafoNodos = new Grafo<GrafoTile>();
 		mapaGrupos = new HashMap<Nodo<GrafoTile>, Group>();
 		
+		vista.getArcherLabel().addMouseListener(new EventoPersonajeHost(ID_ARCHER, vista.getArcherLabel()));
+		vista.getKnightLabel().addMouseListener(new EventoPersonajeHost(ID_KNIGHT, vista.getKnightLabel()));
+		vista.getBrawlerLabel().addMouseListener(new EventoPersonajeHost(ID_BRAWLER, vista.getBrawlerLabel()));
+		
 		this.getVista().getTableroPane().addMouseListener(new EventoGetNodo());
+		
+		this.generarGrafo(mapPath);
+		
+//		for (Nodo<GrafoTile> actual : this.grafoNodos.dijkstra(
+//				mapaNodos.get(new Point(32, 0)), mapaNodos.get(new Point(0, 128))
+//				)) {
+//			System.out.println("Actual: X: " + actual.getValor().getX1() + " Y: " + actual.getValor().getY1());
+//		}
 	}
-	
 	
 	public static PartidaHostController createInstance(String pMapPath, Account pHost) {
 		if (instancia == null) {
@@ -116,7 +131,7 @@ public class PartidaHostController implements Runnable, Serializable, IConstants
 		return readyHost;
 	}
 
-	public void setReadyHost(boolean readyHost) {
+	public void Host(boolean readyHost) {
 		this.readyHost = readyHost;
 	}
 	
@@ -159,7 +174,7 @@ public class PartidaHostController implements Runnable, Serializable, IConstants
 	}
 
 
-	private void generarArbolNodos() {
+	private void generarGrafoNodos() {
 		int x1 = 0;
 		while (x1 < 1024) {
 			int y1 = 0;
@@ -187,7 +202,7 @@ public class PartidaHostController implements Runnable, Serializable, IConstants
 		}
 	}
 	
-	private void conectarArbolNodos() {
+	private void conectarGrafoNodos() {
 		
 		for (Nodo<GrafoTile> nodo : grafoNodos.getNodos()) {
 			
@@ -238,61 +253,91 @@ public class PartidaHostController implements Runnable, Serializable, IConstants
 				int y1 = obstaculo.getY1();
 				int truncatedY = (y1 / 32) * 32;
 				while (truncatedY < obstaculo.getY2()) {
-					System.out.println(truncatedX + " " + truncatedY);
 					Nodo<GrafoTile> nodo = mapaNodos.get(new Point(truncatedX, truncatedY));
 					nodo.getValor().setEsObstaculo(true);
 					truncatedY += 32;
 				}
 				truncatedX += 32;
 			}
-			// vista.getTableroPane().add(obstaculo.getGraphicObstaculo(), 1);
 		}
 	}
-	public void generarArbol(String pPath) {
-		generarArbolNodos();
+	
+	public void generarGrafo(String pPath) {
+		generarGrafoNodos();
 		computarNodosObstaculos(pPath);
-		conectarArbolNodos();
+		conectarGrafoNodos();
 	}
 
+	public Player getHostPlayer() {
+		return hostPlayer;
+	}
+
+	public void setHostPlayer(Player hostPlayer) {
+		this.hostPlayer = hostPlayer;
+	}
+
+	
 	@Override
 	public synchronized void run() {
 		try {
-			// Crea un servidor en el puerto 9999
+
 			ServerSocket server = new ServerSocket(HOST_PORT, 1);
 			Socket clientConnected, connect;
 			
 			boolean connected = true;
+			boolean inicio = true;
 			
 			while (true) {
 				clientConnected = server.accept();
+				
 				// Conecta al host de la partida con el servidor del cliente
 				if (clientConnected.isConnected() && connected == true) {
+					
 					connect = new Socket(IP, CLIENT_PORT);
+					
 					ObjectOutputStream oOS = new ObjectOutputStream(connect.getOutputStream());
-					oOS.writeObject(this);
+				
+					oOS.writeObject(this.host);
+					
+					oOS.flush();
+					
+					oOS.writeUTF(this.mapPath);
+					
 					oOS.close();
 					
 					ObjectInputStream oIS = new ObjectInputStream(clientConnected.getInputStream());
-					controllerClient = (PartidaClientController) oIS.readObject();
+					client = (Account) oIS.readObject();
 					
 					this.getVista().getInfoClient().setText(
-							controllerClient.getClient().getCorreo() + " | " + 
-							controllerClient.getClient().getCounterVictorias());
+							client.getCorreo() + " | " + 
+							client.getCounterVictorias());
 					
 					this.getVista().revalidate();
 					this.getVista().repaint();
 					
 					connected = false;
+					oIS.close();
+					clientConnected.close();
 					continue;
 				}
 				
 				// Actualiza el boton READY en la pantalla del host cuando el client le da click
-				if (clientConnected != null) {
-					ObjectInputStream oIS = new ObjectInputStream(clientConnected.getInputStream());
-					controllerClient = (PartidaClientController) oIS.readObject();
-					this.updateReadyButton(controllerClient.isReadyClient());
+				if (clientConnected != null && inicio) {
+					DataInputStream oIS = new DataInputStream(clientConnected.getInputStream());
+					readyClient = oIS.readBoolean();
+					this.updateReadyButton(readyClient);
 					oIS.close();
 					clientConnected.close();
+					
+					// Ambos estan listos para jugar
+					if (readyClient && readyHost && inicio) {
+						vista.getReadyHostLabel().removeMouseListener(vista.getReadyHostLabel().getMouseListeners()[0]);
+						inicio = false;
+						
+						continue;
+					}
+					
+					continue;
 				}
 				
 			}
@@ -310,6 +355,10 @@ public class PartidaHostController implements Runnable, Serializable, IConstants
 		
 	}
 
+	public void notifyView() {
+		vista.update();
+	}
+	
 	public void updateReadyButton(boolean pReady) {
 		if (!pReady) {
 			this.getVista().getReadyClientLabel().setIcon(new ImageIcon(new ImageIcon(".\\static\\media\\images\\notready_button.png")
@@ -328,15 +377,20 @@ public class PartidaHostController implements Runnable, Serializable, IConstants
 		return mapPath;
 	}
 
+	public int getIdPersonajeSelected() {
+		return idPersonajeSelected;
+	}
+
+	public void setIdPersonajeSelected(int idPersonajeSelected) {
+		this.idPersonajeSelected = idPersonajeSelected;
+	}
+	
+	public void setReadyHost(boolean readyHost) {
+		this.readyHost = readyHost;
+	}
+
 
 	public void setMapPath(String mapPath) {
 		this.mapPath = mapPath;
-	}
-	
-	public static void main(String[] args) {
-		PartidaHostController.createInstance(".//static//maps//mapa1.json", new Account("a@a.com", "123"));
-		PartidaHostController.getInstance().generarArbol(".//static//maps//mapa1.json");
-	}
-	
-	
+	}	
 }	

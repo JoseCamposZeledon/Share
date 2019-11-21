@@ -3,6 +3,7 @@ package controller.partida.clientEventos;
 import java.awt.Image;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
@@ -35,8 +36,8 @@ public class EventoReady extends MouseAdapter implements IConstants{
 		try {
 			Socket socketEvento = new Socket(IP, HOST_PORT);
 			
-			ObjectOutputStream streamOS = new ObjectOutputStream(socketEvento.getOutputStream());
-			streamOS.writeObject(controller);
+			DataOutputStream streamOS = new DataOutputStream(socketEvento.getOutputStream());
+			streamOS.writeBoolean(controller.isReadyClient());
 			streamOS.close();
 			
 		} catch (UnknownHostException e1) {
