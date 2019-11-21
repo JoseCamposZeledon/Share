@@ -7,6 +7,7 @@ public class GrafoTile {
 	private int y1;
 	private int y2;
 	private boolean esObstaculo;
+	private boolean activo;
 	
 	public GrafoTile(int x1, int y1, boolean esObstaculo) {
 		super();
@@ -15,6 +16,7 @@ public class GrafoTile {
 		this.x2 = x1 + 31;
 		this.y2 = y1 + 31;
 		this.esObstaculo = esObstaculo;
+		activo = false;
 	}
 	
 	public int getX1() {
@@ -47,7 +49,11 @@ public class GrafoTile {
 	public void setEsObstaculo(boolean esObstaculo) {
 		this.esObstaculo = esObstaculo;
 	}
-	
-	
+	public boolean isActivo() {
+		return activo;
+	}
+	public void setActivo(boolean activo) {
+		this.activo = activo;
+	}
 	
 }

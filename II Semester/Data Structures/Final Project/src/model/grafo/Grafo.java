@@ -38,9 +38,7 @@ public class Grafo<T> {
 		
 		// Inserta todos los nodos hasta llegar a pDestino
 		Nodo<T> nodoActual = pOrigen; 
-		
-		System.out.println(nodoActual.getValor());
-		
+	
 		while (nodoActual != pDestino) {
 			ruta.addFirst(nodoActual);
 			nodoActual = nodoActual.getPrevio();
@@ -99,7 +97,9 @@ public class Grafo<T> {
 				}	
 			}
 		}
-		
+		if (pDestino.getPrevio() == null) {
+			return new LinkedList<Nodo<T>>();
+		}
 		return backTrack(pDestino, pOrigen);
 	}
 	

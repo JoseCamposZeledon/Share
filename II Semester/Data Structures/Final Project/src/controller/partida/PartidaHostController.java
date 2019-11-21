@@ -29,6 +29,7 @@ import model.grafo.GrafoTile;
 import model.grafo.Nodo;
 import model.json.MapParser;
 import model.mapComponents.ObstaculoGrafico;
+import model.player.Group;
 import model.threadsPool.ThreadManager;
 import view.partida.VistaPartidaHost;
 import view.partida.VistaPartidaUser;
@@ -47,6 +48,8 @@ public class PartidaHostController implements Runnable, Serializable, IConstants
 	private PartidaClientController controllerClient;
 	private HashMap<Point, Nodo<GrafoTile>> mapaNodos;
 	private Grafo<GrafoTile> grafoNodos;
+	
+	private HashMap<Nodo<GrafoTile>, Group> mapaGrupos;
 	
 	private boolean conectado = false;
 	
@@ -70,6 +73,7 @@ public class PartidaHostController implements Runnable, Serializable, IConstants
 		
 		mapaNodos = new HashMap<Point, Nodo<GrafoTile>>();
 		grafoNodos = new Grafo<GrafoTile>();
+		mapaGrupos = new HashMap<Nodo<GrafoTile>, Group>();
 		
 		this.getVista().getTableroPane().addMouseListener(new EventoGetNodo());
 	}
@@ -143,6 +147,15 @@ public class PartidaHostController implements Runnable, Serializable, IConstants
 
 	public void setAddBuffer(int addBuffer) {
 		this.addBuffer = addBuffer;
+	}
+
+	public HashMap<Nodo<GrafoTile>, Group> getMapaGrupos() {
+		return mapaGrupos;
+	}
+
+
+	public void setMapaGrupos(HashMap<Nodo<GrafoTile>, Group> mapaGrupos) {
+		this.mapaGrupos = mapaGrupos;
 	}
 
 

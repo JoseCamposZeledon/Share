@@ -3,6 +3,9 @@ package model.player;
 import java.util.LinkedList;
 import java.util.Random;
 
+import controller.partida.PartidaHostController;
+import model.grafo.GrafoTile;
+import model.grafo.Nodo;
 import model.personajes.Archer;
 import model.personajes.Brawler;
 import model.personajes.Knight;
@@ -10,12 +13,15 @@ import model.personajes.Personaje;
 
 public class Group {
 	
+	private LinkedList<Nodo<GrafoTile>> ruta;
 	private LinkedList<Personaje> personajes;
 	private int vidaTeam;
-	Random r;
+	private Nodo<GrafoTile> nodoActual;
+	private Random r;
 	
 	public Group() {
 		personajes = new LinkedList<Personaje>();
+		ruta = new LinkedList<Nodo<GrafoTile>>();
 		vidaTeam = 0;
 		r = new Random();
 	}
@@ -62,6 +68,16 @@ public class Group {
 			personajes.remove(index);
 		}
 		return false;
+	}
+	
+	public boolean calcularRuta(Nodo<GrafoTile> nodoDestino) {
+		ruta = PartidaHostController.getInstance().getGrafoNodos().dijkstra(nodoActual, nodoDestino);
+		if (ruta.size() == 0) {
+			return false;
+		} else {
+			ruta.remove(0);
+			return true;
+		}
 	}
 	
 	public static void main(String[] args) {
