@@ -1,18 +1,31 @@
 package model.personajes;
 
 public abstract class Personaje {
-	protected int energia = 100;
-	protected int fuerzaAtaque = 10;
 	
-	public abstract void atacar();
+	static int idCounter;
+	protected int id;
+	protected Ataque ataque; 
 	
-	public abstract void recargar();
-
-	public int getEnergia() {
-		return energia;
+	public Personaje() {
+		id = idCounter;
+		idCounter++;
 	}
 
-	public void setEnergia(int energia) {
-		this.energia = energia;
+	public int getId() {
+		return id;
 	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public Ataque getAtaque() {
+		return ataque;
+	}
+
+	public void setAtaque(Ataque ataque) {
+		this.ataque = ataque;
+	}
+	
+	
 }
