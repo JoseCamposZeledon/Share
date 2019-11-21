@@ -26,6 +26,8 @@ public class Tablero extends JLayeredPane implements view.IConstants{
 				
 				tile.setBounds(i * TILE_SIZE, j * TILE_SIZE, TILE_SIZE, TILE_SIZE);
 				
+			
+				
 				this.add(tile, 0);
 			}
 		}

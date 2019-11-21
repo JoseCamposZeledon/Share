@@ -8,6 +8,7 @@ import java.util.LinkedList;
 import model.cola.Cola;
 
 public class Grafo<T> {
+	
 	private LinkedList<Nodo<T>> nodos;
 	
 	public Grafo() {
@@ -18,6 +19,14 @@ public class Grafo<T> {
 		nodos.addLast(pNodo);
 	}
 	
+	public LinkedList<Nodo<T>> getNodos() {
+		return nodos;
+	}
+
+	public void setNodos(LinkedList<Nodo<T>> nodos) {
+		this.nodos = nodos;
+	}
+
 	/*
 	 * Obtiene la ruta propuesta por los diferentes algoritmos
 	 */
@@ -92,6 +101,12 @@ public class Grafo<T> {
 		}
 		
 		return backTrack(pDestino, pOrigen);
+	}
+	
+	public void limpiarPrevios() {
+		for (Nodo nodo : nodos) {
+			nodo.setPrevio(null);
+		}
 	}
 	
 	public static void main(String[] args) {

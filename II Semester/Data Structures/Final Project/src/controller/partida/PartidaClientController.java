@@ -2,6 +2,7 @@ package controller.partida;
 
 import java.awt.Image;
 import java.io.DataInputStream;
+import java.awt.Point;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -11,12 +12,16 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.rmi.server.ServerRef;
+import java.util.HashMap;
 
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
 import controller.partida.clientEventos.EventoReady;
 import model.account.Account;
+import model.grafo.Grafo;
+import model.grafo.GrafoTile;
+import model.grafo.Nodo;
 import model.json.MapParser;
 import model.mapComponents.ObstaculoGrafico;
 import model.threadsPool.ThreadManager;
