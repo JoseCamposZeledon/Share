@@ -1,6 +1,7 @@
 package controller.partida.hostEventos;
 
 import java.awt.Image;
+import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
@@ -45,6 +46,10 @@ public class EventoHostCorona extends MouseAdapter{
 		}
 		
 		PartidaHostController.getInstance().getHostPlayer().setCrownPlaced(true);
+		PartidaHostController.getInstance().getMapaNodos().get(new Point(
+				myTile.getParent().getX(),
+				myTile.getParent().getY()
+				)).getValor();
 		PartidaHostController.getInstance().notifyView();
 		
 	}

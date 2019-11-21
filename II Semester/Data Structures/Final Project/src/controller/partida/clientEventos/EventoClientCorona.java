@@ -46,7 +46,6 @@ public class EventoClientCorona extends MouseAdapter{
 		}
 		
 		PartidaClientController.getInstance().getClientPlayer().setCrownPlaced(true);
-		
 		PartidaClientController.getInstance().notifyView();
 		
 	}

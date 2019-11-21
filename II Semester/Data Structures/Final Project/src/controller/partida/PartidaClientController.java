@@ -88,7 +88,7 @@ public class PartidaClientController implements Runnable, IConstants{
 		
 		vista.getReadyClientLabel().addMouseListener(new EventoReady(this));
 		vista.getInfoClient().setText(client.getCorreo() + " | " + client.getCounterVictorias());
-		
+		vista.getTableroPane().removeEvents(2);
 	}
 	
 	public static PartidaClientController createInstance(Account pClient) throws IOException, UnknownHostException{
