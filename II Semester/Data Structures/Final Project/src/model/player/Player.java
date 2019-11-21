@@ -53,9 +53,9 @@ public class Player implements controller.partida.IConstants {
 	}
 	
 	public void agregarKnight(int pGroupIndex) {
-		if (cantidadBrawler == 0) return;
+		if (cantidadKnight== 0) return;
 		grupos[pGroupIndex].agregarPersonaje(new Knight());
-		cantidadBrawler--;
+		cantidadKnight--;
 	}
 	
 	public boolean isCrownPlaced() {

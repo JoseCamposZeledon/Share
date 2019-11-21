@@ -9,6 +9,7 @@ import javax.swing.JLayeredPane;
 import controller.partida.PartidaClientController;
 import controller.partida.PartidaHostController;
 import controller.partida.clientEventos.EventoClientCorona;
+import controller.partida.clientEventos.EventoClientGrupo;
 import controller.partida.hostEventos.EventoHostCorona;
 import controller.partida.hostEventos.EventoHostGrupo;
 
@@ -36,7 +37,8 @@ public class Tablero extends JLayeredPane implements view.IConstants, controller
 						tile.addMouseListener(new EventoHostGrupo((GroupTile) tile, groupHostCounter));
 						groupHostCounter++;
 					} else if (i == 30) {
-						
+						tile.addMouseListener(new EventoClientGrupo((GroupTile) tile, groupClientCounter));
+						groupClientCounter++;
 					}
 				}
 				else {

@@ -18,6 +18,7 @@ import java.util.HashMap;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
+import controller.partida.clientEventos.EventoClientPersonaje;
 import controller.partida.clientEventos.EventoReady;
 import model.account.Account;
 import model.grafo.Grafo;
@@ -26,6 +27,7 @@ import model.grafo.Nodo;
 import model.json.MapParser;
 import model.mapComponents.CrownTile;
 import model.mapComponents.ObstaculoGrafico;
+import model.player.Player;
 import model.threadsPool.ThreadManager;
 import view.partida.VistaPartidaUser;
 
@@ -39,6 +41,18 @@ public class PartidaClientController implements Runnable, IConstants{
 
 	private ArrayList<CrownTile> tilesCorona;
 	
+	private Player clientPlayer = new Player();
+	
+	private int idPersonajeSelected = 0;
+
+	public int getIdPersonajeSelected() {
+		return idPersonajeSelected;
+	}
+
+	public void setIdPersonajeSelected(int idPersonajeSelected) {
+		this.idPersonajeSelected = idPersonajeSelected;
+	}
+
 	private PartidaClientController(Account pClient) throws IOException, UnknownHostException, Exception{
 		
 		client = pClient;
@@ -67,6 +81,10 @@ public class PartidaClientController implements Runnable, IConstants{
 		vista = new VistaPartidaUser();
 		
 		readyClient = false;
+		
+		vista.getArcherLabel().addMouseListener(new EventoClientPersonaje(ID_ARCHER, vista.getArcherLabel()));
+		vista.getKnightLabel().addMouseListener(new EventoClientPersonaje(ID_KNIGHT, vista.getKnightLabel()));
+		vista.getBrawlerLabel().addMouseListener(new EventoClientPersonaje(ID_BRAWLER, vista.getBrawlerLabel()));
 		
 		vista.getReadyClientLabel().addMouseListener(new EventoReady(this));
 		vista.getInfoClient().setText(client.getCorreo() + " | " + client.getCounterVictorias());
@@ -104,6 +122,14 @@ public class PartidaClientController implements Runnable, IConstants{
 		this.getVista().update();
 	}
 	
+	public Player getClientPlayer() {
+		return clientPlayer;
+	}
+
+	public void setClientPlayer(Player clientPlayer) {
+		this.clientPlayer = clientPlayer;
+	}
+	
 	public static PartidaClientController getInstance() {
 		return instancia;
 	}
@@ -126,7 +152,7 @@ public class PartidaClientController implements Runnable, IConstants{
 	public void setVista(VistaPartidaUser vista) {
 		this.vista = vista;
 	}
-
+	
 
 	public boolean isReadyClient() {
 		return readyClient;
@@ -181,8 +207,16 @@ public class PartidaClientController implements Runnable, IConstants{
 					hostConnected.close();
 					
 					if (readyClient && readyHost && inicio) {
+						
 						vista.getReadyClientLabel().removeMouseListener(vista.getReadyClientLabel().getMouseListeners()[0]);
 						inicio = false;
+						
+						Socket socketEvento = new Socket(IP, HOST_PORT);
+						
+						DataOutputStream streamOS = new DataOutputStream(socketEvento.getOutputStream());
+						streamOS.writeBoolean(this.isReadyClient());
+						streamOS.close();
+						
 						
 						continue;
 					}

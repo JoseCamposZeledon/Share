@@ -323,16 +323,26 @@ public class PartidaHostController implements Runnable, IConstants {
 				
 				// Actualiza el boton READY en la pantalla del host cuando el client le da click
 				if (clientConnected != null && inicio) {
-					DataInputStream oIS = new DataInputStream(clientConnected.getInputStream());
-					readyClient = oIS.readBoolean();
-					this.updateReadyButton(readyClient);
-					oIS.close();
-					clientConnected.close();
+					
+					if (inicio) {
+						DataInputStream oIS = new DataInputStream(clientConnected.getInputStream());
+						readyClient = oIS.readBoolean();
+						this.updateReadyButton(readyClient);
+						oIS.close();
+						clientConnected.close();
+					}
 					
 					// Ambos estan listos para jugar
 					if (readyClient && readyHost && inicio) {
+						
 						vista.getReadyHostLabel().removeMouseListener(vista.getReadyHostLabel().getMouseListeners()[0]);
 						inicio = false;
+						
+						Socket socketEvento = new Socket(IP, CLIENT_PORT);
+						
+						DataOutputStream streamOS = new DataOutputStream(socketEvento.getOutputStream());
+						streamOS.writeBoolean(this.isReadyHost());
+						streamOS.close();
 						
 						continue;
 					}

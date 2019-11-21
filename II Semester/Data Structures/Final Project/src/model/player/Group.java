@@ -3,6 +3,8 @@ package model.player;
 import java.util.LinkedList;
 import java.util.Random;
 
+import javax.swing.JLabel;
+
 import controller.partida.PartidaHostController;
 import model.grafo.GrafoTile;
 import model.grafo.Nodo;
@@ -19,6 +21,8 @@ public class Group {
 	private Nodo<GrafoTile> nodoActual;
 	private Random r;
 	
+	private JLabel personajesLabel;
+
 	public Group() {
 		personajes = new LinkedList<Personaje>();
 		ruta = new LinkedList<Nodo<GrafoTile>>();
@@ -45,9 +49,10 @@ public class Group {
 	public void agregarPersonaje(Personaje pPersonaje) throws IndexOutOfBoundsException {
 		if (personajes.size() == 4) {
 			throw new IndexOutOfBoundsException();
+		} else {
+			personajes.add(pPersonaje);
+			vidaTeam += 100;
 		}
-		personajes.add(pPersonaje);
-		vidaTeam += 100;
 	}
 	
 	public int danoPorMedioSegundo() {
@@ -78,6 +83,14 @@ public class Group {
 			ruta.remove(0);
 			return true;
 		}
+	}
+	
+	public JLabel getPersonajesLabel() {
+		return personajesLabel;
+	}
+
+	public void setPersonajesLabel(JLabel personajesLabel) {
+		this.personajesLabel = personajesLabel;
 	}
 	
 	public static void main(String[] args) {
