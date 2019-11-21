@@ -96,28 +96,7 @@ public class PartidaHostController implements Runnable, IConstants {
 //			System.out.println("Actual: X: " + actual.getValor().getX1() + " Y: " + actual.getValor().getY1());
 //		}
 		
-		hostPlayer.agregarArcher(0);
-		hostPlayer.agregarArcher(0);
-		hostPlayer.agregarBrawler(0);
-		hostPlayer.agregarKnight(0);
 		
-		hostPlayer.agregarKnight(1);
-		hostPlayer.agregarArcher(1);
-		hostPlayer.agregarBrawler(1);
-		hostPlayer.agregarKnight(1);
-		
-		hostPlayer.agregarBrawler(2);
-		hostPlayer.agregarArcher(2);
-		hostPlayer.agregarBrawler(2);
-		hostPlayer.agregarKnight(2);
-		
-		hostPlayer.getGrupos()[0].setNodoActual(mapaNodos.get(new Point(32,0)));
-		hostPlayer.getGrupos()[1].setNodoActual(mapaNodos.get(new Point(32,384)));
-		hostPlayer.getGrupos()[2].setNodoActual(mapaNodos.get(new Point(32,768)));
-		
-		
-		
-		//hostPlayer.calcularRuta(mapaNodos.get(new Point(960,0)), 0);
 		//hostPlayer.getGrupos()[0].calcularRuta(mapaNodos.get(new Point(960,384)));
 		//hostPlayer.getGrupos()[0].calcularRuta(mapaNodos.get(new Point(960,768)));
 		
@@ -310,7 +289,64 @@ public class PartidaHostController implements Runnable, IConstants {
 	@Override
 	public synchronized void run() {
 		try {
-
+			
+			hostPlayer.agregarArcher(0);
+			hostPlayer.agregarArcher(0);
+			hostPlayer.agregarBrawler(0);
+			hostPlayer.agregarKnight(0);
+			
+			hostPlayer.agregarKnight(1);
+			hostPlayer.agregarArcher(1);
+			hostPlayer.agregarBrawler(1);
+			hostPlayer.agregarKnight(1);
+			
+			hostPlayer.agregarBrawler(2);
+			hostPlayer.agregarArcher(2);
+			hostPlayer.agregarBrawler(2);
+			hostPlayer.agregarKnight(2);
+			
+			hostPlayer.getGrupos()[0].setNodoActual(mapaNodos.get(new Point(32,0)));
+			hostPlayer.getGrupos()[1].setNodoActual(mapaNodos.get(new Point(32,384)));
+			hostPlayer.getGrupos()[2].setNodoActual(mapaNodos.get(new Point(32,768)));
+			
+			boolean state;
+			
+			state = hostPlayer.calcularRuta(mapaNodos.get(new Point(960,0)), 0);
+			System.out.println(state);
+			state = hostPlayer.calcularRuta(mapaNodos.get(new Point(960,384)), 1);
+			System.out.println(state);
+			state = hostPlayer.calcularRuta(mapaNodos.get(new Point(960,768)), 2);
+			System.out.println(state +"\n");
+			
+			while (hostPlayer.enSeguimiento()) {
+				for (int i = 0; i < 3; i++) {
+					Group grupo = hostPlayer.getGrupos()[i];
+					Nodo<GrafoTile> nodoActual = hostPlayer.getGrupos()[i].getNodoActual();
+					System.out.println("Grupo " + i + " se encuentra en x: " + nodoActual.getValor().getX1() + " y: " + nodoActual.getValor().getY1());
+					if (grupo.isVivo()) {
+						System.out.println("Grupo " + i +  " esta vivo.");
+						if (!grupo.isEnConflicto()) {
+							boolean states;
+							states = hostPlayer.mover(i);
+							if (states) {
+								System.out.println("Grupo " + i +  " moviendose.");
+								if (!hostPlayer.revisar(i).isEmpty()) {
+									grupo.setEnConflicto(true);
+								}
+							} else {
+								System.out.println("Grupo " + i +  " estatico.");
+							}
+								
+						} else {
+							System.out.println("Grupo " + i +  " en conflicto.");
+						}
+					} else {
+						System.out.println("Grupo " + i +  " esta muerto.");
+					}
+				}
+			}
+			
+			
 			ServerSocket server = new ServerSocket(HOST_PORT, 1);
 			Socket clientConnected, connect;
 			
@@ -371,7 +407,7 @@ public class PartidaHostController implements Runnable, IConstants {
 				}
 				
 			}
-			
+						
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -427,7 +463,7 @@ public class PartidaHostController implements Runnable, IConstants {
 	public static void main(String[] args) {
 		Account acc1 = new Account("a@a.com", "123");
 		PartidaHostController.createInstance(".//static//maps//mapa1.json", acc1);
-		System.out.println("asd");
+		ThreadManager.getInstance().startThread(PartidaHostController.getInstance());
 		
 	}
 }	

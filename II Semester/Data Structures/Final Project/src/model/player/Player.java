@@ -40,7 +40,13 @@ public class Player {
 		return grupos[pGroupIndex].calcularRuta(nodoDestino);
 	}
 	
-	public void mover(int pGroupIndex) {
+	public boolean enSeguimiento() {
+		return !grupos[0].getRuta().isEmpty() || 
+		       !grupos[1].getRuta().isEmpty() ||
+		       !grupos[2].getRuta().isEmpty();
+	}
+	
+	public boolean mover(int pGroupIndex) {
 		Group grupo = grupos[pGroupIndex];
 		if (!grupo.getRuta().isEmpty() && grupo.isVivo()) { 
 			grupo.getNodoActual().getValor().setActivo(0);
@@ -48,6 +54,9 @@ public class Player {
 			PartidaHostController.getInstance().getMapaGrupos().put(grupo.getNodoActual(), grupo);
 			grupo.getRuta().get(0).getValor().setActivo(1);
 			grupo.getRuta().remove(0);
+			return true;
+		} else {
+			return false;
 		}
 	}
 	

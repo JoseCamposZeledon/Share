@@ -107,10 +107,7 @@ public class Group {
 	}
 	
 	public boolean calcularRuta(Nodo<GrafoTile> nodoDestino) {
-		System.out.println("No se cae");
-		System.out.println(PartidaHostController.getInstance() == null);
 		ruta = PartidaHostController.getInstance().getGrafoNodos().dijkstra(nodoActual, nodoDestino);
-		System.out.println("No se cae x 2");
 		if (ruta.isEmpty()) {
 			return false;
 		} else {
