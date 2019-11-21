@@ -1,5 +1,6 @@
 package model.grafo;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -7,7 +8,7 @@ import java.util.LinkedList;
 
 import model.cola.Cola;
 
-public class Grafo<T> {
+public class Grafo<T> implements Serializable{
 	
 	private LinkedList<Nodo<T>> nodos;
 	
@@ -38,8 +39,6 @@ public class Grafo<T> {
 		
 		// Inserta todos los nodos hasta llegar a pDestino
 		Nodo<T> nodoActual = pOrigen; 
-		
-		System.out.println(nodoActual.getValor());
 		
 		while (nodoActual != pDestino) {
 			ruta.addFirst(nodoActual);
@@ -118,22 +117,27 @@ public class Grafo<T> {
 		Nodo<String> nodoC = new Nodo<String>("C");
 		Nodo<String> nodoD = new Nodo<String>("D");
 		Nodo<String> nodoE = new Nodo<String>("E");
+		Nodo<String> nodoF = new Nodo<String>("F");
+		Nodo<String> nodoG = new Nodo<String>("G");
+		Nodo<String> nodoH = new Nodo<String>("H");
 		
-		nodoA.conectar(nodoB, 3);
-		nodoA.conectar(nodoC, 5);
-		nodoA.conectar(nodoD, 4);
+		nodoA.conectar(nodoB, 1);
+		nodoA.conectar(nodoC, 1000);
+		nodoA.conectar(nodoD, 1000);
+		nodoA.conectar(nodoH, 1);
 		
-		nodoB.conectar(nodoD, 5);
+		nodoB.conectar(nodoD, 1);
 		
-		nodoC.conectar(nodoE, 2);
+		nodoC.conectar(nodoE, 1);
 		
-		nodoD.conectar(nodoE, 7);
+		nodoD.conectar(nodoE, 1);
 		
 		test.agregarNodo(nodoA);
 		test.agregarNodo(nodoB);
 		test.agregarNodo(nodoC);
 		test.agregarNodo(nodoD);
 		test.agregarNodo(nodoE);
+		test.agregarNodo(nodoH);
 		
 		for (Nodo<String> actual : test.dijkstra(nodoA, nodoE)) {
 			System.out.println("Actual: " + actual.getValor());

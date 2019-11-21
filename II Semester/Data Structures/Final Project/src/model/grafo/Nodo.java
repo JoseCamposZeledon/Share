@@ -16,7 +16,7 @@ public class Nodo<T>{
 	public void conectar(Nodo<T> pNodo, int pPeso) {
 		conexiones.add(new Arco<T>(this, pNodo, pPeso));
 	}
-
+	
 	public ArrayList<Arco<T>> getConexiones() {
 		return conexiones;
 	}

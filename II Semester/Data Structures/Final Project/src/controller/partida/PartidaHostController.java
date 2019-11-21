@@ -70,6 +70,15 @@ public class PartidaHostController implements Runnable, Serializable, IConstants
 		grafoNodos = new Grafo<GrafoTile>();
 		
 		this.getVista().getTableroPane().addMouseListener(new EventoGetNodo());
+		
+		this.generarGrafo(".//static//maps//mapa1.json");
+		
+		for (Nodo<GrafoTile> actual : this.grafoNodos.dijkstra(
+				mapaNodos.get(new Point(0, 0)), mapaNodos.get(new Point(256, 0))
+				)) {
+			if (actual.getPrevio() == null) continue;
+			System.out.println("Actual: X: " + actual.getValor().getX1() + " Y: " + actual.getValor().getY1());
+		}
 	}
 	
 	
@@ -144,7 +153,7 @@ public class PartidaHostController implements Runnable, Serializable, IConstants
 	}
 
 
-	private void generarArbolNodos() {
+	private void generarGrafoNodos() {
 		int x1 = 0;
 		while (x1 < 1024) {
 			int y1 = 0;
@@ -160,13 +169,13 @@ public class PartidaHostController implements Runnable, Serializable, IConstants
 	
 	private void conectarNodoAux(Nodo<GrafoTile> nodo, Nodo<GrafoTile> nodoDestino) {
 		int arco = 1;
-		if (nodo.getValor().isEsObstaculo() && nodoDestino.getValor().isEsObstaculo()) {
+		if (nodo.getValor().isEsObstaculo() || nodoDestino.getValor().isEsObstaculo()) {
 			arco = addBuffer;
 		}
 		nodo.conectar(nodoDestino, arco);
 	}
 	
-	private void conectarArbolNodos() {
+	private void conectarGrafoNodos() {
 		
 		for (Nodo<GrafoTile> nodo : grafoNodos.getNodos()) {
 			
@@ -227,10 +236,10 @@ public class PartidaHostController implements Runnable, Serializable, IConstants
 			// vista.getTableroPane().add(obstaculo.getGraphicObstaculo(), 1);
 		}
 	}
-	public void generarArbol(String pPath) {
-		generarArbolNodos();
+	public void generarGrafo(String pPath) {
+		generarGrafoNodos();
 		computarNodosObstaculos(pPath);
-		conectarArbolNodos();
+		conectarGrafoNodos();
 	}
 
 	@Override
@@ -262,6 +271,8 @@ public class PartidaHostController implements Runnable, Serializable, IConstants
 					this.getVista().repaint();
 					
 					connected = false;
+					oIS.close();
+					clientConnected.close();
 					continue;
 				}
 				
@@ -314,7 +325,7 @@ public class PartidaHostController implements Runnable, Serializable, IConstants
 	
 	public static void main(String[] args) {
 		PartidaHostController.createInstance(".//static//maps//mapa1.json", new Account("a@a.com", "123"));
-		PartidaHostController.getInstance().generarArbol(".//static//maps//mapa1.json");
+//		PartidaHostController.getInstance()
 	}
 	
 	
