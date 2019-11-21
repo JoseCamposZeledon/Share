@@ -18,12 +18,16 @@ public class Group {
 	private int vidaTeam;
 	private Nodo<GrafoTile> nodoActual;
 	private Random r;
+	private boolean vivo;
+	private boolean enConflicto;
 	
 	public Group() {
 		personajes = new LinkedList<Personaje>();
 		ruta = new LinkedList<Nodo<GrafoTile>>();
 		vidaTeam = 0;
 		r = new Random();
+		vivo = true;
+		enConflicto = false;
 	}
 	
 	public LinkedList<Personaje> getPersonajes() {
@@ -42,6 +46,38 @@ public class Group {
 		this.vidaTeam = vidaTeam;
 	}
 	
+	public boolean isVivo() {
+		return vivo;
+	}
+
+	public void setVivo(boolean vivo) {
+		this.vivo = vivo;
+	}
+
+	public LinkedList<Nodo<GrafoTile>> getRuta() {
+		return ruta;
+	}
+
+	public void setRuta(LinkedList<Nodo<GrafoTile>> ruta) {
+		this.ruta = ruta;
+	}
+
+	public Nodo<GrafoTile> getNodoActual() {
+		return nodoActual;
+	}
+
+	public void setNodoActual(Nodo<GrafoTile> nodoActual) {
+		this.nodoActual = nodoActual;
+	}
+	
+	public boolean isEnConflicto() {
+		return enConflicto;
+	}
+
+	public void setEnConflicto(boolean enConflicto) {
+		this.enConflicto = enConflicto;
+	}
+
 	public void agregarPersonaje(Personaje pPersonaje) throws IndexOutOfBoundsException {
 		if (personajes.size() == 4) {
 			throw new IndexOutOfBoundsException();
@@ -71,8 +107,11 @@ public class Group {
 	}
 	
 	public boolean calcularRuta(Nodo<GrafoTile> nodoDestino) {
+		System.out.println("No se cae");
+		System.out.println(PartidaHostController.getInstance() == null);
 		ruta = PartidaHostController.getInstance().getGrafoNodos().dijkstra(nodoActual, nodoDestino);
-		if (ruta.size() == 0) {
+		System.out.println("No se cae x 2");
+		if (ruta.isEmpty()) {
 			return false;
 		} else {
 			ruta.remove(0);

@@ -31,6 +31,9 @@ import model.grafo.Nodo;
 import model.json.MapParser;
 import model.mapComponents.CrownTile;
 import model.mapComponents.ObstaculoGrafico;
+import model.personajes.Archer;
+import model.personajes.Brawler;
+import model.personajes.Knight;
 import model.player.Group;
 import model.player.Player;
 import model.threadsPool.ThreadManager;
@@ -92,12 +95,39 @@ public class PartidaHostController implements Runnable, IConstants {
 //				)) {
 //			System.out.println("Actual: X: " + actual.getValor().getX1() + " Y: " + actual.getValor().getY1());
 //		}
+		
+		hostPlayer.agregarArcher(0);
+		hostPlayer.agregarArcher(0);
+		hostPlayer.agregarBrawler(0);
+		hostPlayer.agregarKnight(0);
+		
+		hostPlayer.agregarKnight(1);
+		hostPlayer.agregarArcher(1);
+		hostPlayer.agregarBrawler(1);
+		hostPlayer.agregarKnight(1);
+		
+		hostPlayer.agregarBrawler(2);
+		hostPlayer.agregarArcher(2);
+		hostPlayer.agregarBrawler(2);
+		hostPlayer.agregarKnight(2);
+		
+		hostPlayer.getGrupos()[0].setNodoActual(mapaNodos.get(new Point(32,0)));
+		hostPlayer.getGrupos()[1].setNodoActual(mapaNodos.get(new Point(32,384)));
+		hostPlayer.getGrupos()[2].setNodoActual(mapaNodos.get(new Point(32,768)));
+		
+		
+		
+		//hostPlayer.calcularRuta(mapaNodos.get(new Point(960,0)), 0);
+		//hostPlayer.getGrupos()[0].calcularRuta(mapaNodos.get(new Point(960,384)));
+		//hostPlayer.getGrupos()[0].calcularRuta(mapaNodos.get(new Point(960,768)));
+		
 	}
 	
 	public static PartidaHostController createInstance(String pMapPath, Account pHost) {
 		if (instancia == null) {
 			instancia = new PartidaHostController(pMapPath, pHost);
 		}
+		//hostPlayer.calcularRuta(mapaNodos.get(new Point(960,0)), 0);
 		return instancia;
 	}
 	
@@ -392,5 +422,12 @@ public class PartidaHostController implements Runnable, IConstants {
 
 	public void setMapPath(String mapPath) {
 		this.mapPath = mapPath;
-	}	
+	}
+	
+	public static void main(String[] args) {
+		Account acc1 = new Account("a@a.com", "123");
+		PartidaHostController.createInstance(".//static//maps//mapa1.json", acc1);
+		System.out.println("asd");
+		
+	}
 }	

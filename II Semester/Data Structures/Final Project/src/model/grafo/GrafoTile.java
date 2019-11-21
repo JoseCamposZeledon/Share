@@ -1,9 +1,5 @@
 package model.grafo;
 
-import java.io.Serializable;
-
-import model.mapComponents.MapTile;
-
 public class GrafoTile {
 	
 	private int x1;
@@ -11,8 +7,7 @@ public class GrafoTile {
 	private int y1;
 	private int y2;
 	private boolean esObstaculo;
-	private boolean activo;
-	private MapTile tile;
+	private int activo;
 	
 	public GrafoTile(int x1, int y1, boolean esObstaculo) {
 		super();
@@ -21,7 +16,7 @@ public class GrafoTile {
 		this.x2 = x1 + 31;
 		this.y2 = y1 + 31;
 		this.esObstaculo = esObstaculo;
-		activo = false;
+		activo = 0;
 	}
 	
 	public int getX1() {
@@ -54,11 +49,10 @@ public class GrafoTile {
 	public void setEsObstaculo(boolean esObstaculo) {
 		this.esObstaculo = esObstaculo;
 	}
-	public boolean isActivo() {
+	public int getActivo() {
 		return activo;
 	}
-	public void setActivo(boolean activo) {
+	public void setActivo(int activo) {
 		this.activo = activo;
 	}
-	
 }
