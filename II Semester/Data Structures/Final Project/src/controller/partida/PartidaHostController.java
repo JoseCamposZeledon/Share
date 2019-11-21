@@ -48,6 +48,8 @@ public class PartidaHostController implements Runnable, Serializable, IConstants
 	private HashMap<Point, Nodo<GrafoTile>> mapaNodos;
 	private Grafo<GrafoTile> grafoNodos;
 	
+	private boolean conectado = false;
+	
 	private int addBuffer = 1000;
 	
 	
@@ -168,11 +170,17 @@ public class PartidaHostController implements Runnable, Serializable, IConstants
 	}
 	
 	private void conectarNodoAux(Nodo<GrafoTile> nodo, Nodo<GrafoTile> nodoDestino) {
-		int arco = 1;
-		if (nodo.getValor().isEsObstaculo() || nodoDestino.getValor().isEsObstaculo()) {
-			arco = addBuffer;
+		if (!conectado) {
+			if (!nodo.getValor().isEsObstaculo() && !nodoDestino.getValor().isEsObstaculo()) {
+				nodo.conectar(nodoDestino, 1);
+			}
+		} else {
+			int arco = 1;
+			if (nodo.getValor().isEsObstaculo() || nodoDestino.getValor().isEsObstaculo()) {
+				arco = addBuffer;
+			}
+			nodo.conectar(nodoDestino, arco);
 		}
-		nodo.conectar(nodoDestino, arco);
 	}
 	
 	private void conectarGrafoNodos() {
@@ -221,17 +229,17 @@ public class PartidaHostController implements Runnable, Serializable, IConstants
 	private void computarNodosObstaculos(String pPath) {
 		for(ObstaculoGrafico obstaculo: MapParser.getInstance().loadMap(pPath).getObstaculos()) {
 			int x1 = obstaculo.getX1();
-			int y1 = obstaculo.getY1();
-			
-			while (x1 <= obstaculo.getX2()) {
-				while (y1 <= obstaculo.getY2()) {
-					int truncatedX = (x1 / 32) * 32;
-					int truncatedY = (y1 / 32) * 32;
+			int truncatedX = (x1 / 32) * 32;
+			while (truncatedX < obstaculo.getX2()) {
+				int y1 = obstaculo.getY1();
+				int truncatedY = (y1 / 32) * 32;
+				while (truncatedY < obstaculo.getY2()) {
+					System.out.println(truncatedX + " " + truncatedY);
 					Nodo<GrafoTile> nodo = mapaNodos.get(new Point(truncatedX, truncatedY));
 					nodo.getValor().setEsObstaculo(true);
-					y1 += 32;
+					truncatedY += 32;
 				}
-				x1 += 32;
+				truncatedX += 32;
 			}
 			// vista.getTableroPane().add(obstaculo.getGraphicObstaculo(), 1);
 		}
