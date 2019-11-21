@@ -174,6 +174,7 @@ public class PartidaClientController implements Runnable, IConstants{
 			boolean pintarEnemigo = false;
 			boolean first = false;
 			boolean second = false;
+			boolean caminar = false;
 			
 			ArrayList<CrownTile> crowns;
 			ArrayList<GroupTile> groups;
@@ -280,11 +281,14 @@ public class PartidaClientController implements Runnable, IConstants{
 						}
 						
 						pintarEnemigo = false;
+						caminar = true;
 						this.notifyView();
 					}
+				}	
+				if (caminar) {
+					this.walk();
+					caminar = false;
 				}
-					
-					continue;
 			}
 				
 		} catch (IOException | ClassNotFoundException e) {
@@ -292,6 +296,10 @@ public class PartidaClientController implements Runnable, IConstants{
 			e.printStackTrace();
 		}
 		
+	}
+	
+	public void walk() {
+
 	}
 	
 	public void updateReadyButton(boolean pReady) {

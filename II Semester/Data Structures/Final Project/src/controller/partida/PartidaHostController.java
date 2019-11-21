@@ -16,10 +16,12 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 
 import javax.swing.JOptionPane;
 
 import javax.swing.ImageIcon;
+import javax.swing.JLabel;
 
 import controller.menu.eventosInicio.EventoGetNodo;
 import controller.partida.hostEventos.EventoPersonajeHost;
@@ -304,6 +306,7 @@ public class PartidaHostController implements Runnable, IConstants {
 			
 			boolean first = false;
 			boolean second = false;
+			boolean caminar = false;
 			
 			while (true) {
 				clientConnected = server.accept();
@@ -419,11 +422,14 @@ public class PartidaHostController implements Runnable, IConstants {
 						}
 						
 						pintarEnemigo = false;
+						caminar = true;
 						this.notifyView();
 						
-						pintarEnemigo = false;
+						if (caminar) {
+							this.walk(groups);
+							caminar = false;
+						}
 					}
-					
 				}
 			}
 						
@@ -440,6 +446,53 @@ public class PartidaHostController implements Runnable, IConstants {
 		
 	}
 
+	public void walk(ArrayList<GroupTile> pGroups) {
+		LinkedList<Nodo<GrafoTile>> camino1 = this.grafoNodos.dijkstra(this.getMapaNodos().get(new Point(32, 0)), 
+				this.getMapaNodos().get(new Point(992, 768)));
+		 
+		JLabel nodo1 = this.getHostPlayer().getGrupos()[0].getPersonajesLabel();
+		
+//		LinkedList<Nodo<GrafoTile>> camino2 = this.grafoNodos.dijkstra(this.getMapaNodos().get(new Point(32, 384)), 
+//				this.getMapaNodos().get(new Point(992, 384)));
+//		
+//		JLabel nodo2 = this.getHostPlayer().getGrupos()[1].getPersonajesLabel();;
+//
+//		LinkedList<Nodo<GrafoTile>> camino3 = this.grafoNodos.dijkstra(this.getMapaNodos().get(new Point(32, 768)), 
+//				this.getMapaNodos().get(new Point(992, 0)));
+//		
+//		JLabel nodo3 = this.getHostPlayer().getGrupos()[2].getPersonajesLabel();;
+
+		Thread t = new Thread(new Runnable() {
+		    @Override
+		    public void run() {
+		    	int counter1 = 0;
+		    	int counter2 = 0;
+		    	int counter3 = 0;
+		    	
+		    	while (true) {
+		    		
+
+//		    		if (counter2 < camino2.size()) {
+//		    			int x = camino2.get(counter2).getValor().getX1();
+//		    			int y = camino2.get(counter2).getValor().getX2();
+//		    			nodo2.setLocation(x, y);
+//		    			counter2 += 1;
+//		    		}
+//		    		
+//		    		if (counter3 < camino2.size()) {
+//		    			int x = camino3.get(counter3).getValor().getX1();
+//		    			int y = camino3.get(counter3).getValor().getX2();
+//		    			nodo3.setLocation(x, y);
+//		    			counter1 += 1;
+//		    		}
+		    		
+				}
+		    }
+		});
+		t.start();
+		
+	}
+	
 	public void notifyView() {
 		vista.update();
 	}
@@ -477,10 +530,4 @@ public class PartidaHostController implements Runnable, IConstants {
 		this.mapPath = mapPath;
 	}
 	
-	public static void main(String[] args) {
-		Account acc1 = new Account("a@a.com", "123");
-		PartidaHostController.createInstance(".//static//maps//mapa1.json", acc1);
-		ThreadManager.getInstance().startThread(PartidaHostController.getInstance());
-		
-	}
-}	
+}
