@@ -170,6 +170,7 @@ public class PartidaClientController implements Runnable, IConstants{
 			
 			boolean connected = true;
 			boolean inicio = true;
+			boolean pintarEnemigo = false;
 			
 			// Espera a que el host se pueda conectar
 			while (true) {
@@ -200,11 +201,13 @@ public class PartidaClientController implements Runnable, IConstants{
 				
 				// Cambia el estado del boton READY cuando host hace click
 				if (hostConnected != null && inicio) {
-					DataInputStream oIS = new DataInputStream(hostConnected.getInputStream());
-					readyHost = oIS.readBoolean();
-					this.updateReadyButton(readyHost);
-					oIS.close();
-					hostConnected.close();
+					if (inicio) {
+						DataInputStream oIS = new DataInputStream(hostConnected.getInputStream());
+						readyHost = oIS.readBoolean();
+						this.updateReadyButton(readyHost);
+						oIS.close();
+						hostConnected.close();
+					}
 					
 					if (readyClient && readyHost && inicio) {
 						
@@ -218,9 +221,28 @@ public class PartidaClientController implements Runnable, IConstants{
 						streamOS.close();
 						
 						
+						pintarEnemigo = true;
 						continue;
 					}
 					continue;
+				}
+				
+				// Pinta los tiles del enemigo
+				if (pintarEnemigo) {
+					
+					Socket socketEvento = new Socket(IP, HOST_PORT);
+					
+					ObjectOutputStream streamOS = new ObjectOutputStream(socketEvento.getOutputStream());
+					streamOS.writeObject(this.getVista().getTableroPane().getHostCrownTiles());
+					streamOS.writeObject(this.getVista().getTableroPane().getHostGroupTiles());
+					streamOS.close();
+					
+					ObjectOutputStream streamIS = new ObjectOutputStream(socketEvento.getOutputStream());
+					streamOS.writeObject(this.getVista().getTableroPane().getHostCrownTiles());
+					streamOS.writeObject(this.getVista().getTableroPane().getHostGroupTiles());
+					streamOS.close();
+					
+					pintarEnemigo = false;
 				}
 				
 			}
@@ -240,8 +262,7 @@ public class PartidaClientController implements Runnable, IConstants{
 					.getImage().getScaledInstance(75, 75, Image.SCALE_SMOOTH)));
 		}
 		
-		this.getVista().revalidate();
-		this.getVista().repaint();
+		this.notifyView();
 	}
 	 
 	

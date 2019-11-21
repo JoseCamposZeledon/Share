@@ -410,8 +410,7 @@ public class PartidaHostController implements Runnable, IConstants {
 					.getImage().getScaledInstance(75, 75, Image.SCALE_SMOOTH)));
 		}
 		
-		this.getVista().revalidate();
-		this.getVista().repaint();
+		this.notifyView();
 	}
 	
 	
@@ -430,17 +429,9 @@ public class PartidaHostController implements Runnable, IConstants {
 	public void setReadyHost(boolean readyHost) {
 		this.readyHost = readyHost;
 	}
-
-	
 	
 	public void setMapPath(String mapPath) {
 		this.mapPath = mapPath;
 	}
-	
-	public static void main(String[] args) {
-		Account acc1 = new Account("a@a.com", "123");
-		PartidaHostController.createInstance(".//static//maps//mapa1.json", acc1);
-		System.out.println("asd");
-		
-	}
+
 }	

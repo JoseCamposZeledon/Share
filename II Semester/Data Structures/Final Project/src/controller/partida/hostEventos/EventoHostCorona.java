@@ -40,6 +40,13 @@ public class EventoHostCorona extends MouseAdapter{
 				continue;
 			}
 			
+			else if (actual.isSelected()) {
+				PartidaHostController.getInstance().getMapaNodos().get(new Point(
+						myTile.getX(),
+						myTile.getY()
+						)).getValor().setActivo(0);
+			}
+			
 			// Limpia el tile
 			actual.removeAll();
 			actual.setSelected(false);
@@ -49,7 +56,7 @@ public class EventoHostCorona extends MouseAdapter{
 		PartidaHostController.getInstance().getMapaNodos().get(new Point(
 				myTile.getParent().getX(),
 				myTile.getParent().getY()
-				)).getValor();
+				)).getValor().setActivo(2);
 		PartidaHostController.getInstance().notifyView();
 		
 	}

@@ -12,7 +12,7 @@ import model.personajes.Brawler;
 import model.personajes.Knight;
 import model.personajes.Personaje;
 
-public class Player {
+public class Player implements controller.partida.IConstants {
 	
 	private boolean crownPlaced;
 	
@@ -34,6 +34,14 @@ public class Player {
 
 	public void setGrupos(Group[] grupos) {
 		this.grupos = grupos;
+	}
+
+	public boolean isCrownPlaced() {
+		return crownPlaced;
+	}
+
+	public void setCrownPlaced(boolean crownPlaced) {
+		this.crownPlaced = crownPlaced;
 	}
 
 	public boolean calcularRuta(Nodo<GrafoTile> nodoDestino, int pGroupIndex) {
@@ -60,6 +68,20 @@ public class Player {
 			}
 		}
 		return grupo;
+	}
+	
+	public void agregar(int pIdGrupo, int pIdAgregar) {
+		switch (pIdAgregar) {
+			case(ID_ARCHER):
+				this.agregarArcher(pIdGrupo);
+				break;
+			case(ID_KNIGHT):
+				this.agregarKnight(pIdGrupo);
+				break;
+			case(ID_BRAWLER):
+				this.agregarBrawler(pIdGrupo);
+				break;
+		}
 	}
 	
 	public void agregarArcher(int pGroupIndex) {
