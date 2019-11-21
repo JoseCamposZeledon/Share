@@ -248,7 +248,7 @@ public class PartidaHostController implements Runnable, IConstants {
 	@Override
 	public synchronized void run() {
 		try {
-			// Crea un servidor en el puerto 9999
+
 			ServerSocket server = new ServerSocket(HOST_PORT, 1);
 			Socket clientConnected, connect;
 			

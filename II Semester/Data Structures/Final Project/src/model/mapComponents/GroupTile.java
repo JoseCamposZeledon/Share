@@ -5,7 +5,7 @@ import java.awt.Image;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 
-import controller.partida.hostEventos.EventoGrupo;
+import controller.partida.hostEventos.EventoHostGrupo;
 
 public class GroupTile extends MapTile {
 	
@@ -17,7 +17,7 @@ public class GroupTile extends MapTile {
 
 		this.setIcon(tileTexture);
 		
-		this.addMouseListener(new EventoGrupo());
+		this.addMouseListener(new EventoHostGrupo());
 	}
 			
 }
