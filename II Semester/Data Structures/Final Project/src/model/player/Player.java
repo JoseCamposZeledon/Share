@@ -1,18 +1,22 @@
 package model.player;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 
+import controller.partida.PartidaHostController;
+import model.grafo.Arco;
+import model.grafo.GrafoTile;
+import model.grafo.Nodo;
 import model.personajes.Archer;
 import model.personajes.Brawler;
 import model.personajes.Knight;
 import model.personajes.Personaje;
 
-public class Player implements controller.partida.IConstants {
+public class Player {
 	
 	private boolean crownPlaced;
 	
 	private int cantidadArcher = 4;
-	
 	private int cantidadBrawler = 6;
 	private int cantidadKnight = 2;
 	
@@ -24,20 +28,38 @@ public class Player implements controller.partida.IConstants {
 		grupos[2] = new Group();
 	}
 	
-	public void agregar(int pGroupIndex, int pIdPersonaje) {
-		
-		switch(pIdPersonaje) {
-			case (ID_ARCHER):
-				this.agregarArcher(pGroupIndex);
-				return;
-			case (ID_KNIGHT):
-				this.agregarKnight(pGroupIndex);
-				return;
-			case (ID_BRAWLER):
-				this.agregarBrawler(pGroupIndex);
-				return;
+	public Group[] getGrupos() {
+		return grupos;
+	}
+
+	public void setGrupos(Group[] grupos) {
+		this.grupos = grupos;
+	}
+
+	public boolean calcularRuta(Nodo<GrafoTile> nodoDestino, int pGroupIndex) {
+		return grupos[pGroupIndex].calcularRuta(nodoDestino);
+	}
+	
+	public void mover(int pGroupIndex) {
+		Group grupo = grupos[pGroupIndex];
+		if (!grupo.getRuta().isEmpty() && grupo.isVivo()) { 
+			grupo.getNodoActual().getValor().setActivo(0);
+			grupo.setNodoActual(grupo.getRuta().get(0));
+			PartidaHostController.getInstance().getMapaGrupos().put(grupo.getNodoActual(), grupo);
+			grupo.getRuta().get(0).getValor().setActivo(1);
+			grupo.getRuta().remove(0);
 		}
-		
+	}
+	
+	public ArrayList<Group> revisar(int pGroupIndex) {
+		// grupo para atacar
+		ArrayList<Group> grupo = new ArrayList<Group>();
+		for (Arco<GrafoTile> arco : grupos[pGroupIndex].getNodoActual().getConexiones()) {
+			if (arco.getConexion()[1].getValor().getActivo() == 1) {
+				grupo.add(PartidaHostController.getInstance().getMapaGrupos().get(arco.getConexion()[1]));
+			}
+		}
+		return grupo;
 	}
 	
 	public void agregarArcher(int pGroupIndex) {
@@ -57,21 +79,4 @@ public class Player implements controller.partida.IConstants {
 		grupos[pGroupIndex].agregarPersonaje(new Knight());
 		cantidadKnight--;
 	}
-	
-	public boolean isCrownPlaced() {
-		return crownPlaced;
-	}
-
-	public void setCrownPlaced(boolean crownPlaced) {
-		this.crownPlaced = crownPlaced;
-	}
-
-	public Group[] getGrupos() {
-		return grupos;
-	}
-
-	public void setGrupos(Group[] grupos) {
-		this.grupos = grupos;
-	}
-
 }
