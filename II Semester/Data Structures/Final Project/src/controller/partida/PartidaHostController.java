@@ -48,6 +48,8 @@ public class PartidaHostController implements Runnable, Serializable, IConstants
 	private HashMap<Point, Nodo<GrafoTile>> mapaNodos;
 	private Grafo<GrafoTile> grafoNodos;
 	
+	private boolean conectado = false;
+	
 	private int addBuffer = 1000;
 	
 	
@@ -159,11 +161,17 @@ public class PartidaHostController implements Runnable, Serializable, IConstants
 	}
 	
 	private void conectarNodoAux(Nodo<GrafoTile> nodo, Nodo<GrafoTile> nodoDestino) {
-		int arco = 1;
-		if (nodo.getValor().isEsObstaculo() && nodoDestino.getValor().isEsObstaculo()) {
-			arco = addBuffer;
+		if (!conectado) {
+			if (!nodo.getValor().isEsObstaculo() && !nodoDestino.getValor().isEsObstaculo()) {
+				nodo.conectar(nodoDestino, 1);
+			}
+		} else {
+			int arco = 1;
+			if (nodo.getValor().isEsObstaculo() || nodoDestino.getValor().isEsObstaculo()) {
+				arco = addBuffer;
+			}
+			nodo.conectar(nodoDestino, arco);
 		}
-		nodo.conectar(nodoDestino, arco);
 	}
 	
 	private void conectarArbolNodos() {
