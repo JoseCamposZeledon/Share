@@ -447,10 +447,24 @@ public class PartidaHostController implements Runnable, IConstants {
 	}
 
 	public void walk(ArrayList<GroupTile> pGroups) {
-		LinkedList<Nodo<GrafoTile>> camino1 = this.grafoNodos.dijkstra(this.getMapaNodos().get(new Point(32, 0)), 
-				this.getMapaNodos().get(new Point(992, 768)));
-		 
 		JLabel nodo1 = PartidaHostController.getInstance().getHostPlayer().getGrupos()[0].getPersonajesLabel();
+		JLabel nodo2 = PartidaHostController.getInstance().getHostPlayer().getGrupos()[1].getPersonajesLabel();
+		JLabel nodo3 = PartidaHostController.getInstance().getHostPlayer().getGrupos()[2].getPersonajesLabel();
+		
+		LinkedList<Nodo<GrafoTile>> camino1 = this.grafoNodos.dijkstra(this.getMapaNodos().get(new Point(32, 0)), 
+				this.getMapaNodos().get(new Point(992, 768))); 
+		
+		this.grafoNodos.limpiar();
+		
+		LinkedList<Nodo<GrafoTile>> camino2 = this.grafoNodos.dijkstra(this.getMapaNodos().get(new Point(32, 384)), 
+				this.getMapaNodos().get(new Point(992, 284))); 
+		
+		this.grafoNodos.limpiar();
+		
+		LinkedList<Nodo<GrafoTile>> camino3 = this.grafoNodos.dijkstra(this.getMapaNodos().get(new Point(32, 768)), 
+				this.getMapaNodos().get(new Point(992, 0))); 
+		
+		this.grafoNodos.limpiar();
 		
 		Thread t = new Thread(new Runnable() {
 		    @Override
@@ -472,6 +486,27 @@ public class PartidaHostController implements Runnable, IConstants {
 						}
 		    		}
 		    			
+		    		for (Nodo<GrafoTile> a: camino2) {
+		    			nodo2.setLocation(a.getValor().getX1(), a.getValor().getY1());
+		    			
+		    			try {
+							Thread.sleep(500);
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+		    		}
+		    		
+		    		for (Nodo<GrafoTile> a: camino3) {
+		    			nodo3.setLocation(a.getValor().getX1(), a.getValor().getY1());
+		    			
+		    			try {
+							Thread.sleep(500);
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+		    		}
 				}
 		    }
 		});
