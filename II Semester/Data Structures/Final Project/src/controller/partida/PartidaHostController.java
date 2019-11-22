@@ -450,42 +450,28 @@ public class PartidaHostController implements Runnable, IConstants {
 		LinkedList<Nodo<GrafoTile>> camino1 = this.grafoNodos.dijkstra(this.getMapaNodos().get(new Point(32, 0)), 
 				this.getMapaNodos().get(new Point(992, 768)));
 		 
-		JLabel nodo1 = this.getHostPlayer().getGrupos()[0].getPersonajesLabel();
+		JLabel nodo1 = PartidaHostController.getInstance().getHostPlayer().getGrupos()[0].getPersonajesLabel();
 		
-//		LinkedList<Nodo<GrafoTile>> camino2 = this.grafoNodos.dijkstra(this.getMapaNodos().get(new Point(32, 384)), 
-//				this.getMapaNodos().get(new Point(992, 384)));
-//		
-//		JLabel nodo2 = this.getHostPlayer().getGrupos()[1].getPersonajesLabel();;
-//
-//		LinkedList<Nodo<GrafoTile>> camino3 = this.grafoNodos.dijkstra(this.getMapaNodos().get(new Point(32, 768)), 
-//				this.getMapaNodos().get(new Point(992, 0)));
-//		
-//		JLabel nodo3 = this.getHostPlayer().getGrupos()[2].getPersonajesLabel();;
-
 		Thread t = new Thread(new Runnable() {
 		    @Override
+		    
+		    
 		    public void run() {
-		    	int counter1 = 0;
-		    	int counter2 = 0;
-		    	int counter3 = 0;
+	
 		    	
 		    	while (true) {
 		    		
-
-//		    		if (counter2 < camino2.size()) {
-//		    			int x = camino2.get(counter2).getValor().getX1();
-//		    			int y = camino2.get(counter2).getValor().getX2();
-//		    			nodo2.setLocation(x, y);
-//		    			counter2 += 1;
-//		    		}
-//		    		
-//		    		if (counter3 < camino2.size()) {
-//		    			int x = camino3.get(counter3).getValor().getX1();
-//		    			int y = camino3.get(counter3).getValor().getX2();
-//		    			nodo3.setLocation(x, y);
-//		    			counter1 += 1;
-//		    		}
-		    		
+		    		for (Nodo<GrafoTile> a: camino1) {
+		    			nodo1.setLocation(a.getValor().getX1(), a.getValor().getY1());
+		    			
+		    			try {
+							Thread.sleep(500);
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+		    		}
+		    			
 				}
 		    }
 		});

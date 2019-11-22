@@ -14,8 +14,10 @@ import java.net.UnknownHostException;
 import java.rmi.server.ServerRef;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 
 import javax.swing.ImageIcon;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
 import controller.partida.clientEventos.EventoClientPersonaje;
@@ -299,7 +301,7 @@ public class PartidaClientController implements Runnable, IConstants{
 	}
 	
 	public void walk() {
-
+		System.out.println("AAA");
 	}
 	
 	public void updateReadyButton(boolean pReady) {
