@@ -146,7 +146,6 @@ public class Group {
 	
 	public boolean restarVida(int vida) {
 		vidaTeam -= vida;
-		System.out.println("Restando vida a " + this + " cantidad: " + vidaTeam);
 		if (vida <= 0) {
 			return true;
 		} 

@@ -180,11 +180,11 @@ public class PartidaHostController implements Runnable, IConstants {
 			boolean state;
 			
 			state = clientePlayerLogica.calcularRuta(mapaNodos.get(new Point(32,0)), 0);
-			System.out.println(state);
+			
 			state = clientePlayerLogica.calcularRuta(mapaNodos.get(new Point(32,384)), 1);
-			System.out.println(state);
+
 			state = clientePlayerLogica.calcularRuta(mapaNodos.get(new Point(32,768)), 2);
-			System.out.println(state +"\n");
+	
 			
 			hostPlayerLogica.agregarArcher(0);
 			hostPlayerLogica.agregarArcher(0);
@@ -206,11 +206,11 @@ public class PartidaHostController implements Runnable, IConstants {
 			hostPlayerLogica.getGrupos()[2].setNodoActual(mapaNodos.get(new Point(32,768)));
 			
 			state = hostPlayerLogica.calcularRuta(mapaNodos.get(new Point(960,0)), 0);
-			System.out.println(state);
+		
 			state = hostPlayerLogica.calcularRuta(mapaNodos.get(new Point(960,384)), 1);
-			System.out.println(state);
+	
 			state = hostPlayerLogica.calcularRuta(mapaNodos.get(new Point(960,768)), 2);
-			System.out.println(state +"\n");
+			
 			
 			int turno = 0;
 			
@@ -292,14 +292,8 @@ public class PartidaHostController implements Runnable, IConstants {
 					if (!hostPlayerLogica.getGrupos()[i].isEnConflicto() && hostPlayerLogica.getGrupos()[i].isVivo()) {
 						if (hostPlayerLogica.getGrupos()[i].getNodoActual().getValor().getActivo() == 2) {
 							hostGane = true;
-							System.out.println("-----------------------------------------------------------");
-							System.out.println("ganeeeeee");
-							System.out.println("-----------------------------------------------------------");
 						} else if (hostPlayerLogica.revisar(i)) {
 							hostPlayerLogica.getGrupos()[i].setEnConflicto(true);
-							System.out.println("-----------------------------------------------------------");
-							System.out.println("se detecta");
-							System.out.println("-----------------------------------------------------------");
 						} else {
 							// no gana y no en conlflcito
 						}
@@ -307,14 +301,8 @@ public class PartidaHostController implements Runnable, IConstants {
 					if (!clientePlayerLogica.getGrupos()[i].isEnConflicto() && clientePlayerLogica.getGrupos()[i].isVivo()) {
 						if (clientePlayerLogica.getGrupos()[i].getNodoActual().getValor().getActivo() == 2) {
 							clientGane = true;
-							System.out.println("-----------------------------------------------------------");
-							System.out.println("ganeeeeee");
-							System.out.println("-----------------------------------------------------------");
 						} else if (clientePlayerLogica.revisar(i)) {
 							clientePlayerLogica.getGrupos()[i].setEnConflicto(true);
-							System.out.println("-----------------------------------------------------------");
-							System.out.println("se detecta");
-							System.out.println("-----------------------------------------------------------");
 						} else {
 							// no gana y no en conlflcito
 						}
