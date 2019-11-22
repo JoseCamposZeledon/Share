@@ -150,6 +150,8 @@ public class PartidaHostController implements Runnable, IConstants {
 			
 			HashMap<Point, Nodo<GrafoTile>> mapaNodos = JuegoController.getInstance().getMapaNodos();
 			
+			mapaNodos.get(new Point(512, 512)).getValor().setActivo(2);;
+			
 			Player clients = new Player(2);
 			Player clientePlayerLogica = clients;
 						
@@ -213,8 +215,11 @@ public class PartidaHostController implements Runnable, IConstants {
 			
 			
 			int turno = 0;
+			boolean clientGane, hostGane;
+			clientGane = false;
+			hostGane = false;
 			
-			while (hostPlayerLogica.enSeguimiento() || clientePlayerLogica.enSeguimiento()) {
+			while (hostPlayerLogica.enSeguimiento() || clientePlayerLogica.enSeguimiento() && !clientGane && !hostGane) {
 				
 				for (int i = 0; i < 3; i++) {
 					Group grupo = hostPlayerLogica.getGrupos()[i];
@@ -285,13 +290,15 @@ public class PartidaHostController implements Runnable, IConstants {
 				}
 				
 				HashMap<Group, Integer> mapaDano = new HashMap<Group, Integer>();
-				boolean clientGane, hostGane;
+				
 				
 				
 				for (int i = 0; i < 3; i++) {
 					if (!hostPlayerLogica.getGrupos()[i].isEnConflicto() && hostPlayerLogica.getGrupos()[i].isVivo()) {
 						if (hostPlayerLogica.getGrupos()[i].getNodoActual().getValor().getActivo() == 2) {
 							hostGane = true;
+							System.out.println("Host Gana.");
+							
 						} else if (hostPlayerLogica.revisar(i)) {
 							hostPlayerLogica.getGrupos()[i].setEnConflicto(true);
 						} else {
@@ -301,6 +308,8 @@ public class PartidaHostController implements Runnable, IConstants {
 					if (!clientePlayerLogica.getGrupos()[i].isEnConflicto() && clientePlayerLogica.getGrupos()[i].isVivo()) {
 						if (clientePlayerLogica.getGrupos()[i].getNodoActual().getValor().getActivo() == 2) {
 							clientGane = true;
+							System.out.println("Host Gana.");
+							
 						} else if (clientePlayerLogica.revisar(i)) {
 							clientePlayerLogica.getGrupos()[i].setEnConflicto(true);
 						} else {
